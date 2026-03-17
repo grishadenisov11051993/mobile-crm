@@ -24,33 +24,33 @@
         .tags-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="text-slate-800 font-sans">
+<body class="text-slate-800 font-sans transition-all duration-300">
     
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[200] text-sm font-medium transition-all text-white"></div>
 
     <div id="dayModal" class="fixed inset-0 bg-slate-900/50 hidden z-[155] flex items-center justify-center p-4 backdrop-blur-sm transition-all">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh] border border-slate-200">
-            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 relative">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] border border-slate-200">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 relative shrink-0">
                 <button onclick="closeDayModal()" class="text-sky-500 hover:text-sky-600 font-medium flex items-center gap-1 text-sm absolute left-4">
                     <span>←</span> Назад
                 </button>
                 <h3 id="dayModalTitle" class="font-bold text-slate-700 text-base mx-auto">Отгрузки</h3>
                 <button onclick="closeDayModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none absolute right-4">&times;</button>
             </div>
-            <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
+            <div id="dayOrdersList" class="p-4 overflow-y-auto overscroll-contain space-y-3 flex-1 bg-white" style="-webkit-overflow-scrolling: touch;"></div>
         </div>
     </div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-[160] flex items-center justify-center p-4 backdrop-blur-sm transition-all">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
-            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 relative">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] border border-slate-200">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 relative shrink-0">
                 <button onclick="closeEditModal()" class="text-sky-500 hover:text-sky-600 font-medium flex items-center gap-1 text-sm absolute left-4">
                     <span>←</span> Назад
                 </button>
                 <h3 class="font-bold text-slate-700 text-base mx-auto">Карточка заказа</h3>
                 <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none absolute right-4">&times;</button>
             </div>
-            <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-white">
+            <div class="p-5 overflow-y-auto overscroll-contain space-y-4 flex-1 bg-white" style="-webkit-overflow-scrolling: touch;">
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">№ Заказа</label><input id="editOrderNum" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label><input id="editName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
@@ -81,7 +81,7 @@
                     <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
+            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3 shrink-0">
                 <button onclick="closeEditModal()" class="px-5 py-2.5 bg-white border border-slate-300 rounded text-slate-600 hover:bg-slate-100 text-sm font-medium transition">Отмена</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="px-5 py-2.5 bg-sky-500 text-white rounded hover:bg-sky-600 text-sm font-medium shadow-sm transition">Сохранить</button>
             </div>
@@ -188,7 +188,9 @@
                         <div id="totalSum" class="bg-slate-50 px-5 py-3 text-right text-slate-700 font-bold text-sm border-t border-slate-200"></div>
                     </div>
                 </div>
-            </div> <div id="section-calendar" class="hidden p-4 max-w-7xl mx-auto w-full mt-2">
+            </div>
+
+            <div id="section-calendar" class="hidden p-4 max-w-7xl mx-auto w-full mt-2">
                 <div class="bg-white p-4 md:p-6 rounded-xl border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-6">
                         <button onclick="changeMonth(-1)" class="p-2 px-4 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition font-bold">◀ Пред.</button>
@@ -219,15 +221,17 @@
             </div>
 
         </main>
-    </div> <script>
+    </div>
+
+    <script>
         // === ВСТАВЬ СВОИ КЛЮЧИ SUPABASE СЮДА !!! ===
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
         // ===========================================
         
-        // === ТВОЙ ПАРОЛЬ (ИЗМЕНИ НА СВОЙ!) ===
+        // === ТВОЙ ПАРОЛЬ ===
         const SECRET_PIN = '1234';
-        // =====================================
+        // ===================
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -237,17 +241,24 @@
         let currentDate = new Date(); 
         let currentSupplierFilter = 'Все';
 
-        // === 1. ГЕНЕРАТОР МАСКИ ТЕЛЕФОНА ===
+        // === БЛОКИРОВКА ФОНА ДЛЯ ПЛАВНОГО СКРОЛЛА ===
+        function checkBodyScroll() {
+            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || 
+                                  !document.getElementById('dayModal').classList.contains('hidden');
+            if (hasOpenModals) {
+                document.body.classList.add('overflow-hidden');
+            } else {
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        // --- УМНОЕ ФОРМАТИРОВАНИЕ ТЕЛЕФОНА ---
         function applyPhoneMask(phoneStr) {
-            let val = String(phoneStr).replace(/\D/g, ''); // Оставляем только цифры
+            let val = String(phoneStr).replace(/\D/g, ''); 
             if (!val) return '';
-            
-            // Если номер начинается с 8 или 9 -> превращаем в +7
             if (val[0] === '8') val = '7' + val.substring(1);
             if (val[0] === '9') val = '7' + val;
-            if (val[0] !== '7') val = '7' + val; // Принудительно для РФ
-
-            // Собираем красивый формат: +7 (926) 123-45-67
+            if (val[0] !== '7') val = '7' + val; 
             let formatted = '+7';
             if (val.length > 1) formatted += ' (' + val.substring(1, 4);
             if (val.length >= 5) formatted += ') ' + val.substring(4, 7);
@@ -256,12 +267,11 @@
             return formatted;
         }
 
-        // Вызывается при каждом нажатии клавиши в поле
         function formatPhoneInput(e) {
             e.target.value = applyPhoneMask(e.target.value);
         }
 
-        // --- ЛОГИКА АВТОРИЗАЦИИ ---
+        // --- АВТОРИЗАЦИЯ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) {
@@ -337,6 +347,7 @@
             if(window.innerWidth < 768) toggleSidebar();
         }
 
+        // --- КАЛЕНДАРЬ ---
         function changeMonth(offset) {
             currentDate.setMonth(currentDate.getMonth() + offset);
             renderCalendar();
@@ -387,6 +398,7 @@
             }
         }
 
+        // --- МОДАЛКА ДНЯ И РЕДАКТИРОВАНИЯ ---
         function openDayModal(dateStr) {
             const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
             document.getElementById('dayModalTitle').innerText = 'Отгрузки на ' + formatDate(dateStr);
@@ -418,10 +430,12 @@
                 });
             }
             document.getElementById('dayModal').classList.remove('hidden');
+            checkBodyScroll();
         }
 
         function closeDayModal() {
             document.getElementById('dayModal').classList.add('hidden');
+            checkBodyScroll();
         }
 
         function openEditModal(id) {
@@ -432,10 +446,7 @@
             document.getElementById('editName').value = order.customer_name || '';
             document.getElementById('editPrice').value = order.total_price || '';
             document.getElementById('editPrepayment').value = order.prepayment || '';
-            
-            // === ПРИ ОТКРЫТИИ КАРТОЧКИ: ИСПРАВЛЯЕМ СТАРЫЙ НОМЕР С 8-КОЙ ===
             document.getElementById('editPhone').value = applyPhoneMask(order.phone || '');
-            
             document.getElementById('editInvoice').value = order.supplier_invoice || '';
             document.getElementById('editSupplierStatus').value = order.supplier_status || 'Не оплачен';
             document.getElementById('editShipDate').value = order.shipment_date || '';
@@ -447,9 +458,14 @@
             if (order.file_url) linkDiv.innerHTML = `Файл: <a href="${order.file_url}" target="_blank" class="text-sky-500 hover:underline">Открыть</a>`;
             else linkDiv.innerHTML = `Нет файла.`;
             document.getElementById('editModal').classList.remove('hidden');
+            checkBodyScroll();
         }
 
-        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); currentEditId = null; }
+        function closeEditModal() { 
+            document.getElementById('editModal').classList.add('hidden'); 
+            currentEditId = null; 
+            checkBodyScroll();
+        }
 
         async function saveEdit() {
             const btn = document.getElementById('saveEditBtn');
@@ -461,7 +477,6 @@
                 customer_name: document.getElementById('editName').value,
                 total_price: document.getElementById('editPrice').value,
                 prepayment: document.getElementById('editPrepayment').value || null,
-                // Сохраняем красивый формат напрямую из инпута
                 phone: document.getElementById('editPhone').value,
                 supplier_invoice: document.getElementById('editInvoice').value,
                 supplier_status: document.getElementById('editSupplierStatus').value,
@@ -490,6 +505,7 @@
             finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
+        // --- ДАННЫЕ И РЕНДЕР ---
         function setFilter(status) {
             currentSupplierFilter = status;
             document.querySelectorAll('.filter-btn').forEach(btn => {
