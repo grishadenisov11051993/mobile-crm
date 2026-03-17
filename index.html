@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM Хорошие полы - Kanban</title>
+    <title>CRM Хорошие полы</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Стили для плавной прокрутки Канбан-доски на мобильных */
         .kanban-scroll::-webkit-scrollbar { height: 6px; }
         .kanban-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
         .column { min-width: 280px; width: 100%; max-width: 320px; }
@@ -19,14 +18,19 @@
 </head>
 <body class="bg-gray-950 text-white min-h-screen font-sans pb-20">
     
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-2xl hidden z-50 text-sm font-bold transition-all"></div>
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl hidden z-50 text-sm font-bold transition-all text-white"></div>
 
     <div class="p-4 max-w-7xl mx-auto">
         <header class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
             <div>
-                <h1 class="text-2xl font-black tracking-tight text-white">Канбан <span class="text-blue-500">Хорошие полы</span></h1>
+                <h1 class="text-2xl font-black tracking-tight text-white">CRM <span class="text-blue-500">Хорошие полы</span></h1>
             </div>
-            <button onclick="toggleForm()" class="bg-blue-600 hover:bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl shadow-lg shadow-blue-600/30 transition">+</button>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleView()" id="viewBtn" class="bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs px-4 py-2 rounded-lg font-bold uppercase tracking-wider transition border border-gray-700">
+                    Вид: Доска
+                </button>
+                <button onclick="toggleForm()" class="bg-blue-600 hover:bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg shadow-blue-600/30 transition">+</button>
+            </div>
         </header>
 
         <div id="formSection" class="hidden bg-gray-900 p-6 rounded-2xl mb-8 border border-gray-800 shadow-2xl">
@@ -34,17 +38,14 @@
             <input id="cName" type="text" placeholder="Имя клиента" class="w-full mb-3 p-3 bg-gray-950 border border-gray-800 rounded-xl text-white outline-none focus:border-blue-500 transition">
             <input id="cPrice" type="number" placeholder="Сумма (₽)" class="w-full mb-3 p-3 bg-gray-950 border border-gray-800 rounded-xl text-white outline-none focus:border-blue-500 transition">
             <input id="cPhone" type="tel" placeholder="Телефон (79XXXXXXXXX)" class="w-full mb-4 p-3 bg-gray-950 border border-gray-800 rounded-xl text-white outline-none focus:border-blue-500 transition">
-            
             <div class="mb-6 bg-gray-950 p-4 rounded-xl border border-gray-800">
-                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Прикрепить файл (Смета/Фото):</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Прикрепить файл:</label>
                 <input id="cFile" type="file" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-800 file:text-white hover:file:bg-gray-700 transition cursor-pointer">
             </div>
-
             <button onclick="saveOrder()" id="saveBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-black uppercase tracking-widest transition">Создать заказ</button>
         </div>
 
-        <div class="flex overflow-x-auto gap-4 pb-4 kanban-scroll snap-x">
-            
+        <div id="kanbanView" class="flex overflow-x-auto gap-4 pb-4 kanban-scroll snap-x">
             <div class="column shrink-0 snap-center bg-gray-900/50 rounded-2xl p-4 border border-gray-800/50 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-800">
                     <h3 class="font-bold text-gray-400 uppercase text-xs tracking-widest">Новые</h3>
@@ -52,7 +53,6 @@
                 </div>
                 <div id="col-new" class="space-y-3 flex-1"></div>
             </div>
-
             <div class="column shrink-0 snap-center bg-gray-900/50 rounded-2xl p-4 border border-gray-800/50 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-800">
                     <h3 class="font-bold text-blue-500 uppercase text-xs tracking-widest">В работе</h3>
@@ -60,7 +60,6 @@
                 </div>
                 <div id="col-work" class="space-y-3 flex-1"></div>
             </div>
-
             <div class="column shrink-0 snap-center bg-gray-900/50 rounded-2xl p-4 border border-gray-800/50 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-800">
                     <h3 class="font-bold text-green-500 uppercase text-xs tracking-widest">Готово</h3>
@@ -68,8 +67,19 @@
                 </div>
                 <div id="col-done" class="space-y-3 flex-1"></div>
             </div>
-
         </div>
+
+        <div id="listView" class="hidden space-y-3 pb-10">
+            <div class="hidden md:grid grid-cols-12 gap-4 px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-800 mb-4">
+                <div class="col-span-3">Клиент</div>
+                <div class="col-span-2">Сумма</div>
+                <div class="col-span-2">Статус</div>
+                <div class="col-span-2">Файл</div>
+                <div class="col-span-3 text-right">Действия</div>
+            </div>
+            <div id="list-container" class="space-y-3"></div>
+        </div>
+
     </div>
 
     <script>
@@ -80,16 +90,29 @@
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Логика переключения видов
+        let isKanban = localStorage.getItem('crm_view') !== 'list';
+        
+        function applyView() {
+            document.getElementById('kanbanView').classList.toggle('hidden', !isKanban);
+            document.getElementById('listView').classList.toggle('hidden', isKanban);
+            document.getElementById('viewBtn').innerText = isKanban ? 'Вид: Доска' : 'Вид: Список';
+        }
+        
+        function toggleView() {
+            isKanban = !isKanban;
+            localStorage.setItem('crm_view', isKanban ? 'kanban' : 'list');
+            applyView();
+        }
+
         function showToast(msg, isError = false) {
             const t = document.getElementById('toast');
             t.innerText = msg;
             t.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl z-50 text-sm font-bold transition-all ${isError ? 'bg-red-600' : 'bg-blue-600'} text-white block`;
-            setTimeout(() => t.classList.add('hidden'), 4000);
+            setTimeout(() => t.classList.add('hidden'), 3000);
         }
 
-        function toggleForm() {
-            document.getElementById('formSection').classList.toggle('hidden');
-        }
+        function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
 
         async function loadData() {
             try {
@@ -99,56 +122,76 @@
                 const cols = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
                 const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 };
 
-                // Очищаем колонки перед обновлением
                 document.getElementById('col-new').innerHTML = '';
                 document.getElementById('col-work').innerHTML = '';
                 document.getElementById('col-done').innerHTML = '';
+                document.getElementById('list-container').innerHTML = '';
 
                 data.forEach(item => {
                     const status = item.status || 'Новый';
                     const colId = cols[status] || 'col-new';
                     counts[status]++;
 
-                    // Логика следующего статуса
-                    let nextStatus = 'В работе';
-                    let btnHtml = `<button onclick="changeStatus(${item.id}, 'В работе')" class="bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase px-2 py-1 rounded transition">В работу →</button>`;
+                    // Общие элементы для обоих видов
+                    let btnHtml = `<button onclick="changeStatus(${item.id}, 'В работе')" class="bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase px-2 py-1.5 rounded transition">В работу →</button>`;
+                    let statusColor = "text-gray-400";
                     
                     if (status === 'В работе') { 
-                        btnHtml = `<button onclick="changeStatus(${item.id}, 'Завершен')" class="bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white text-[10px] font-bold uppercase px-2 py-1 rounded transition">Завершить ✔</button>`;
+                        btnHtml = `<button onclick="changeStatus(${item.id}, 'Завершен')" class="bg-green-600/20 text-green-400 hover:bg-green-600 hover:text-white text-[10px] font-bold uppercase px-2 py-1.5 rounded transition">Завершить ✔</button>`;
+                        statusColor = "text-blue-400";
                     } else if (status === 'Завершен') { 
                         btnHtml = `<span class="text-[10px] text-gray-600 font-bold uppercase px-2 py-1">Выполнено</span>`; 
+                        statusColor = "text-green-500";
                     }
 
-                    // Кнопка файла (если есть)
-                    const fileHtml = item.file_url 
-                        ? `<a href="${item.file_url}" target="_blank" class="inline-flex items-center gap-2 mt-3 bg-gray-800 hover:bg-gray-700 text-blue-400 text-xs px-3 py-1.5 rounded-lg transition">📎 Открыть файл</a>` 
-                        : '';
+                    const fileHtml = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-400 hover:text-blue-300 text-[11px] uppercase tracking-wider">📎 Файл</a>` : '<span class="text-gray-700 text-[10px] uppercase">Нет файла</span>';
+                    const waBtn = `<a href="https://wa.me/${item.phone}" target="_blank" class="text-[11px] font-bold text-emerald-500 hover:text-emerald-400 uppercase transition">WA</a>`;
+                    const delBtn = `<button onclick="delOrder(${item.id})" class="text-[11px] text-gray-600 hover:text-red-500 font-bold uppercase transition">Удалить</button>`;
 
-                    const card = `
+                    // 1. Рендер для Канбана
+                    const kanbanCard = `
                         <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 shadow-md">
                             <div class="flex justify-between items-start mb-2">
                                 <h4 class="font-bold text-white text-lg leading-tight">${item.customer_name}</h4>
                                 ${btnHtml}
                             </div>
                             <div class="text-green-400 font-black mb-1">${item.total_price} ₽</div>
-                            ${fileHtml}
+                            <div class="mt-2">${fileHtml}</div>
                             <div class="mt-4 flex justify-between items-center border-t border-gray-800/50 pt-3">
-                                <a href="https://wa.me/${item.phone}" target="_blank" class="text-[11px] font-bold text-emerald-500 hover:text-emerald-400 uppercase tracking-widest transition">WhatsApp</a>
-                                <button onclick="delOrder(${item.id})" class="text-[11px] text-gray-600 hover:text-red-500 font-bold uppercase transition">Удалить</button>
+                                ${waBtn} ${delBtn}
                             </div>
                         </div>
                     `;
-                    document.getElementById(colId).innerHTML += card;
+                    document.getElementById(colId).innerHTML += kanbanCard;
+
+                    // 2. Рендер для Списка
+                    const listCard = `
+                        <div class="bg-gray-900 p-4 md:p-3 rounded-xl border border-gray-800 shadow-sm flex flex-col md:grid md:grid-cols-12 md:items-center gap-3 hover:bg-gray-800/50 transition">
+                            <div class="col-span-3 flex justify-between md:block">
+                                <h4 class="font-bold text-white">${item.customer_name}</h4>
+                                <span class="md:hidden text-[10px] font-bold uppercase ${statusColor}">${status}</span>
+                            </div>
+                            <div class="col-span-2 text-green-400 font-bold">${item.total_price} ₽</div>
+                            <div class="col-span-2 hidden md:block text-[10px] font-bold uppercase ${statusColor}">${status}</div>
+                            <div class="col-span-2">${fileHtml}</div>
+                            <div class="col-span-3 flex items-center justify-between md:justify-end gap-4 mt-2 md:mt-0 border-t border-gray-800 md:border-0 pt-3 md:pt-0">
+                                ${btnHtml}
+                                <div class="flex gap-3 ml-2 border-l border-gray-700 pl-3">
+                                    ${waBtn} ${delBtn}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('list-container').innerHTML += listCard;
                 });
 
-                // Обновляем счетчики
                 document.getElementById('cnt-new').innerText = counts['Новый'];
                 document.getElementById('cnt-work').innerText = counts['В работе'];
                 document.getElementById('cnt-done').innerText = counts['Завершен'];
 
-            } catch (e) {
-                showToast("Ошибка загрузки: " + e.message, true);
-            }
+                applyView(); // Применяем сохраненный вид после загрузки данных
+
+            } catch (e) { showToast("Ошибка: " + e.message, true); }
         }
 
         async function saveOrder() {
@@ -156,83 +199,30 @@
             const name = document.getElementById('cName').value;
             const price = document.getElementById('cPrice').value;
             const phone = document.getElementById('cPhone').value;
-            const fileInput = document.getElementById('cFile');
-            const file = fileInput.files[0];
+            const file = document.getElementById('cFile').files[0];
 
-            if (!name || !price) return showToast("Заполни имя и сумму!", true);
-
-            btn.disabled = true;
-            btn.innerText = "Загрузка...";
+            if (!name || !price) return showToast("Укажите имя и сумму!", true);
+            btn.disabled = true; btn.innerText = "Загрузка...";
 
             try {
                 let fileUrl = null;
-
-                // 1. Если есть файл - грузим его в Storage
                 if (file) {
-                    // Генерируем уникальное имя файла, чтобы избежать перезаписи
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = Date.now() + "_" + Math.random().toString(36).substring(7) + "." + fileExt;
-                    
-                    const { data: uploadData, error: uploadErr } = await _supabase.storage
-                        .from('order-files') // ИМЯ ТВОЕГО БАКЕТА
-                        .upload(fileName, file);
-
-                    if (uploadErr) throw new Error("Ошибка загрузки файла: " + uploadErr.message);
-
-                    // Получаем публичную ссылку на файл
-                    const { data: publicData } = _supabase.storage
-                        .from('order-files')
-                        .getPublicUrl(fileName);
-                        
-                    fileUrl = publicData.publicUrl;
+                    const fileName = Date.now() + "_" + Math.random().toString(36).substring(7) + "." + file.name.split('.').pop();
+                    const { error: uploadErr } = await _supabase.storage.from('order-files').upload(fileName, file);
+                    if (uploadErr) throw uploadErr;
+                    fileUrl = _supabase.storage.from('order-files').getPublicUrl(fileName).data.publicUrl;
                 }
 
-                // 2. Сохраняем все данные в таблицу orders
                 const { error: dbErr } = await _supabase.from('orders').insert([{
-                    customer_name: name,
-                    total_price: price,
-                    phone: phone,
-                    file_url: fileUrl,
-                    status: 'Новый'
+                    customer_name: name, total_price: price, phone: phone, file_url: fileUrl, status: 'Новый'
                 }]);
-
                 if (dbErr) throw dbErr;
 
-                // 3. Успех: очищаем форму и обновляем доску
                 document.getElementById('cName').value = '';
                 document.getElementById('cPrice').value = '';
                 document.getElementById('cPhone').value = '';
-                fileInput.value = '';
+                document.getElementById('cFile').value = '';
                 toggleForm();
-                
-                showToast("Заказ успешно создан!");
-                await loadData();
-
-            } catch (e) {
-                showToast(e.message, true);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Создать заказ";
-            }
-        }
-
-        async function changeStatus(id, newStatus) {
-            try {
-                await _supabase.from('orders').update({ status: newStatus }).eq('id', id);
+                showToast("Заказ успешно добавлен!");
                 loadData();
-            } catch(e) { showToast(e.message, true); }
-        }
-
-        async function delOrder(id) {
-            if(!confirm("Удалить этот заказ навсегда?")) return;
-            try {
-                await _supabase.from('orders').delete().eq('id', id);
-                loadData();
-            } catch(e) { showToast(e.message, true); }
-        }
-
-        // Запуск при открытии страницы
-        loadData();
-    </script>
-</body>
-</html>
+            } catch (e
