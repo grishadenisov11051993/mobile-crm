@@ -3,33 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM Контроль</title>
+    <title>CRM Хорошие полы</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-900 text-white pb-24">
     <div class="p-4" id="app">
-        <h1 class="text-2xl font-bold mb-6">Заказы Хорошие полы</h1>
+        <h1 class="text-2xl font-bold mb-6 flex justify-between items-center">
+            Заказы
+            <span class="text-xs font-normal text-gray-500">Хорошие полы</span>
+        </h1>
         
         <div id="errorLog" class="hidden bg-red-500 text-white p-3 rounded mb-4 text-xs"></div>
 
-        <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 border border-gray-700">
-            <input id="custName" type="text" placeholder="Имя клиента" class="w-full mb-2 p-3 bg-gray-700 border-none rounded text-white focus:ring-2 focus:ring-blue-500">
-            <input id="custPrice" type="text" placeholder="Сумма (₽)" class="w-full mb-2 p-3 bg-gray-700 border-none rounded text-white focus:ring-2 focus:ring-blue-500">
-            <input id="custPhone" type="text" placeholder="79XXXXXXXXX (только цифры)" class="w-full mb-4 p-3 bg-gray-700 border-none rounded text-white focus:ring-2 focus:ring-blue-500">
-            <button onclick="addOrder()" id="addBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition">Добавить заказ</button>
+        <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 border border-gray-700 text-sm">
+            <input id="custName" type="text" placeholder="Имя клиента" class="w-full mb-2 p-3 bg-gray-700 border-none rounded text-white outline-none focus:ring-2 focus:ring-blue-500">
+            <input id="custPrice" type="text" placeholder="Сумма (₽)" class="w-full mb-2 p-3 bg-gray-700 border-none rounded text-white outline-none focus:ring-2 focus:ring-blue-500">
+            <input id="custPhone" type="text" placeholder="79XXXXXXXXX (WhatsApp)" class="w-full mb-4 p-3 bg-gray-700 border-none rounded text-white outline-none focus:ring-2 focus:ring-blue-500">
+            <button onclick="addOrder()" id="addBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition uppercase tracking-wide">Добавить заказ</button>
         </div>
 
         <div id="ordersList" class="space-y-4">
-            <div class="animate-pulse text-gray-500">Подключение к базе...</div>
+            <div class="animate-pulse text-gray-500 text-center">Связь с базой...</div>
         </div>
     </div>
 
     <script>
-        // === ТВОИ ДАННЫЕ ===
-        const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
-        // ==================
+        // === ТВОИ ДАННЫЕ (НЕ ЗАБУДЬ ВСТАВИТЬ СНОВА) ===
+        const SUPABASE_URL = 'ВСТАВЬ_СЮДА_URL';
+        const SUPABASE_KEY = 'ВСТАВЬ_СЮДА_KEY';
+        // =============================================
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -37,6 +40,7 @@
             const el = document.getElementById('errorLog');
             el.innerText = msg;
             el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 5000);
         }
 
         async function loadOrders() {
@@ -50,63 +54,100 @@
 
                 const container = document.getElementById('ordersList');
                 if (data.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center">Заказов пока нет</p>';
+                    container.innerHTML = '<p class="text-gray-500 text-center">Нет активных заказов</p>';
                     return;
                 }
 
                 container.innerHTML = '';
                 data.forEach(order => {
+                    // Определяем цвет и текст кнопки статуса
+                    let statusColor = "bg-blue-900 text-blue-200 border-blue-700";
+                    let nextStatus = "В работе";
+                    
+                    if (order.status === "В работе") {
+                        statusColor = "bg-orange-900 text-orange-200 border-orange-700";
+                        nextStatus = "Завершен";
+                    } else if (order.status === "Завершен") {
+                        statusColor = "bg-green-900 text-green-200 border-green-800";
+                        nextStatus = "Архив";
+                    }
+
                     container.innerHTML += `
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-md">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-gray-500 text-xs">ID: ${order.id}</span>
-                                <span class="bg-blue-900 text-blue-200 px-2 py-1 rounded text-[10px] uppercase font-bold">${order.status || 'Новый'}</span>
+                        <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-xl transition-all">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="font-bold text-xl text-white leading-tight">${order.customer_name}</h2>
+                                    <p class="text-green-400 font-bold text-lg">${order.total_price} ₽</p>
+                                </div>
+                                <button onclick="updateStatus(${order.id}, '${nextStatus}')" 
+                                    class="border ${statusColor} px-3 py-1 rounded-full text-[10px] font-black uppercase">
+                                    ${order.status || 'Новый'} →
+                                </button>
                             </div>
-                            <h2 class="font-bold text-lg text-white">${order.customer_name}</h2>
-                            <p class="text-green-400 font-bold text-xl mb-4">${order.total_price} ₽</p>
-                            <a href="https://wa.me/${order.phone}" class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition">
-                                💬 WhatsApp
-                            </a>
+                            
+                            <div class="grid grid-cols-2 gap-3 mt-4">
+                                <a href="https://wa.me/${order.phone}" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-medium text-sm transition">
+                                    WhatsApp
+                                </a>
+                                <button onclick="deleteOrder(${order.id})" class="text-gray-500 hover:text-red-400 text-xs font-medium">
+                                    Удалить
+                                </button>
+                            </div>
                         </div>
                     `;
                 });
             } catch (err) {
-                showError("Ошибка загрузки: " + err.message);
+                showError("Ошибка: " + err.message);
+            }
+        }
+
+        async function updateStatus(id, nextStatus) {
+            try {
+                const { error } = await _supabase
+                    .from('orders')
+                    .update({ status: nextStatus })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                loadOrders();
+            } catch (err) {
+                showError("Не удалось обновить: " + err.message);
+            }
+        }
+
+        async function deleteOrder(id) {
+            if(!confirm("Удалить этот заказ?")) return;
+            try {
+                const { error } = await _supabase.from('orders').delete().eq('id', id);
+                if (error) throw error;
+                loadOrders();
+            } catch (err) {
+                showError("Ошибка удаления: " + err.message);
             }
         }
 
         async function addOrder() {
-            const btn = document.getElementById('addBtn');
             const name = document.getElementById('custName').value;
             const price = document.getElementById('custPrice').value;
             const phone = document.getElementById('custPhone').value;
 
-            if(!name || !price) return alert("Заполни имя и сумму!");
-
-            btn.disabled = true;
-            btn.innerText = "Сохранение...";
+            if(!name || !price) return alert("Введите имя и сумму!");
 
             try {
-                const { error } = await _supabase
-                    .from('orders')
-                    .insert([{ 
-                        customer_name: name, 
-                        total_price: price, 
-                        phone: phone,
-                        status: 'Новый' 
-                    }]);
-
+                const { error } = await _supabase.from('orders').insert([{ 
+                    customer_name: name, 
+                    total_price: price, 
+                    phone: phone, 
+                    status: 'Новый' 
+                }]);
                 if (error) throw error;
-
+                
                 document.getElementById('custName').value = '';
                 document.getElementById('custPrice').value = '';
                 document.getElementById('custPhone').value = '';
-                await loadOrders();
+                loadOrders();
             } catch (err) {
-                showError("Ошибка сохранения: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Добавить заказ";
+                showError("Ошибка: " + err.message);
             }
         }
 
