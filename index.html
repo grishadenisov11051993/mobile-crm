@@ -22,7 +22,7 @@
 </head>
 <body class="text-slate-800 font-sans pb-20">
     
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-50 text-sm font-medium transition-all text-white"></div>
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[100] text-sm font-medium transition-all text-white"></div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-all">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
@@ -241,8 +241,8 @@
         function showToast(msg, isError = false) {
             const t = document.getElementById('toast');
             t.innerText = msg;
-            t.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 text-sm font-medium transition-all ${isError ? 'bg-red-500' : 'bg-sky-600'} text-white block`;
-            setTimeout(() => t.classList.add('hidden'), 3000);
+            t.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-[100] text-sm font-medium transition-all ${isError ? 'bg-red-500' : 'bg-sky-600'} text-white block`;
+            setTimeout(() => t.classList.add('hidden'), 5000); // Увеличил время показа до 5 секунд
         }
 
         // --- РЕДАКТИРОВАНИЕ ---
@@ -282,6 +282,7 @@
             const newFile = document.getElementById('editFile').files[0];
             btn.disabled = true; btn.innerText = "Сохранение...";
 
+            // ИСПРАВЛЕНИЕ: передаем null, если дата пустая
             let updates = {
                 order_number: document.getElementById('editOrderNum').value,
                 customer_name: document.getElementById('editName').value,
@@ -289,7 +290,7 @@
                 phone: document.getElementById('editPhone').value,
                 supplier_invoice: document.getElementById('editInvoice').value,
                 supplier_status: document.getElementById('editSupplierStatus').value,
-                shipment_date: document.getElementById('editShipDate').value,
+                shipment_date: document.getElementById('editShipDate').value || null, 
                 comments: document.getElementById('editComments').value,
                 status: document.getElementById('editStatus').value
             };
@@ -303,22 +304,26 @@
                 }
 
                 const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
-                if (error) throw error;
+                if (error) throw error; // Теперь ошибка покажется красным уведомлением
                 
-                showToast("Сохранено!"); closeEditModal(); loadData();
-            } catch (error) { showToast(error.message, true); } 
-            finally { btn.disabled = false; btn.innerText = "Сохранить"; }
+                showToast("Успешно сохранено!"); 
+                closeEditModal(); 
+                loadData();
+            } catch (error) { 
+                showToast("Ошибка сохранения: " + error.message, true); 
+            } finally { 
+                btn.disabled = false; btn.innerText = "Сохранить"; 
+            }
         }
 
-        // --- ЗАГРУЗКА ---
+        // --- ЗАГРУЗКА И РЕНДЕР ---
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (error) return showToast("Ошибка: " + error.message, true);
+            if (error) return showToast("Ошибка загрузки: " + error.message, true);
             allOrders = data;
             renderData();
         }
 
-        // Вспомогательная функция для форматирования даты
         function formatDate(dateString) {
             if(!dateString) return 'Не указана';
             const d = new Date(dateString);
@@ -350,21 +355,17 @@
                 counts[status]++;
                 total += Number(item.total_price || 0);
 
-                // Настройки кнопок статуса сделки
                 let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-sky-600 hover:bg-sky-50";
                 if (status === 'В работе') { btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-emerald-600 hover:bg-emerald-50"; } 
                 else if (status === 'Завершен') { btnClass = "hidden"; }
 
-                // Цвета статуса поставщика
                 let supStatusColor = "bg-slate-100 text-slate-500";
                 if(item.supplier_status === 'Оплачен') supStatusColor = "bg-green-100 text-green-700";
                 else if(item.supplier_status === 'Предоплата') supStatusColor = "bg-amber-100 text-amber-700";
                 else if(item.supplier_status === 'Не оплачен') supStatusColor = "bg-red-100 text-red-600";
 
-                // Очистка номера телефона для ссылок
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
                 
-                // Кнопки связи
                 const commsHtml = cleanPhone ? `
                     <div class="flex gap-2">
                         <a href="tel:+${cleanPhone}" class="flex items-center justify-center w-7 h-7 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition" title="Позвонить">📞</a>
@@ -447,26 +448,31 @@
             btn.disabled = true; btn.innerText = "Загрузка...";
             let fileUrl = null;
 
-            if (file) {
-                const name = Date.now() + "_" + file.name;
-                await _supabase.storage.from('order-files').upload(name, file);
-                fileUrl = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
-            }
-
-            const { error } = await _supabase.from('orders').insert([{
+            // ИСПРАВЛЕНИЕ ДЛЯ ФОРМЫ СОЗДАНИЯ (пустая дата)
+            let newOrderData = {
                 order_number: document.getElementById('cOrderNum').value,
                 customer_name: document.getElementById('cName').value,
                 total_price: document.getElementById('cPrice').value,
                 phone: document.getElementById('cPhone').value,
                 supplier_invoice: document.getElementById('cInvoice').value,
                 supplier_status: document.getElementById('cSupplierStatus').value,
-                shipment_date: document.getElementById('cShipDate').value,
+                shipment_date: document.getElementById('cShipDate').value || null,
                 comments: document.getElementById('cComments').value,
-                file_url: fileUrl, status: 'Новый'
-            }]);
+                status: 'Новый'
+            };
 
-            if(error) { showToast(error.message, true); } 
-            else {
+            try {
+                if (file) {
+                    const name = Date.now() + "_" + file.name;
+                    const { error: uploadErr } = await _supabase.storage.from('order-files').upload(name, file);
+                    if (uploadErr) throw uploadErr;
+                    newOrderData.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
+                }
+
+                const { error } = await _supabase.from('orders').insert([newOrderData]);
+
+                if(error) throw error;
+                
                 document.getElementById('cOrderNum').value = '';
                 document.getElementById('cName').value = '';
                 document.getElementById('cPrice').value = '';
@@ -476,8 +482,12 @@
                 document.getElementById('cComments').value = '';
                 document.getElementById('cFile').value = '';
                 toggleForm(); showToast("Сделка создана"); loadData();
+                
+            } catch (error) { 
+                showToast("Ошибка создания: " + error.message, true); 
+            } finally { 
+                btn.disabled = false; btn.innerText = "Создать сделку"; 
             }
-            btn.disabled = false; btn.innerText = "Создать сделку";
         }
 
         async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
