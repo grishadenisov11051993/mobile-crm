@@ -25,43 +25,73 @@
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-50 text-sm font-medium transition-all text-white"></div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-all">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-700 text-lg">Редактирование</h3>
+                <h3 class="font-bold text-slate-700 text-lg">Редактирование заказа</h3>
                 <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none">&times;</button>
             </div>
             <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-white">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label>
-                    <input id="editName" type="text" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 transition">
-                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Сумма (₽)</label>
-                        <input id="editPrice" type="number" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 transition">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">№ Заказа (свой)</label>
+                        <input id="editOrderNum" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Счет поставщика</label>
-                        <input id="editInvoice" type="text" placeholder="№ счета или сумма" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 transition">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label>
+                        <input id="editName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон</label>
-                    <input id="editPhone" type="tel" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 transition">
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Сумма заказа (₽)</label>
+                        <input id="editPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон клиента</label>
+                        <input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Стадия</label>
-                    <select id="editStatus" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 transition cursor-pointer">
-                        <option value="Новый">Новые</option>
-                        <option value="В работе">В работе</option>
-                        <option value="Завершен">Сделка успешна</option>
-                    </select>
+
+                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Счет поставщика</label>
+                        <input id="editInvoice" type="text" placeholder="№ счета" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Оплата поставщику</label>
+                        <select id="editSupplierStatus" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                            <option value="Не оплачен">Не оплачен</option>
+                            <option value="Предоплата">Предоплата</option>
+                            <option value="Оплачен">Оплачен полностью</option>
+                        </select>
+                    </div>
                 </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label>
+                        <input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Стадия заказа</label>
+                        <select id="editStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 cursor-pointer">
+                            <option value="Новый">Новые</option>
+                            <option value="В работе">В работе</option>
+                            <option value="Завершен">Сделка успешна</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Комментарий</label>
+                    <textarea id="editComments" rows="2" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea>
+                </div>
+
                 <div class="p-3 bg-slate-50 border border-slate-200 rounded">
                     <label class="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Файл (Договор/Замер)</label>
                     <div id="currentFileLink" class="mb-2 text-sm text-slate-600"></div>
                     <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
-                    <p class="text-[10px] text-slate-400 mt-1">Выберите новый файл, если хотите заменить текущий.</p>
                 </div>
             </div>
             <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
@@ -88,9 +118,13 @@
 
     <div class="p-4 max-w-7xl mx-auto mt-2">
         <div id="formSection" class="hidden bg-white p-5 rounded border border-slate-200 shadow-sm mb-6 transition-all">
-            <h2 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">Новая сделка</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div class="md:col-span-1">
+            <h2 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">Новый заказ</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">Свой № заказа</label>
+                    <input id="cOrderNum" type="text" placeholder="Например: П-104" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                </div>
+                <div class="md:col-span-2">
                     <label class="block text-xs text-slate-500 mb-1">Имя клиента</label>
                     <input id="cName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                 </div>
@@ -98,20 +132,38 @@
                     <label class="block text-xs text-slate-500 mb-1">Сумма заказа (₽)</label>
                     <input id="cPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                 </div>
+                
                 <div>
-                    <label class="block text-xs text-slate-500 mb-1">Счет поставщика</label>
-                    <input id="cInvoice" type="text" placeholder="№ счета или сумма" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    <label class="block text-xs text-slate-500 mb-1">Телефон клиента</label>
+                    <input id="cPhone" type="tel" placeholder="79XXXXXXXXX" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                 </div>
                 <div>
-                    <label class="block text-xs text-slate-500 mb-1">Телефон (WhatsApp)</label>
-                    <input id="cPhone" type="tel" placeholder="79XXXXXXXXX" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    <label class="block text-xs text-slate-500 mb-1">Счет поставщика</label>
+                    <input id="cInvoice" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">Оплата поставщику</label>
+                    <select id="cSupplierStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        <option value="Не оплачен">Не оплачен</option>
+                        <option value="Предоплата">Предоплата</option>
+                        <option value="Оплачен">Оплачен полностью</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">Дата отгрузки</label>
+                    <input id="cShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-xs text-slate-500 mb-1">Комментарий</label>
+                    <textarea id="cComments" rows="1" placeholder="Например: Выбран ламинат Tarkett..." class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-xs text-slate-500 mb-1">Прикрепить файл</label>
-                    <input id="cFile" type="file" class="block w-full text-xs text-slate-500 border border-slate-300 rounded bg-slate-50 file:mr-3 file:py-2 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
+                    <input id="cFile" type="file" class="block w-full text-xs text-slate-500 border border-slate-300 rounded bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
                 </div>
             </div>
-            <button onclick="saveOrder()" id="saveBtn" class="bg-sky-500 hover:bg-sky-600 text-white px-5 py-2 rounded text-sm font-medium transition shadow-sm">Создать</button>
+            <button onclick="saveOrder()" id="saveBtn" class="bg-sky-500 hover:bg-sky-600 text-white px-5 py-2 rounded text-sm font-medium transition shadow-sm">Создать сделку</button>
             <button onclick="toggleForm()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2 rounded text-sm font-medium transition hover:bg-slate-50 ml-2 shadow-sm">Отмена</button>
         </div>
 
@@ -145,14 +197,13 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                <th class="px-5 py-3 whitespace-nowrap w-16">ID</th>
-                                <th class="px-5 py-3 whitespace-nowrap min-w-[150px]">Клиент</th>
-                                <th class="px-5 py-3 whitespace-nowrap">Сумма</th>
-                                <th class="px-5 py-3 whitespace-nowrap">Счет пост.</th>
-                                <th class="px-5 py-3 whitespace-nowrap">Стадия</th>
-                                <th class="px-5 py-3 whitespace-nowrap">Связь</th>
-                                <th class="px-5 py-3 whitespace-nowrap">Файл</th>
-                                <th class="px-5 py-3 whitespace-nowrap text-right">Действия</th>
+                                <th class="px-4 py-3 whitespace-nowrap w-16">№</th>
+                                <th class="px-4 py-3 whitespace-nowrap min-w-[150px]">Клиент</th>
+                                <th class="px-4 py-3 whitespace-nowrap">Сумма</th>
+                                <th class="px-4 py-3 whitespace-nowrap">Поставщик</th>
+                                <th class="px-4 py-3 whitespace-nowrap">Отгрузка</th>
+                                <th class="px-4 py-3 whitespace-nowrap">Связь</th>
+                                <th class="px-4 py-3 whitespace-nowrap text-right">Действия</th>
                             </tr>
                         </thead>
                         <tbody id="table-container" class="divide-y divide-slate-100 text-sm"></tbody>
@@ -184,7 +235,7 @@
         function toggleForm() { 
             const form = document.getElementById('formSection');
             form.classList.toggle('hidden');
-            if(!form.classList.contains('hidden')) document.getElementById('cName').focus();
+            if(!form.classList.contains('hidden')) document.getElementById('cOrderNum').focus();
         }
 
         function showToast(msg, isError = false) {
@@ -199,21 +250,23 @@
             const order = allOrders.find(o => o.id === id);
             if (!order) return;
             currentEditId = id;
+            
+            document.getElementById('editOrderNum').value = order.order_number || '';
             document.getElementById('editName').value = order.customer_name || '';
             document.getElementById('editPrice').value = order.total_price || '';
             document.getElementById('editPhone').value = order.phone || '';
             document.getElementById('editInvoice').value = order.supplier_invoice || '';
+            document.getElementById('editSupplierStatus').value = order.supplier_status || 'Не оплачен';
+            document.getElementById('editShipDate').value = order.shipment_date || '';
+            document.getElementById('editComments').value = order.comments || '';
             document.getElementById('editStatus').value = order.status || 'Новый';
             
-            // Сбрасываем поле выбора файла
             document.getElementById('editFile').value = ''; 
-            
-            // Показываем текущий файл, если он есть
             const linkDiv = document.getElementById('currentFileLink');
             if (order.file_url) {
-                linkDiv.innerHTML = `Прикреплен: <a href="${order.file_url}" target="_blank" class="text-sky-500 hover:underline">Посмотреть файл</a>`;
+                linkDiv.innerHTML = `Файл: <a href="${order.file_url}" target="_blank" class="text-sky-500 hover:underline">Открыть</a>`;
             } else {
-                linkDiv.innerHTML = `Нет прикрепленного файла.`;
+                linkDiv.innerHTML = `Нет файла.`;
             }
 
             document.getElementById('editModal').classList.remove('hidden');
@@ -230,39 +283,34 @@
             btn.disabled = true; btn.innerText = "Сохранение...";
 
             let updates = {
+                order_number: document.getElementById('editOrderNum').value,
                 customer_name: document.getElementById('editName').value,
                 total_price: document.getElementById('editPrice').value,
                 phone: document.getElementById('editPhone').value,
                 supplier_invoice: document.getElementById('editInvoice').value,
+                supplier_status: document.getElementById('editSupplierStatus').value,
+                shipment_date: document.getElementById('editShipDate').value,
+                comments: document.getElementById('editComments').value,
                 status: document.getElementById('editStatus').value
             };
 
             try {
-                // Если выбрали новый файл - грузим его
                 if (newFile) {
                     const name = Date.now() + "_" + newFile.name;
                     const { error: uploadErr } = await _supabase.storage.from('order-files').upload(name, newFile);
                     if (uploadErr) throw uploadErr;
-                    
-                    // Обновляем ссылку на файл в объекте updates
                     updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
                 }
 
-                // Обновляем базу
                 const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 if (error) throw error;
                 
-                showToast("Сделка обновлена!"); 
-                closeEditModal(); 
-                loadData();
-            } catch (error) {
-                showToast("Ошибка: " + error.message, true);
-            } finally {
-                btn.disabled = false; btn.innerText = "Сохранить";
-            }
+                showToast("Сохранено!"); closeEditModal(); loadData();
+            } catch (error) { showToast(error.message, true); } 
+            finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
-        // --- ЗАГРУЗКА И РЕНДЕР ---
+        // --- ЗАГРУЗКА ---
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
             if (error) return showToast("Ошибка: " + error.message, true);
@@ -270,12 +318,20 @@
             renderData();
         }
 
+        // Вспомогательная функция для форматирования даты
+        function formatDate(dateString) {
+            if(!dateString) return 'Не указана';
+            const d = new Date(dateString);
+            return d.toLocaleDateString('ru-RU');
+        }
+
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allOrders.filter(o => 
                 (o.customer_name || '').toLowerCase().includes(search) || 
                 (o.phone || '').includes(search) ||
-                (o.supplier_invoice || '').toLowerCase().includes(search)
+                (o.order_number || '').toLowerCase().includes(search) ||
+                (o.comments || '').toLowerCase().includes(search)
             );
             
             document.getElementById('kanbanView').classList.toggle('hidden', !isKanban);
@@ -294,38 +350,58 @@
                 counts[status]++;
                 total += Number(item.total_price || 0);
 
-                let statusColor = "bg-slate-100 text-slate-600";
-                let btnTxt = "В работу";
-                let nextSt = "В работе";
-                let btnClass = "text-sky-600 hover:bg-sky-50";
+                // Настройки кнопок статуса сделки
+                let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-sky-600 hover:bg-sky-50";
+                if (status === 'В работе') { btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-emerald-600 hover:bg-emerald-50"; } 
+                else if (status === 'Завершен') { btnClass = "hidden"; }
 
-                if (status === 'В работе') {
-                    statusColor = "bg-sky-100 text-sky-700";
-                    btnTxt = "Успех";
-                    nextSt = "Завершен";
-                    btnClass = "text-emerald-600 hover:bg-emerald-50";
-                } else if (status === 'Завершен') {
-                    statusColor = "bg-emerald-100 text-emerald-700";
-                    btnClass = "text-slate-400 cursor-default hidden opacity-0"; 
-                }
+                // Цвета статуса поставщика
+                let supStatusColor = "bg-slate-100 text-slate-500";
+                if(item.supplier_status === 'Оплачен') supStatusColor = "bg-green-100 text-green-700";
+                else if(item.supplier_status === 'Предоплата') supStatusColor = "bg-amber-100 text-amber-700";
+                else if(item.supplier_status === 'Не оплачен') supStatusColor = "bg-red-100 text-red-600";
 
-                const fileBtn = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-sky-500 hover:text-sky-600 text-[11px] font-bold uppercase">📎 Файл</a>` : '<span class="text-slate-300 text-[10px] uppercase">Нет</span>';
-                const waBtn = item.phone ? `<a href="https://wa.me/${item.phone}" target="_blank" class="text-emerald-500 hover:text-emerald-600 text-[10px] font-bold uppercase tracking-wide">WA</a>` : '<span class="text-slate-300 text-xs">-</span>';
-                const invoiceTxt = item.supplier_invoice ? `<div class="text-[11px] text-slate-500 mt-1">Счет: <span class="font-medium text-slate-700">${item.supplier_invoice}</span></div>` : '';
-                const tableInvoice = item.supplier_invoice ? `<span class="text-xs font-medium text-slate-600">${item.supplier_invoice}</span>` : '<span class="text-slate-300 text-xs">-</span>';
+                // Очистка номера телефона для ссылок
+                const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
+                
+                // Кнопки связи
+                const commsHtml = cleanPhone ? `
+                    <div class="flex gap-2">
+                        <a href="tel:+${cleanPhone}" class="flex items-center justify-center w-7 h-7 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition" title="Позвонить">📞</a>
+                        <a href="https://wa.me/${cleanPhone}" target="_blank" class="flex items-center justify-center w-7 h-7 bg-emerald-100 text-emerald-600 rounded-full hover:bg-emerald-200 transition" title="WhatsApp">💬</a>
+                        <a href="https://t.me/+${cleanPhone}" target="_blank" class="flex items-center justify-center w-7 h-7 bg-sky-100 text-sky-600 rounded-full hover:bg-sky-200 transition" title="Telegram">✈️</a>
+                    </div>
+                ` : '<span class="text-[10px] text-slate-400">Нет телефона</span>';
+
+                const displayOrderNum = item.order_number || `#${item.id}`;
+                const fileBtn = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-sky-500 hover:text-sky-600 text-[11px] font-bold uppercase">📎 Файл</a>` : '';
 
                 // КАНБАН
                 const cardHtml = `
-                    <div class="bx-card p-3.5 rounded relative group">
-                        <div class="flex justify-between items-start mb-1">
+                    <div class="bx-card p-3.5 rounded relative group flex flex-col gap-2">
+                        <div class="flex justify-between items-start">
                             <h4 onclick="openEditModal(${item.id})" class="font-bold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate pr-2">${item.customer_name}</h4>
-                            <div class="text-[10px] text-slate-400">#${item.id}</div>
+                            <div class="text-[11px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">${displayOrderNum}</div>
                         </div>
-                        <div class="text-slate-800 font-bold text-base">${Number(item.total_price).toLocaleString()} ₽</div>
-                        ${invoiceTxt}
-                        <div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-3">
-                            <div class="flex gap-3 items-center">${waBtn} ${fileBtn}</div>
-                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-2 py-1 rounded border border-transparent hover:border-current">${btnTxt}</button>` : ''}
+                        
+                        <div class="text-slate-800 font-black text-base">${Number(item.total_price).toLocaleString()} ₽</div>
+                        
+                        <div class="bg-slate-50 border border-slate-100 p-2 rounded text-[11px] text-slate-600">
+                            <div class="flex justify-between mb-1">
+                                <span>Счет: <b>${item.supplier_invoice || '-'}</b></span>
+                                <span class="px-1.5 rounded font-bold ${supStatusColor}">${item.supplier_status || 'Не оплачен'}</span>
+                            </div>
+                            <div class="text-slate-500">🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div>
+                        </div>
+
+                        ${item.comments ? `<div class="text-[11px] text-slate-500 italic bg-amber-50/50 p-1.5 rounded border border-amber-100/50 truncate">📝 ${item.comments}</div>` : ''}
+
+                        <div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-1">
+                            ${commsHtml}
+                            <div class="flex items-center gap-2">
+                                ${fileBtn}
+                                ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-2 py-1.5 rounded border border-transparent hover:border-current transition">${btnTxt}</button>` : ''}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -333,18 +409,21 @@
                 // ТАБЛИЦА
                 const tableRow = `
                     <tr class="hover:bg-slate-50 transition group">
-                        <td class="px-5 py-3 text-slate-400 text-xs whitespace-nowrap">#${item.id}</td>
-                        <td class="px-5 py-3 whitespace-nowrap">
-                            <span onclick="openEditModal(${item.id})" class="font-semibold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer">${item.customer_name}</span>
+                        <td class="px-4 py-3 text-slate-600 text-xs font-bold whitespace-nowrap">${displayOrderNum}</td>
+                        <td class="px-4 py-3 min-w-[150px]">
+                            <div onclick="openEditModal(${item.id})" class="font-semibold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate">${item.customer_name}</div>
+                            ${item.comments ? `<div class="text-[10px] text-slate-400 truncate mt-0.5 max-w-[150px]">${item.comments}</div>` : ''}
                         </td>
-                        <td class="px-5 py-3 text-slate-800 font-medium whitespace-nowrap">${Number(item.total_price).toLocaleString()} ₽</td>
-                        <td class="px-5 py-3 whitespace-nowrap">${tableInvoice}</td>
-                        <td class="px-5 py-3 whitespace-nowrap"><span class="text-[10px] font-bold px-2 py-1 rounded ${statusColor}">${status}</span></td>
-                        <td class="px-5 py-3 whitespace-nowrap">${waBtn}</td>
-                        <td class="px-5 py-3 whitespace-nowrap">${fileBtn}</td>
-                        <td class="px-5 py-3 whitespace-nowrap text-right">
-                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-2 py-1 rounded shadow-sm mr-2" title="Передвинуть стадию">➔</button>` : ''}
-                            <button onclick="delOrder(${item.id})" class="text-slate-300 hover:text-red-500 text-lg leading-none font-light" title="Удалить">×</button>
+                        <td class="px-4 py-3 text-slate-800 font-bold whitespace-nowrap">${Number(item.total_price).toLocaleString()} ₽</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="text-xs font-medium text-slate-700">${item.supplier_invoice || '-'}</div>
+                            <div class="text-[9px] font-bold uppercase mt-1 inline-block px-1.5 rounded ${supStatusColor}">${item.supplier_status || 'Не оплачен'}</div>
+                        </td>
+                        <td class="px-4 py-3 text-xs text-slate-600 whitespace-nowrap">${formatDate(item.shipment_date)}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${commsHtml}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-right flex items-center justify-end gap-3 h-full pt-4">
+                            ${fileBtn}
+                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-2 py-1 rounded shadow-sm" title="Дальше">➔</button>` : ''}
                         </td>
                     </tr>
                 `;
@@ -375,23 +454,30 @@
             }
 
             const { error } = await _supabase.from('orders').insert([{
+                order_number: document.getElementById('cOrderNum').value,
                 customer_name: document.getElementById('cName').value,
                 total_price: document.getElementById('cPrice').value,
-                supplier_invoice: document.getElementById('cInvoice').value,
                 phone: document.getElementById('cPhone').value,
+                supplier_invoice: document.getElementById('cInvoice').value,
+                supplier_status: document.getElementById('cSupplierStatus').value,
+                shipment_date: document.getElementById('cShipDate').value,
+                comments: document.getElementById('cComments').value,
                 file_url: fileUrl, status: 'Новый'
             }]);
 
             if(error) { showToast(error.message, true); } 
             else {
+                document.getElementById('cOrderNum').value = '';
                 document.getElementById('cName').value = '';
                 document.getElementById('cPrice').value = '';
-                document.getElementById('cInvoice').value = '';
                 document.getElementById('cPhone').value = '';
+                document.getElementById('cInvoice').value = '';
+                document.getElementById('cShipDate').value = '';
+                document.getElementById('cComments').value = '';
                 document.getElementById('cFile').value = '';
-                toggleForm(); showToast("Сделка сохранена"); loadData();
+                toggleForm(); showToast("Сделка создана"); loadData();
             }
-            btn.disabled = false; btn.innerText = "Создать";
+            btn.disabled = false; btn.innerText = "Создать сделку";
         }
 
         async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
