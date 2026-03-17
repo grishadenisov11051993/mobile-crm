@@ -3,153 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM Хорошие полы</title>
+    <title>Канбан CRM | Хорошие полы</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .kanban-column { min-width: 300px; max-width: 300px; }
+        @media (max-width: 768px) { .kanban-column { min-width: 100%; } }
+    </style>
 </head>
-<body class="bg-gray-900 text-white pb-24">
-    <div class="p-4" id="app">
-        <h1 class="text-2xl font-bold mb-6 flex justify-between items-center">
-            Заказы
-            <span class="text-xs font-normal text-gray-500">Хорошие полы</span>
-        </h1>
-        
-        <div id="errorLog" class="hidden bg-red-500 text-white p-3 rounded mb-4 text-xs"></div>
+<body class="bg-gray-950 text-white min-h-screen">
+    <div class="p-4">
+        <header class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-black tracking-tighter text-blue-500">ХОРОШИЕ ПОЛЫ <span class="text-white text-xs uppercase ml-2 opacity-50 font-normal">Kanban</span></h1>
+            <button onclick="toggleForm()" class="bg-blue-600 p-2 rounded-full shadow-lg">+</button>
+        </header>
 
-        <div class="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 border border-gray-700 text-sm">
-            <input id="custName" type="text" placeholder="Имя клиента" class="w-full mb-2 p-3 bg-gray-700 border-none rounded text-white outline-none focus:ring-2 focus:ring-blue-500">
-            <input id="custPrice" type="text" placeholder="Сумма (₽)" class="w-full mb-2 p-3 bg-gray-700 border-none rounded text-white outline-none focus:ring-2 focus:ring-blue-500">
-            <input id="custPhone" type="text" placeholder="79XXXXXXXXX (WhatsApp)" class="w-full mb-4 p-3 bg-gray-700 border-none rounded text-white outline-none focus:ring-2 focus:ring-blue-500">
-            <button onclick="addOrder()" id="addBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition uppercase tracking-wide">Добавить заказ</button>
+        <div id="addForm" class="hidden bg-gray-900 p-4 rounded-2xl mb-6 border border-gray-800 shadow-2xl">
+            <input id="custName" type="text" placeholder="Имя клиента" class="w-full mb-2 p-3 bg-gray-800 border-none rounded-xl text-white outline-none">
+            <input id="custPrice" type="text" placeholder="Сумма" class="w-full mb-2 p-3 bg-gray-800 border-none rounded-xl text-white outline-none">
+            <input id="custPhone" type="text" placeholder="Телефон" class="w-full mb-3 p-3 bg-gray-800 border-none rounded-xl text-white outline-none">
+            <label class="block text-xs text-gray-500 mb-1 ml-1">Прикрепить фото/файл:</label>
+            <input id="custFile" type="file" class="w-full mb-4 text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+            <button onclick="addOrder()" id="addBtn" class="w-full bg-blue-600 py-3 rounded-xl font-bold uppercase">Создать заказ</button>
         </div>
 
-        <div id="ordersList" class="space-y-4">
-            <div class="animate-pulse text-gray-500 text-center">Связь с базой...</div>
+        <div class="flex overflow-x-auto gap-4 pb-10 custom-scrollbar">
+            <div class="kanban-column">
+                <h3 class="flex justify-between mb-4 font-bold text-gray-400 px-2 uppercase text-xs tracking-widest">Новые <span id="count-new" class="bg-gray-800 px-2 rounded">0</span></h3>
+                <div id="list-new" class="space-y-4"></div>
+            </div>
+            <div class="kanban-column">
+                <h3 class="flex justify-between mb-4 font-bold text-blue-400 px-2 uppercase text-xs tracking-widest">В работе <span id="count-work" class="bg-gray-800 px-2 rounded">0</span></h3>
+                <div id="list-work" class="space-y-4"></div>
+            </div>
+            <div class="kanban-column">
+                <h3 class="flex justify-between mb-4 font-bold text-green-400 px-2 uppercase text-xs tracking-widest">Готово <span id="count-done" class="bg-gray-800 px-2 rounded">0</span></h3>
+                <div id="list-done" class="space-y-4"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // === ТВОИ ДАННЫЕ (НЕ ЗАБУДЬ ВСТАВИТЬ СНОВА) ===
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
-        // =============================================
-
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        function showError(msg) {
-            const el = document.getElementById('errorLog');
-            el.innerText = msg;
-            el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 5000);
-        }
+        function toggleForm() { document.getElementById('addForm').classList.toggle('hidden'); }
 
         async function loadOrders() {
-            try {
-                const { data, error } = await _supabase
-                    .from('orders')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+            const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
+            if (error) return console.error(error);
 
-                if (error) throw error;
+            const lists = { 'Новый': 'list-new', 'В работе': 'list-work', 'Завершен': 'list-done' };
+            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 };
+            
+            Object.values(lists).forEach(id => document.getElementById(id).innerHTML = '');
 
-                const container = document.getElementById('ordersList');
-                if (data.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center">Нет активных заказов</p>';
-                    return;
-                }
-
-                container.innerHTML = '';
-                data.forEach(order => {
-                    // Определяем цвет и текст кнопки статуса
-                    let statusColor = "bg-blue-900 text-blue-200 border-blue-700";
-                    let nextStatus = "В работе";
-                    
-                    if (order.status === "В работе") {
-                        statusColor = "bg-orange-900 text-orange-200 border-orange-700";
-                        nextStatus = "Завершен";
-                    } else if (order.status === "Завершен") {
-                        statusColor = "bg-green-900 text-green-200 border-green-800";
-                        nextStatus = "Архив";
-                    }
-
-                    container.innerHTML += `
-                        <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-xl transition-all">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h2 class="font-bold text-xl text-white leading-tight">${order.customer_name}</h2>
-                                    <p class="text-green-400 font-bold text-lg">${order.total_price} ₽</p>
-                                </div>
-                                <button onclick="updateStatus(${order.id}, '${nextStatus}')" 
-                                    class="border ${statusColor} px-3 py-1 rounded-full text-[10px] font-black uppercase">
-                                    ${order.status || 'Новый'} →
-                                </button>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-3 mt-4">
-                                <a href="https://wa.me/${order.phone}" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-medium text-sm transition">
-                                    WhatsApp
-                                </a>
-                                <button onclick="deleteOrder(${order.id})" class="text-gray-500 hover:text-red-400 text-xs font-medium">
-                                    Удалить
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch (err) {
-                showError("Ошибка: " + err.message);
-            }
-        }
-
-        async function updateStatus(id, nextStatus) {
-            try {
-                const { error } = await _supabase
-                    .from('orders')
-                    .update({ status: nextStatus })
-                    .eq('id', id);
+            data.forEach(order => {
+                const listId = lists[order.status] || 'list-new';
+                counts[order.status || 'Новый']++;
                 
-                if (error) throw error;
-                loadOrders();
-            } catch (err) {
-                showError("Не удалось обновить: " + err.message);
-            }
-        }
+                const fileLink = order.file_url ? `<a href="${order.file_url}" target="_blank" class="block mt-2 text-[10px] text-blue-400 underline uppercase tracking-tighter">📎 Посмотреть файл</a>` : '';
+                const nextStatus = order.status === 'Новый' ? 'В работе' : (order.status === 'В работе' ? 'Завершен' : 'Архив');
 
-        async function deleteOrder(id) {
-            if(!confirm("Удалить этот заказ?")) return;
-            try {
-                const { error } = await _supabase.from('orders').delete().eq('id', id);
-                if (error) throw error;
-                loadOrders();
-            } catch (err) {
-                showError("Ошибка удаления: " + err.message);
-            }
+                document.getElementById(listId).innerHTML += `
+                    <div class="bg-gray-900 p-4 rounded-2xl border border-gray-800 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-white">${order.customer_name}</h4>
+                            <button onclick="updateStatus(${order.id}, '${nextStatus}')" class="text-[10px] bg-gray-800 p-1 px-2 rounded text-gray-400 hover:text-white">Next →</button>
+                        </div>
+                        <p class="text-green-500 font-black text-sm">${order.total_price} ₽</p>
+                        ${fileLink}
+                        <div class="flex justify-between items-center mt-4">
+                            <a href="https://wa.me/${order.phone}" class="text-[10px] text-emerald-500 font-bold uppercase">WhatsApp</a>
+                            <button onclick="deleteOrder(${order.id})" class="text-[10px] text-gray-700 hover:text-red-500">Удалить</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('count-new').innerText = counts['Новый'];
+            document.getElementById('count-work').innerText = counts['В работе'];
+            document.getElementById('count-done').innerText = counts['Завершен'];
         }
 
         async function addOrder() {
-            const name = document.getElementById('custName').value;
-            const price = document.getElementById('custPrice').value;
-            const phone = document.getElementById('custPhone').value;
+            const btn = document.getElementById('addBtn');
+            const fileInput = document.getElementById('custFile');
+            const file = fileInput.files[0];
+            let fileUrl = null;
 
-            if(!name || !price) return alert("Введите имя и сумму!");
+            btn.disabled = true; btn.innerText = "Загрузка...";
 
-            try {
-                const { error } = await _supabase.from('orders').insert([{ 
-                    customer_name: name, 
-                    total_price: price, 
-                    phone: phone, 
-                    status: 'Новый' 
-                }]);
-                if (error) throw error;
-                
-                document.getElementById('custName').value = '';
-                document.getElementById('custPrice').value = '';
-                document.getElementById('custPhone').value = '';
-                loadOrders();
-            } catch (err) {
-                showError("Ошибка: " + err.message);
+            if (file) {
+                const fileName = `${Date.now()}-${file.name}`;
+                const { data, error } = await _supabase.storage.from('order-files').upload(fileName, file);
+                if (data) {
+                    const { data: publicUrl } = _supabase.storage.from('order-files').getPublicUrl(fileName);
+                    fileUrl = publicUrl.publicUrl;
+                }
             }
+
+            await _supabase.from('orders').insert([{ 
+                customer_name: document.getElementById('custName').value,
+                total_price: document.getElementById('custPrice').value,
+                phone: document.getElementById('custPhone').value,
+                file_url: fileUrl,
+                status: 'Новый'
+            }]);
+
+            toggleForm();
+            loadOrders();
+            btn.disabled = false; btn.innerText = "Создать заказ";
         }
+
+        async function updateStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadOrders(); }
+        async function deleteOrder(id) { if(confirm("Удалить?")) { await _supabase.from('orders').delete().eq('id', id); loadOrders(); } }
 
         loadOrders();
     </script>
