@@ -18,213 +18,281 @@
         .bx-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-color: #d5d9dd; }
         .table-wrapper::-webkit-scrollbar { height: 6px; }
         .table-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Стили для ввода пин-кода */
+        .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; }
     </style>
 </head>
 <body class="text-slate-800 font-sans pb-20">
     
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[100] text-sm font-medium transition-all text-white"></div>
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[200] text-sm font-medium transition-all text-white"></div>
 
-    <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-all">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
-            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-700 text-lg">Редактирование заказа</h3>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none">&times;</button>
+    <div id="authScreen" class="fixed inset-0 bg-slate-900 z-[150] flex flex-col items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+            <div class="w-16 h-16 bg-sky-100 text-sky-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🔒</div>
+            <h2 class="text-2xl font-black text-slate-800 mb-1 tracking-tight">Хорошие полы</h2>
+            <p class="text-sm text-slate-500 mb-6">Введите PIN-код для доступа к CRM</p>
+            
+            <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl py-3 px-4 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200 transition mb-4 pin-input font-mono text-slate-700">
+            
+            <button onclick="checkPin()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl transition shadow-md hover:shadow-lg">Войти</button>
+        </div>
+    </div>
+
+    <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500">
+        <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-all">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
+                <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                    <h3 class="font-bold text-slate-700 text-lg">Редактирование заказа</h3>
+                    <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none">&times;</button>
+                </div>
+                <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-white">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">№ Заказа (свой)</label>
+                            <input id="editOrderNum" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label>
+                            <input id="editName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Сумма заказа (₽)</label>
+                            <input id="editPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон клиента</label>
+                            <input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded border border-slate-200">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Счет поставщика</label>
+                            <input id="editInvoice" type="text" placeholder="№ счета" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Оплата поставщику</label>
+                            <select id="editSupplierStatus" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                                <option value="Не оплачен">Не оплачен</option>
+                                <option value="Предоплата">Предоплата</option>
+                                <option value="Оплачен">Оплачен полностью</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label>
+                            <input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Стадия заказа</label>
+                            <select id="editStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 cursor-pointer">
+                                <option value="Новый">Новые</option>
+                                <option value="В работе">В работе</option>
+                                <option value="Завершен">Сделка успешна</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Комментарий</label>
+                        <textarea id="editComments" rows="2" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                        <label class="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Файл (Договор/Замер)</label>
+                        <div id="currentFileLink" class="mb-2 text-sm text-slate-600"></div>
+                        <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
+                    </div>
+                </div>
+                <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
+                    <button onclick="closeEditModal()" class="px-5 py-2.5 bg-white border border-slate-300 rounded text-slate-600 hover:bg-slate-100 text-sm font-medium transition">Отмена</button>
+                    <button onclick="saveEdit()" id="saveEditBtn" class="px-5 py-2.5 bg-sky-500 text-white rounded hover:bg-sky-600 text-sm font-medium shadow-sm transition">Сохранить</button>
+                </div>
             </div>
-            <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-white">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">№ Заказа (свой)</label>
-                        <input id="editOrderNum" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label>
-                        <input id="editName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+        </div>
+
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+                <div class="flex justify-between items-center w-full md:w-auto">
+                    <h1 class="text-xl font-bold text-slate-700 tracking-tight">Хорошие полы <span class="text-sky-500 font-normal ml-1">CRM</span></h1>
+                    <div class="flex gap-2">
+                        <button onclick="lockCrm()" class="md:hidden bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 rounded flex items-center justify-center shadow-sm" title="Заблокировать">🔒</button>
+                        <button onclick="toggleForm()" class="md:hidden bg-sky-500 hover:bg-sky-600 text-white w-8 h-8 rounded flex items-center justify-center shadow-sm">+</button>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Сумма заказа (₽)</label>
-                        <input id="editPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон клиента</label>
-                        <input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                    </div>
+                
+                <div class="flex flex-1 md:max-w-md gap-2 w-full">
+                    <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="flex-1 bg-slate-50 border border-slate-300 rounded px-3 py-1.5 text-sm outline-none focus:border-sky-500 transition">
+                    <button onclick="toggleView()" id="viewBtn" class="bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wide transition shadow-sm w-24 text-center">Таблица ≡</button>
+                    <button onclick="toggleForm()" class="hidden md:flex bg-sky-500 hover:bg-sky-600 text-white px-4 py-1.5 rounded text-sm font-semibold shadow-sm transition items-center gap-1">+ Сделка</button>
+                    <button onclick="lockCrm()" class="hidden md:flex bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded text-sm font-semibold shadow-sm transition items-center" title="Заблокировать">🔒</button>
                 </div>
+            </div>
+        </header>
 
-                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded border border-slate-200">
+        <div class="p-4 max-w-7xl mx-auto mt-2">
+            <div id="formSection" class="hidden bg-white p-5 rounded border border-slate-200 shadow-sm mb-6 transition-all">
+                <h2 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">Новый заказ</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Счет поставщика</label>
-                        <input id="editInvoice" type="text" placeholder="№ счета" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        <label class="block text-xs text-slate-500 mb-1">Свой № заказа</label>
+                        <input id="cOrderNum" type="text" placeholder="Например: П-104" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-500 mb-1">Имя клиента</label>
+                        <input id="cName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Оплата поставщику</label>
-                        <select id="editSupplierStatus" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        <label class="block text-xs text-slate-500 mb-1">Сумма заказа (₽)</label>
+                        <input id="cPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Телефон клиента</label>
+                        <input id="cPhone" type="tel" placeholder="79XXXXXXXXX" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Счет поставщика</label>
+                        <input id="cInvoice" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1">Оплата поставщику</label>
+                        <select id="cSupplierStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                             <option value="Не оплачен">Не оплачен</option>
                             <option value="Предоплата">Предоплата</option>
                             <option value="Оплачен">Оплачен полностью</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label>
-                        <input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
+                        <label class="block text-xs text-slate-500 mb-1">Дата отгрузки</label>
+                        <input id="cShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Стадия заказа</label>
-                        <select id="editStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500 cursor-pointer">
-                            <option value="Новый">Новые</option>
-                            <option value="В работе">В работе</option>
-                            <option value="Завершен">Сделка успешна</option>
-                        </select>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-500 mb-1">Комментарий</label>
+                        <textarea id="cComments" rows="1" placeholder="Например: Выбран ламинат Tarkett..." class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-500 mb-1">Прикрепить файл</label>
+                        <input id="cFile" type="file" class="block w-full text-xs text-slate-500 border border-slate-300 rounded bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
                     </div>
                 </div>
+                <button onclick="saveOrder()" id="saveBtn" class="bg-sky-500 hover:bg-sky-600 text-white px-5 py-2 rounded text-sm font-medium transition shadow-sm">Создать сделку</button>
+                <button onclick="toggleForm()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2 rounded text-sm font-medium transition hover:bg-slate-50 ml-2 shadow-sm">Отмена</button>
+            </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Комментарий</label>
-                    <textarea id="editComments" rows="2" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea>
+            <div id="kanbanView" class="flex overflow-x-auto gap-5 pb-4 kanban-scroll snap-x">
+                <div class="column shrink-0 snap-center bg-[#eef2f4] p-3 rounded-md border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1">
+                        <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Новые</h3>
+                        <span id="cnt-new" class="bg-white border border-slate-200 text-slate-500 text-xs px-2 py-0.5 rounded-full font-semibold shadow-sm">0</span>
+                    </div>
+                    <div id="col-new" class="space-y-3"></div>
                 </div>
-
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded">
-                    <label class="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Файл (Договор/Замер)</label>
-                    <div id="currentFileLink" class="mb-2 text-sm text-slate-600"></div>
-                    <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
+                <div class="column shrink-0 snap-center bg-[#eef2f4] p-3 rounded-md border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1">
+                        <h3 class="text-xs font-bold text-sky-600 uppercase tracking-wider">В работе</h3>
+                        <span id="cnt-work" class="bg-sky-100 text-sky-700 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+                    </div>
+                    <div id="col-work" class="space-y-3"></div>
+                </div>
+                <div class="column shrink-0 snap-center bg-[#eef2f4] p-3 rounded-md border border-slate-200/60">
+                    <div class="flex justify-between items-center mb-3 px-1">
+                        <h3 class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Сделка успешна</h3>
+                        <span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+                    </div>
+                    <div id="col-done" class="space-y-3"></div>
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
-                <button onclick="closeEditModal()" class="px-5 py-2.5 bg-white border border-slate-300 rounded text-slate-600 hover:bg-slate-100 text-sm font-medium transition">Отмена</button>
-                <button onclick="saveEdit()" id="saveEditBtn" class="px-5 py-2.5 bg-sky-500 text-white rounded hover:bg-sky-600 text-sm font-medium shadow-sm transition">Сохранить</button>
+
+            <div id="tableView" class="hidden">
+                <div class="bg-white border border-slate-200 rounded shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto table-wrapper">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    <th class="px-4 py-3 whitespace-nowrap w-16">№</th>
+                                    <th class="px-4 py-3 whitespace-nowrap min-w-[150px]">Клиент</th>
+                                    <th class="px-4 py-3 whitespace-nowrap">Сумма</th>
+                                    <th class="px-4 py-3 whitespace-nowrap">Поставщик</th>
+                                    <th class="px-4 py-3 whitespace-nowrap">Отгрузка</th>
+                                    <th class="px-4 py-3 whitespace-nowrap">Связь</th>
+                                    <th class="px-4 py-3 whitespace-nowrap text-right">Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-container" class="divide-y divide-slate-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                    <div id="totalSum" class="bg-slate-50 px-5 py-3 text-right text-slate-700 font-bold text-sm border-t border-slate-200"></div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
-            <div class="flex justify-between items-center w-full md:w-auto">
-                <h1 class="text-xl font-bold text-slate-700 tracking-tight">Хорошие полы <span class="text-sky-500 font-normal ml-1">CRM</span></h1>
-                <button onclick="toggleForm()" class="md:hidden bg-sky-500 hover:bg-sky-600 text-white w-8 h-8 rounded flex items-center justify-center shadow-sm">+</button>
-            </div>
-            
-            <div class="flex flex-1 md:max-w-md gap-2 w-full">
-                <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="flex-1 bg-slate-50 border border-slate-300 rounded px-3 py-1.5 text-sm outline-none focus:border-sky-500 transition">
-                <button onclick="toggleView()" id="viewBtn" class="bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wide transition shadow-sm w-24 text-center">Таблица ≡</button>
-                <button onclick="toggleForm()" class="hidden md:flex bg-sky-500 hover:bg-sky-600 text-white px-4 py-1.5 rounded text-sm font-semibold shadow-sm transition items-center gap-1">+ Сделка</button>
-            </div>
-        </div>
-    </header>
-
-    <div class="p-4 max-w-7xl mx-auto mt-2">
-        <div id="formSection" class="hidden bg-white p-5 rounded border border-slate-200 shadow-sm mb-6 transition-all">
-            <h2 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">Новый заказ</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div>
-                    <label class="block text-xs text-slate-500 mb-1">Свой № заказа</label>
-                    <input id="cOrderNum" type="text" placeholder="Например: П-104" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs text-slate-500 mb-1">Имя клиента</label>
-                    <input id="cName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-500 mb-1">Сумма заказа (₽)</label>
-                    <input id="cPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                </div>
-                
-                <div>
-                    <label class="block text-xs text-slate-500 mb-1">Телефон клиента</label>
-                    <input id="cPhone" type="tel" placeholder="79XXXXXXXXX" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-500 mb-1">Счет поставщика</label>
-                    <input id="cInvoice" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-500 mb-1">Оплата поставщику</label>
-                    <select id="cSupplierStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                        <option value="Не оплачен">Не оплачен</option>
-                        <option value="Предоплата">Предоплата</option>
-                        <option value="Оплачен">Оплачен полностью</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-500 mb-1">Дата отгрузки</label>
-                    <input id="cShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500">
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="block text-xs text-slate-500 mb-1">Комментарий</label>
-                    <textarea id="cComments" rows="1" placeholder="Например: Выбран ламинат Tarkett..." class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs text-slate-500 mb-1">Прикрепить файл</label>
-                    <input id="cFile" type="file" class="block w-full text-xs text-slate-500 border border-slate-300 rounded bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
-                </div>
-            </div>
-            <button onclick="saveOrder()" id="saveBtn" class="bg-sky-500 hover:bg-sky-600 text-white px-5 py-2 rounded text-sm font-medium transition shadow-sm">Создать сделку</button>
-            <button onclick="toggleForm()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2 rounded text-sm font-medium transition hover:bg-slate-50 ml-2 shadow-sm">Отмена</button>
-        </div>
-
-        <div id="kanbanView" class="flex overflow-x-auto gap-5 pb-4 kanban-scroll snap-x">
-            <div class="column shrink-0 snap-center bg-[#eef2f4] p-3 rounded-md border border-slate-200/60">
-                <div class="flex justify-between items-center mb-3 px-1">
-                    <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider">Новые</h3>
-                    <span id="cnt-new" class="bg-white border border-slate-200 text-slate-500 text-xs px-2 py-0.5 rounded-full font-semibold shadow-sm">0</span>
-                </div>
-                <div id="col-new" class="space-y-3"></div>
-            </div>
-            <div class="column shrink-0 snap-center bg-[#eef2f4] p-3 rounded-md border border-slate-200/60">
-                <div class="flex justify-between items-center mb-3 px-1">
-                    <h3 class="text-xs font-bold text-sky-600 uppercase tracking-wider">В работе</h3>
-                    <span id="cnt-work" class="bg-sky-100 text-sky-700 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
-                </div>
-                <div id="col-work" class="space-y-3"></div>
-            </div>
-            <div class="column shrink-0 snap-center bg-[#eef2f4] p-3 rounded-md border border-slate-200/60">
-                <div class="flex justify-between items-center mb-3 px-1">
-                    <h3 class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Сделка успешна</h3>
-                    <span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
-                </div>
-                <div id="col-done" class="space-y-3"></div>
-            </div>
-        </div>
-
-        <div id="tableView" class="hidden">
-            <div class="bg-white border border-slate-200 rounded shadow-sm overflow-hidden">
-                <div class="overflow-x-auto table-wrapper">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                <th class="px-4 py-3 whitespace-nowrap w-16">№</th>
-                                <th class="px-4 py-3 whitespace-nowrap min-w-[150px]">Клиент</th>
-                                <th class="px-4 py-3 whitespace-nowrap">Сумма</th>
-                                <th class="px-4 py-3 whitespace-nowrap">Поставщик</th>
-                                <th class="px-4 py-3 whitespace-nowrap">Отгрузка</th>
-                                <th class="px-4 py-3 whitespace-nowrap">Связь</th>
-                                <th class="px-4 py-3 whitespace-nowrap text-right">Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-container" class="divide-y divide-slate-100 text-sm"></tbody>
-                    </table>
-                </div>
-                <div id="totalSum" class="bg-slate-50 px-5 py-3 text-right text-slate-700 font-bold text-sm border-t border-slate-200"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
+    </div> <script>
         // === ВСТАВЬ СВОИ КЛЮЧИ SUPABASE СЮДА !!! ===
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
         // ===========================================
+        
+        // === ТВОЙ ПАРОЛЬ (ИЗМЕНИ НА СВОЙ!) ===
+        const SECRET_PIN = '1234';
+        // =====================================
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let isKanban = localStorage.getItem('crm_view') !== 'table';
         let allOrders = [];
         let currentEditId = null;
+
+        // --- ЛОГИКА АВТОРИЗАЦИИ ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Если пин-код уже вводили в этой сессии - открываем CRM
+            if (sessionStorage.getItem('crm_auth') === 'true') {
+                unlockCrm();
+            }
+            
+            // Ввод по нажатию Enter
+            document.getElementById('pinInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') checkPin();
+            });
+        });
+
+        function checkPin() {
+            const input = document.getElementById('pinInput').value;
+            if (input === SECRET_PIN) {
+                sessionStorage.setItem('crm_auth', 'true');
+                unlockCrm();
+            } else {
+                showToast("Неверный PIN-код", true);
+                document.getElementById('pinInput').value = '';
+            }
+        }
+
+        function unlockCrm() {
+            document.getElementById('authScreen').classList.add('hidden');
+            const main = document.getElementById('mainCrm');
+            main.classList.remove('hidden');
+            setTimeout(() => main.classList.remove('opacity-0'), 50); // Плавное появление
+            loadData(); // Загружаем данные только ПОСЛЕ авторизации
+        }
+
+        function lockCrm() {
+            sessionStorage.removeItem('crm_auth');
+            document.getElementById('pinInput').value = '';
+            document.getElementById('mainCrm').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('mainCrm').classList.add('hidden');
+                document.getElementById('authScreen').classList.remove('hidden');
+            }, 300);
+            allOrders = []; // Очищаем данные из памяти
+            document.getElementById('table-container').innerHTML = ''; // Очищаем интерфейс
+        }
+        // ------------------------
 
         function toggleView() {
             isKanban = !isKanban;
@@ -241,8 +309,8 @@
         function showToast(msg, isError = false) {
             const t = document.getElementById('toast');
             t.innerText = msg;
-            t.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-[100] text-sm font-medium transition-all ${isError ? 'bg-red-500' : 'bg-sky-600'} text-white block`;
-            setTimeout(() => t.classList.add('hidden'), 5000); // Увеличил время показа до 5 секунд
+            t.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-[200] text-sm font-medium transition-all ${isError ? 'bg-red-500' : 'bg-sky-600'} text-white block`;
+            setTimeout(() => t.classList.add('hidden'), 4000);
         }
 
         // --- РЕДАКТИРОВАНИЕ ---
@@ -282,7 +350,6 @@
             const newFile = document.getElementById('editFile').files[0];
             btn.disabled = true; btn.innerText = "Сохранение...";
 
-            // ИСПРАВЛЕНИЕ: передаем null, если дата пустая
             let updates = {
                 order_number: document.getElementById('editOrderNum').value,
                 customer_name: document.getElementById('editName').value,
@@ -304,16 +371,11 @@
                 }
 
                 const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
-                if (error) throw error; // Теперь ошибка покажется красным уведомлением
+                if (error) throw error; 
                 
-                showToast("Успешно сохранено!"); 
-                closeEditModal(); 
-                loadData();
-            } catch (error) { 
-                showToast("Ошибка сохранения: " + error.message, true); 
-            } finally { 
-                btn.disabled = false; btn.innerText = "Сохранить"; 
-            }
+                showToast("Успешно сохранено!"); closeEditModal(); loadData();
+            } catch (error) { showToast("Ошибка сохранения: " + error.message, true); } 
+            finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
         // --- ЗАГРУЗКА И РЕНДЕР ---
@@ -448,7 +510,6 @@
             btn.disabled = true; btn.innerText = "Загрузка...";
             let fileUrl = null;
 
-            // ИСПРАВЛЕНИЕ ДЛЯ ФОРМЫ СОЗДАНИЯ (пустая дата)
             let newOrderData = {
                 order_number: document.getElementById('cOrderNum').value,
                 customer_name: document.getElementById('cName').value,
@@ -470,7 +531,6 @@
                 }
 
                 const { error } = await _supabase.from('orders').insert([newOrderData]);
-
                 if(error) throw error;
                 
                 document.getElementById('cOrderNum').value = '';
@@ -483,17 +543,12 @@
                 document.getElementById('cFile').value = '';
                 toggleForm(); showToast("Сделка создана"); loadData();
                 
-            } catch (error) { 
-                showToast("Ошибка создания: " + error.message, true); 
-            } finally { 
-                btn.disabled = false; btn.innerText = "Создать сделку"; 
-            }
+            } catch (error) { showToast("Ошибка: " + error.message, true); } 
+            finally { btn.disabled = false; btn.innerText = "Создать сделку"; }
         }
 
         async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
         async function delOrder(id) { if(confirm("Удалить сделку навсегда?")) { await _supabase.from('orders').delete().eq('id', id); loadData(); } }
-
-        loadData();
     </script>
 </body>
 </html>
