@@ -27,6 +27,43 @@
     
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[200] text-sm font-medium transition-all text-white"></div>
 
+    <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-[160] flex items-center justify-center p-4 backdrop-blur-sm transition-all">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-700 text-lg">Редактирование заказа</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-white">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">№ Заказа</label><input id="editOrderNum" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label><input id="editName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Сумма (₽)</label><input id="editPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон</label><input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded border border-slate-200">
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Счет поставщика</label><input id="editInvoice" type="text" placeholder="№ счета" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Оплата</label><select id="editSupplierStatus" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен полностью</option></select></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label><input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Стадия заказа</label><select id="editStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select></div>
+                </div>
+                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Комментарий</label><textarea id="editComments" rows="2" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea></div>
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                    <label class="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Файл (Договор/Замер)</label>
+                    <div id="currentFileLink" class="mb-2 text-sm text-slate-600"></div>
+                    <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
+                <button onclick="closeEditModal()" class="px-5 py-2.5 bg-white border border-slate-300 rounded text-slate-600 hover:bg-slate-100 text-sm font-medium transition">Отмена</button>
+                <button onclick="saveEdit()" id="saveEditBtn" class="px-5 py-2.5 bg-sky-500 text-white rounded hover:bg-sky-600 text-sm font-medium shadow-sm transition">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
     <div id="authScreen" class="fixed inset-0 bg-slate-900 z-[150] flex flex-col items-center justify-center p-4 transition-all duration-300">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
             <div class="w-16 h-16 bg-sky-100 text-sky-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🔒</div>
@@ -76,43 +113,7 @@
             </header>
 
             <div id="section-deals" class="p-4 max-w-7xl mx-auto w-full mt-2">
-                <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-all">
-                    <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
-                        <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                            <h3 class="font-bold text-slate-700 text-lg">Редактирование заказа</h3>
-                            <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none">&times;</button>
-                        </div>
-                        <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-white">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">№ Заказа</label><input id="editOrderNum" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label><input id="editName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Сумма (₽)</label><input id="editPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон</label><input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded border border-slate-200">
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Счет поставщика</label><input id="editInvoice" type="text" placeholder="№ счета" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Оплата</label><select id="editSupplierStatus" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен полностью</option></select></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label><input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                                <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Стадия заказа</label><select id="editStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select></div>
-                            </div>
-                            <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Комментарий</label><textarea id="editComments" rows="2" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea></div>
-                            <div class="p-3 bg-slate-50 border border-slate-200 rounded">
-                                <label class="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Файл (Договор/Замер)</label>
-                                <div id="currentFileLink" class="mb-2 text-sm text-slate-600"></div>
-                                <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
-                            </div>
-                        </div>
-                        <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
-                            <button onclick="closeEditModal()" class="px-5 py-2.5 bg-white border border-slate-300 rounded text-slate-600 hover:bg-slate-100 text-sm font-medium transition">Отмена</button>
-                            <button onclick="saveEdit()" id="saveEditBtn" class="px-5 py-2.5 bg-sky-500 text-white rounded hover:bg-sky-600 text-sm font-medium shadow-sm transition">Сохранить</button>
-                        </div>
-                    </div>
-                </div>
-
+                
                 <div id="formSection" class="hidden bg-white p-5 rounded border border-slate-200 shadow-sm mb-6 transition-all">
                     <h2 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">Новый заказ</h2>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -295,23 +296,17 @@
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
             
-            // Находим первый день месяца (сдвигаем, чтобы неделя начиналась с ПН)
             let firstDay = new Date(year, month, 1).getDay();
             firstDay = firstDay === 0 ? 6 : firstDay - 1; 
             
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             
-            // Пустые ячейки до начала месяца
             for (let i = 0; i < firstDay; i++) {
                 grid.innerHTML += `<div class="bg-slate-50/30 rounded min-h-[80px] md:min-h-[100px] border border-transparent"></div>`;
             }
             
-            // Заполняем дни месяца
             for (let d = 1; d <= daysInMonth; d++) {
-                // Формируем дату в формате YYYY-MM-DD для сравнения
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                
-                // Ищем сделки на эту дату
                 const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
                 
                 let ordersHtml = '';
@@ -471,7 +466,6 @@
             document.getElementById('cnt-done').innerText = counts['Завершен'];
             document.getElementById('totalSum').innerText = "Итого в работе: " + total.toLocaleString() + " ₽";
             
-            // Обязательно обновляем календарь при любом изменении данных!
             renderCalendar(); 
         }
 
