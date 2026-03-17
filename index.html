@@ -21,7 +21,6 @@
         .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; }
         .calendar-cell::-webkit-scrollbar { width: 4px; }
         .calendar-cell::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        /* Скрываем скроллбар для тегов на телефоне */
         .tags-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -56,16 +55,23 @@
                     <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">№ Заказа</label><input id="editOrderNum" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Имя клиента</label><input id="editName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Сумма (₽)</label><input id="editPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон</label><input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                
+                <div class="grid grid-cols-2 gap-4 bg-sky-50/50 p-3 rounded border border-sky-100">
+                    <div><label class="block text-xs font-semibold text-sky-700 mb-1 uppercase tracking-wider">Сумма заказа (₽)</label><input id="editPrice" type="number" class="w-full p-2 bg-white border border-sky-200 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                    <div><label class="block text-xs font-semibold text-sky-700 mb-1 uppercase tracking-wider">Внесена предоплата (₽)</label><input id="editPrepayment" type="number" placeholder="Например: 50000" class="w-full p-2 bg-white border border-sky-200 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                 </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон</label><input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label><input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                </div>
+                
                 <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded border border-slate-200">
                     <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Счет поставщика</label><input id="editInvoice" type="text" placeholder="№ счета" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Оплата</label><select id="editSupplierStatus" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен полностью</option></select></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Оплата поставщику</label><select id="editSupplierStatus" class="w-full p-2 bg-white border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен полностью</option></select></div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label><input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                
+                <div>
                     <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Стадия заказа</label><select id="editStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select></div>
                 </div>
                 <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Комментарий</label><textarea id="editComments" rows="2" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea></div>
@@ -144,13 +150,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div><label class="block text-xs text-slate-500 mb-1">Свой № заказа</label><input id="cOrderNum" type="text" placeholder="П-104" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                         <div class="md:col-span-2"><label class="block text-xs text-slate-500 mb-1">Имя клиента</label><input id="cName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                        <div><label class="block text-xs text-slate-500 mb-1">Сумма (₽)</label><input id="cPrice" type="number" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                         <div><label class="block text-xs text-slate-500 mb-1">Телефон</label><input id="cPhone" type="tel" placeholder="79XXXXXXXXX" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                        
+                        <div><label class="block text-xs text-slate-500 mb-1">Сумма заказа (₽)</label><input id="cPrice" type="number" class="w-full p-2 bg-sky-50 border border-sky-200 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                        <div><label class="block text-xs text-slate-500 mb-1">Предоплата (₽)</label><input id="cPrepayment" type="number" placeholder="Сколько внесли" class="w-full p-2 bg-sky-50 border border-sky-200 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                        
                         <div><label class="block text-xs text-slate-500 mb-1">Счет поставщика</label><input id="cInvoice" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                         <div><label class="block text-xs text-slate-500 mb-1">Оплата поставщику</label><select id="cSupplierStatus" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен полностью</option></select></div>
+                        
                         <div><label class="block text-xs text-slate-500 mb-1">Дата отгрузки</label><input id="cShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                        <div class="md:col-span-2"><label class="block text-xs text-slate-500 mb-1">Комментарий</label><textarea id="cComments" rows="1" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea></div>
-                        <div class="md:col-span-2"><label class="block text-xs text-slate-500 mb-1">Файл</label><input id="cFile" type="file" class="block w-full text-xs text-slate-500 border border-slate-300 rounded bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 hover:file:bg-slate-300 cursor-pointer"></div>
+                        <div class="md:col-span-3"><label class="block text-xs text-slate-500 mb-1">Комментарий</label><textarea id="cComments" rows="1" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></textarea></div>
+                        <div class="md:col-span-4"><label class="block text-xs text-slate-500 mb-1">Файл</label><input id="cFile" type="file" class="block w-full text-xs text-slate-500 border border-slate-300 rounded bg-slate-50 file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-slate-200 hover:file:bg-slate-300 cursor-pointer"></div>
                     </div>
                     <button onclick="saveOrder()" id="saveBtn" class="bg-sky-500 hover:bg-sky-600 text-white px-5 py-2 rounded text-sm font-medium transition shadow-sm">Создать сделку</button>
                     <button onclick="toggleForm()" class="bg-white border border-slate-300 text-slate-600 px-5 py-2 rounded text-sm font-medium transition hover:bg-slate-50 ml-2 shadow-sm">Отмена</button>
@@ -168,7 +178,7 @@
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        <th class="px-4 py-3 whitespace-nowrap w-16">№</th><th class="px-4 py-3 whitespace-nowrap min-w-[150px]">Клиент</th><th class="px-4 py-3 whitespace-nowrap">Сумма</th><th class="px-4 py-3 whitespace-nowrap">Поставщик</th><th class="px-4 py-3 whitespace-nowrap">Отгрузка</th><th class="px-4 py-3 whitespace-nowrap">Связь</th><th class="px-4 py-3 whitespace-nowrap text-right">Действия</th>
+                                        <th class="px-4 py-3 whitespace-nowrap w-16">№</th><th class="px-4 py-3 whitespace-nowrap min-w-[150px]">Клиент</th><th class="px-4 py-3 whitespace-nowrap">Сумма (Остаток)</th><th class="px-4 py-3 whitespace-nowrap">Поставщик</th><th class="px-4 py-3 whitespace-nowrap">Отгрузка</th><th class="px-4 py-3 whitespace-nowrap">Связь</th><th class="px-4 py-3 whitespace-nowrap text-right">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-container" class="divide-y divide-slate-100 text-sm"></tbody>
@@ -223,10 +233,9 @@
         let isKanban = localStorage.getItem('crm_view') !== 'table';
         let allOrders = [];
         let currentEditId = null;
-        let currentDate = new Date(); // Для календаря
-        let currentSupplierFilter = 'Все'; // Текущий активный фильтр
+        let currentDate = new Date(); 
+        let currentSupplierFilter = 'Все';
 
-        // --- ЛОГИКА АВТОРИЗАЦИИ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) {
@@ -265,7 +274,6 @@
             toggleSidebar();
         }
 
-        // --- ЛОГИКА МЕНЮ ---
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
             document.getElementById('sidebarOverlay').classList.toggle('hidden');
@@ -303,7 +311,6 @@
             if(window.innerWidth < 768) toggleSidebar();
         }
 
-        // --- ЛОГИКА КАЛЕНДАРЯ ---
         function changeMonth(offset) {
             currentDate.setMonth(currentDate.getMonth() + offset);
             renderCalendar();
@@ -336,7 +343,6 @@
                     let stColor = "bg-sky-100 text-sky-700 border-sky-200";
                     if (o.status === 'Завершен') stColor = "bg-emerald-100 text-emerald-700 border-emerald-200";
                     if (o.status === 'Новый') stColor = "bg-slate-100 text-slate-700 border-slate-200";
-                    
                     const label = o.order_number || o.customer_name;
                     ordersHtml += `<div class="text-[10px] md:text-xs font-semibold ${stColor} border p-1 rounded mb-1 truncate shadow-sm pointer-events-none">${label}</div>`;
                 });
@@ -355,7 +361,6 @@
             }
         }
 
-        // --- ЛОГИКА ПРОСМОТРА ДНЯ И РЕДАКТИРОВАНИЯ ---
         function openDayModal(dateStr) {
             const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
             document.getElementById('dayModalTitle').innerText = 'Отгрузки на ' + formatDate(dateStr);
@@ -400,6 +405,7 @@
             document.getElementById('editOrderNum').value = order.order_number || '';
             document.getElementById('editName').value = order.customer_name || '';
             document.getElementById('editPrice').value = order.total_price || '';
+            document.getElementById('editPrepayment').value = order.prepayment || '';
             document.getElementById('editPhone').value = order.phone || '';
             document.getElementById('editInvoice').value = order.supplier_invoice || '';
             document.getElementById('editSupplierStatus').value = order.supplier_status || 'Не оплачен';
@@ -425,6 +431,7 @@
                 order_number: document.getElementById('editOrderNum').value,
                 customer_name: document.getElementById('editName').value,
                 total_price: document.getElementById('editPrice').value,
+                prepayment: document.getElementById('editPrepayment').value || null,
                 phone: document.getElementById('editPhone').value,
                 supplier_invoice: document.getElementById('editInvoice').value,
                 supplier_status: document.getElementById('editSupplierStatus').value,
@@ -453,18 +460,14 @@
             finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
-        // --- ЛОГИКА ФИЛЬТРАЦИИ И РЕНДЕРА СДЕЛОК ---
         function setFilter(status) {
             currentSupplierFilter = status;
-            
-            // Меняем стили кнопок-тегов
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.className = 'filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition shadow-sm';
             });
             const activeBtn = document.getElementById('filter-' + status);
             activeBtn.className = 'filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-sky-500 text-white shadow-sm transition hover:opacity-90 border border-sky-500';
-            
-            renderData(); // Перерисовываем доску и таблицу
+            renderData(); 
         }
 
         async function loadData() {
@@ -482,19 +485,13 @@
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             
-            // Фильтруем данные: поиск (по тексту) + теги (по статусу поставщика)
             const filtered = allOrders.filter(o => {
-                // Логика текстового поиска
                 const matchesSearch = (o.customer_name || '').toLowerCase().includes(search) || 
                                       (o.phone || '').includes(search) || 
                                       (o.order_number || '').toLowerCase().includes(search) || 
                                       (o.comments || '').toLowerCase().includes(search);
-                
-                // Логика тегов (статус поставщика)
-                // Если у сделки пустой статус, считаем его 'Не оплачен'
                 const actualSupplierStatus = o.supplier_status || 'Не оплачен';
                 const matchesTag = (currentSupplierFilter === 'Все') || (actualSupplierStatus === currentSupplierFilter);
-                
                 return matchesSearch && matchesTag;
             });
             
@@ -526,10 +523,20 @@
                 const displayOrderNum = item.order_number || `#${item.id}`;
                 const fileBtn = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-sky-500 hover:text-sky-600 text-[11px] font-bold uppercase">📎 Файл</a>` : '';
 
-                const cardHtml = `<div class="bx-card p-3.5 rounded relative group flex flex-col gap-2"><div class="flex justify-between items-start"><h4 onclick="openEditModal(${item.id})" class="font-bold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate pr-2">${item.customer_name}</h4><div class="text-[11px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">${displayOrderNum}</div></div><div class="text-slate-800 font-black text-base">${Number(item.total_price).toLocaleString()} ₽</div><div class="bg-slate-50 border border-slate-100 p-2 rounded text-[11px] text-slate-600"><div class="flex justify-between mb-1"><span>Счет: <b>${item.supplier_invoice || '-'}</b></span><span class="px-1.5 rounded font-bold ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div><div class="text-slate-500">🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div></div>${item.comments ? `<div class="text-[11px] text-slate-500 italic bg-amber-50/50 p-1.5 rounded border border-amber-100/50 truncate">📝 ${item.comments}</div>` : ''}<div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-1">${commsHtml}<div class="flex items-center gap-2">${fileBtn}${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-2 py-1.5 rounded border border-transparent hover:border-current">${btnTxt}</button>` : ''}</div></div></div>`;
+                // === ЛОГИКА РАСЧЕТА ОСТАТКА ===
+                let balanceHtmlCard = '';
+                let balanceHtmlTable = '';
+                if (item.prepayment !== null && item.prepayment !== undefined && item.prepayment !== '') {
+                    const bal = Number(item.total_price || 0) - Number(item.prepayment);
+                    const colorClass = bal <= 0 ? 'text-emerald-500' : 'text-red-500';
+                    balanceHtmlCard = `<div class="text-[11px] text-slate-500 mt-[-4px]">Остаток: <span class="${colorClass} font-bold">${bal.toLocaleString()} ₽</span></div>`;
+                    balanceHtmlTable = `<div class="text-[10px] text-slate-500">Остаток: <span class="${colorClass} font-bold">${bal.toLocaleString()} ₽</span></div>`;
+                }
+
+                const cardHtml = `<div class="bx-card p-3.5 rounded relative group flex flex-col gap-2"><div class="flex justify-between items-start"><h4 onclick="openEditModal(${item.id})" class="font-bold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate pr-2">${item.customer_name}</h4><div class="text-[11px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">${displayOrderNum}</div></div><div><div class="text-slate-800 font-black text-base">${Number(item.total_price).toLocaleString()} ₽</div>${balanceHtmlCard}</div><div class="bg-slate-50 border border-slate-100 p-2 rounded text-[11px] text-slate-600"><div class="flex justify-between mb-1"><span>Счет: <b>${item.supplier_invoice || '-'}</b></span><span class="px-1.5 rounded font-bold ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div><div class="text-slate-500">🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div></div>${item.comments ? `<div class="text-[11px] text-slate-500 italic bg-amber-50/50 p-1.5 rounded border border-amber-100/50 truncate">📝 ${item.comments}</div>` : ''}<div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-1">${commsHtml}<div class="flex items-center gap-2">${fileBtn}${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-2 py-1.5 rounded border border-transparent hover:border-current">${btnTxt}</button>` : ''}</div></div></div>`;
                 if (isKanban && containers[status]) document.getElementById(containers[status]).innerHTML += cardHtml;
 
-                const tableRow = `<tr class="hover:bg-slate-50 transition group"><td class="px-4 py-3 text-slate-600 text-xs font-bold whitespace-nowrap">${displayOrderNum}</td><td class="px-4 py-3 min-w-[150px]"><div onclick="openEditModal(${item.id})" class="font-semibold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate">${item.customer_name}</div>${item.comments ? `<div class="text-[10px] text-slate-400 truncate mt-0.5 max-w-[150px]">${item.comments}</div>` : ''}</td><td class="px-4 py-3 text-slate-800 font-bold whitespace-nowrap">${Number(item.total_price).toLocaleString()} ₽</td><td class="px-4 py-3 whitespace-nowrap"><div class="text-xs font-medium text-slate-700">${item.supplier_invoice || '-'}</div><div class="text-[9px] font-bold uppercase mt-1 inline-block px-1.5 rounded ${supColor}">${item.supplier_status || 'Не оплачен'}</div></td><td class="px-4 py-3 text-xs text-slate-600 whitespace-nowrap">${formatDate(item.shipment_date)}</td><td class="px-4 py-3 whitespace-nowrap">${commsHtml}</td><td class="px-4 py-3 whitespace-nowrap text-right flex items-center justify-end gap-3 h-full pt-4">${fileBtn}${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-2 py-1 rounded shadow-sm" title="Дальше">➔</button>` : ''}</td></tr>`;
+                const tableRow = `<tr class="hover:bg-slate-50 transition group"><td class="px-4 py-3 text-slate-600 text-xs font-bold whitespace-nowrap">${displayOrderNum}</td><td class="px-4 py-3 min-w-[150px]"><div onclick="openEditModal(${item.id})" class="font-semibold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate">${item.customer_name}</div>${item.comments ? `<div class="text-[10px] text-slate-400 truncate mt-0.5 max-w-[150px]">${item.comments}</div>` : ''}</td><td class="px-4 py-3 whitespace-nowrap"><div class="text-slate-800 font-bold">${Number(item.total_price).toLocaleString()} ₽</div>${balanceHtmlTable}</td><td class="px-4 py-3 whitespace-nowrap"><div class="text-xs font-medium text-slate-700">${item.supplier_invoice || '-'}</div><div class="text-[9px] font-bold uppercase mt-1 inline-block px-1.5 rounded ${supColor}">${item.supplier_status || 'Не оплачен'}</div></td><td class="px-4 py-3 text-xs text-slate-600 whitespace-nowrap">${formatDate(item.shipment_date)}</td><td class="px-4 py-3 whitespace-nowrap">${commsHtml}</td><td class="px-4 py-3 whitespace-nowrap text-right flex items-center justify-end gap-3 h-full pt-4">${fileBtn}${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-2 py-1 rounded shadow-sm" title="Дальше">➔</button>` : ''}</td></tr>`;
                 if (!isKanban) document.getElementById('table-container').innerHTML += tableRow;
             });
 
@@ -541,11 +548,43 @@
             renderCalendar(); 
         }
 
+        function toggleView() {
+            isKanban = !isKanban;
+            localStorage.setItem('crm_view', isKanban ? 'kanban' : 'table');
+            renderData();
+        }
+
+        function toggleForm() { 
+            const form = document.getElementById('formSection');
+            form.classList.toggle('hidden');
+            if(!form.classList.contains('hidden')) document.getElementById('cOrderNum').focus();
+        }
+
+        function showToast(msg, isError = false) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-[200] text-sm font-medium transition-all ${isError ? 'bg-red-500' : 'bg-sky-600'} text-white block`;
+            setTimeout(() => t.classList.add('hidden'), 4000);
+        }
+
         async function saveOrder() {
             const btn = document.getElementById('saveBtn');
             const file = document.getElementById('cFile').files[0];
             btn.disabled = true; btn.innerText = "Загрузка...";
-            let newOrderData = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value, phone: document.getElementById('cPhone').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, comments: document.getElementById('cComments').value, status: 'Новый' };
+            
+            let newOrderData = { 
+                order_number: document.getElementById('cOrderNum').value, 
+                customer_name: document.getElementById('cName').value, 
+                total_price: document.getElementById('cPrice').value, 
+                prepayment: document.getElementById('cPrepayment').value || null,
+                phone: document.getElementById('cPhone').value, 
+                supplier_invoice: document.getElementById('cInvoice').value, 
+                supplier_status: document.getElementById('cSupplierStatus').value, 
+                shipment_date: document.getElementById('cShipDate').value || null, 
+                comments: document.getElementById('cComments').value, 
+                status: 'Новый' 
+            };
+
             try {
                 if (file) {
                     const name = Date.now() + "_" + file.name;
@@ -554,7 +593,8 @@
                 }
                 const { error } = await _supabase.from('orders').insert([newOrderData]);
                 if(error) throw error;
-                ['cOrderNum', 'cName', 'cPrice', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile'].forEach(id => document.getElementById(id).value = '');
+                
+                ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile'].forEach(id => document.getElementById(id).value = '');
                 toggleForm(); showToast("Сделка создана"); loadData();
             } catch (error) { showToast("Ошибка: " + error.message, true); } 
             finally { btn.disabled = false; btn.innerText = "Создать сделку"; }
