@@ -21,17 +21,35 @@
         .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; }
         .calendar-cell::-webkit-scrollbar { width: 4px; }
         .calendar-cell::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        /* Скрываем скроллбар для тегов на телефоне */
+        .tags-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="text-slate-800 font-sans">
     
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[200] text-sm font-medium transition-all text-white"></div>
 
+    <div id="dayModal" class="fixed inset-0 bg-slate-900/50 hidden z-[155] flex items-center justify-center p-4 backdrop-blur-sm transition-all">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh] border border-slate-200">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 relative">
+                <button onclick="closeDayModal()" class="text-sky-500 hover:text-sky-600 font-medium flex items-center gap-1 text-sm absolute left-4">
+                    <span>←</span> Назад
+                </button>
+                <h3 id="dayModalTitle" class="font-bold text-slate-700 text-base mx-auto">Отгрузки</h3>
+                <button onclick="closeDayModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none absolute right-4">&times;</button>
+            </div>
+            <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
+        </div>
+    </div>
+
     <div id="editModal" class="fixed inset-0 bg-slate-900/50 hidden z-[160] flex items-center justify-center p-4 backdrop-blur-sm transition-all">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] border border-slate-200">
-            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-700 text-lg">Редактирование заказа</h3>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none">&times;</button>
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 relative">
+                <button onclick="closeEditModal()" class="text-sky-500 hover:text-sky-600 font-medium flex items-center gap-1 text-sm absolute left-4">
+                    <span>←</span> Назад
+                </button>
+                <h3 class="font-bold text-slate-700 text-base mx-auto">Карточка заказа</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-500 text-2xl leading-none absolute right-4">&times;</button>
             </div>
             <div class="p-5 overflow-y-auto space-y-4 flex-1 bg-white">
                 <div class="grid grid-cols-2 gap-4">
@@ -114,6 +132,13 @@
 
             <div id="section-deals" class="p-4 max-w-7xl mx-auto w-full mt-2">
                 
+                <div class="flex gap-2 mb-5 overflow-x-auto pb-2 tags-scroll">
+                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-sky-500 text-white shadow-sm transition hover:opacity-90">Все сделки</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition shadow-sm">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition shadow-sm">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition shadow-sm">Оплачен полностью</button>
+                </div>
+
                 <div id="formSection" class="hidden bg-white p-5 rounded border border-slate-200 shadow-sm mb-6 transition-all">
                     <h2 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">Новый заказ</h2>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -159,13 +184,10 @@
                         <h2 id="calendarMonthLabel" class="text-xl font-bold text-slate-700 capitalize">Октябрь 2023</h2>
                         <button onclick="changeMonth(1)" class="p-2 px-4 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition font-bold">След. ▶</button>
                     </div>
-                    
                     <div class="grid grid-cols-7 gap-1 md:gap-2 text-center text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
                         <div>ПН</div><div>ВТ</div><div>СР</div><div>ЧТ</div><div>ПТ</div><div class="text-red-400">СБ</div><div class="text-red-400">ВС</div>
                     </div>
-                    
-                    <div id="calendarGrid" class="grid grid-cols-7 gap-1 md:gap-2">
-                        </div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1 md:gap-2"></div>
                 </div>
             </div>
 
@@ -202,6 +224,7 @@
         let allOrders = [];
         let currentEditId = null;
         let currentDate = new Date(); // Для календаря
+        let currentSupplierFilter = 'Все'; // Текущий активный фильтр
 
         // --- ЛОГИКА АВТОРИЗАЦИИ ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -263,7 +286,7 @@
             } else if (sectionId === 'calendar') {
                 titleElement.innerText = "Календарь отгрузок";
                 toolbar.classList.add('hidden');
-                renderCalendar(); // Обновляем календарь при переходе
+                renderCalendar(); 
             } else if (sectionId === 'analytics') {
                 titleElement.innerText = "Аналитика";
                 toolbar.classList.add('hidden');
@@ -289,7 +312,6 @@
         function renderCalendar() {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
-            
             const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
             document.getElementById('calendarMonthLabel').innerText = `${monthNames[month]} ${year}`;
             
@@ -316,18 +338,14 @@
                     if (o.status === 'Новый') stColor = "bg-slate-100 text-slate-700 border-slate-200";
                     
                     const label = o.order_number || o.customer_name;
-                    ordersHtml += `
-                        <div onclick="openEditModal(${o.id})" class="text-[10px] md:text-xs font-semibold ${stColor} border p-1 rounded mb-1 cursor-pointer truncate hover:opacity-80 transition shadow-sm" title="${o.customer_name} (${o.total_price} ₽)">
-                            ${label}
-                        </div>
-                    `;
+                    ordersHtml += `<div class="text-[10px] md:text-xs font-semibold ${stColor} border p-1 rounded mb-1 truncate shadow-sm pointer-events-none">${label}</div>`;
                 });
                 
                 const isToday = new Date().toDateString() === new Date(year, month, d).toDateString();
-                const todayClass = isToday ? 'bg-sky-50 border-sky-300 ring-1 ring-sky-300' : 'bg-white border-slate-200 hover:border-slate-300';
+                const todayClass = isToday ? 'bg-sky-50 border-sky-300 ring-1 ring-sky-300' : 'bg-white border-slate-200 hover:border-sky-400';
                 
                 grid.innerHTML += `
-                    <div class="${todayClass} rounded p-1 md:p-2 min-h-[80px] md:min-h-[100px] border shadow-sm flex flex-col transition">
+                    <div onclick="openDayModal('${dateStr}')" class="${todayClass} cursor-pointer rounded p-1 md:p-2 min-h-[80px] md:min-h-[100px] border shadow-sm flex flex-col transition hover:shadow-md">
                         <div class="text-right text-xs md:text-sm font-bold text-slate-400 mb-1 ${isToday ? 'text-sky-600' : ''}">${d}</div>
                         <div class="flex-1 overflow-y-auto calendar-cell space-y-1 pr-1">
                             ${ordersHtml}
@@ -337,24 +355,42 @@
             }
         }
 
-        // --- ОСТАЛЬНАЯ ЛОГИКА CRM ---
-        function toggleView() {
-            isKanban = !isKanban;
-            localStorage.setItem('crm_view', isKanban ? 'kanban' : 'table');
-            renderData();
+        // --- ЛОГИКА ПРОСМОТРА ДНЯ И РЕДАКТИРОВАНИЯ ---
+        function openDayModal(dateStr) {
+            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
+            document.getElementById('dayModalTitle').innerText = 'Отгрузки на ' + formatDate(dateStr);
+            const listContainer = document.getElementById('dayOrdersList');
+            listContainer.innerHTML = '';
+            
+            if (dayOrders.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-slate-400 my-6">На этот день нет запланированных отгрузок.</p>';
+            } else {
+                dayOrders.forEach(o => {
+                    const displayOrderNum = o.order_number || `#${o.id}`;
+                    let stColor = "bg-sky-100 text-sky-700";
+                    if (o.status === 'Завершен') stColor = "bg-emerald-100 text-emerald-700";
+                    if (o.status === 'Новый') stColor = "bg-slate-100 text-slate-700";
+
+                    listContainer.innerHTML += `
+                        <div class="border border-slate-200 rounded-lg p-3 flex justify-between items-center hover:bg-slate-50 transition">
+                            <div class="overflow-hidden pr-2">
+                                <div class="font-bold text-sky-600 truncate">${o.customer_name}</div>
+                                <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-2">
+                                    <span class="font-mono bg-slate-100 px-1 rounded text-slate-600">${displayOrderNum}</span>
+                                    <span>${Number(o.total_price).toLocaleString()} ₽</span>
+                                    <span class="px-1.5 rounded font-bold uppercase text-[9px] ${stColor}">${o.status}</span>
+                                </div>
+                            </div>
+                            <button onclick="openEditModal(${o.id})" class="text-xs font-bold bg-white border border-slate-300 hover:bg-slate-100 text-slate-600 px-3 py-2 rounded shadow-sm transition">Открыть</button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('dayModal').classList.remove('hidden');
         }
 
-        function toggleForm() { 
-            const form = document.getElementById('formSection');
-            form.classList.toggle('hidden');
-            if(!form.classList.contains('hidden')) document.getElementById('cOrderNum').focus();
-        }
-
-        function showToast(msg, isError = false) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-[200] text-sm font-medium transition-all ${isError ? 'bg-red-500' : 'bg-sky-600'} text-white block`;
-            setTimeout(() => t.classList.add('hidden'), 4000);
+        function closeDayModal() {
+            document.getElementById('dayModal').classList.add('hidden');
         }
 
         function openEditModal(id) {
@@ -405,9 +441,30 @@
                 }
                 const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 if (error) throw error; 
-                showToast("Успешно сохранено!"); closeEditModal(); loadData();
+                showToast("Успешно сохранено!"); 
+                closeEditModal(); 
+                loadData(); 
+                
+                if(!document.getElementById('dayModal').classList.contains('hidden')) {
+                    if(updates.shipment_date) openDayModal(updates.shipment_date);
+                    else closeDayModal();
+                }
             } catch (error) { showToast("Ошибка: " + error.message, true); } 
             finally { btn.disabled = false; btn.innerText = "Сохранить"; }
+        }
+
+        // --- ЛОГИКА ФИЛЬТРАЦИИ И РЕНДЕРА СДЕЛОК ---
+        function setFilter(status) {
+            currentSupplierFilter = status;
+            
+            // Меняем стили кнопок-тегов
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition shadow-sm';
+            });
+            const activeBtn = document.getElementById('filter-' + status);
+            activeBtn.className = 'filter-btn shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap bg-sky-500 text-white shadow-sm transition hover:opacity-90 border border-sky-500';
+            
+            renderData(); // Перерисовываем доску и таблицу
         }
 
         async function loadData() {
@@ -424,7 +481,22 @@
 
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allOrders.filter(o => (o.customer_name || '').toLowerCase().includes(search) || (o.phone || '').includes(search) || (o.order_number || '').toLowerCase().includes(search) || (o.comments || '').toLowerCase().includes(search));
+            
+            // Фильтруем данные: поиск (по тексту) + теги (по статусу поставщика)
+            const filtered = allOrders.filter(o => {
+                // Логика текстового поиска
+                const matchesSearch = (o.customer_name || '').toLowerCase().includes(search) || 
+                                      (o.phone || '').includes(search) || 
+                                      (o.order_number || '').toLowerCase().includes(search) || 
+                                      (o.comments || '').toLowerCase().includes(search);
+                
+                // Логика тегов (статус поставщика)
+                // Если у сделки пустой статус, считаем его 'Не оплачен'
+                const actualSupplierStatus = o.supplier_status || 'Не оплачен';
+                const matchesTag = (currentSupplierFilter === 'Все') || (actualSupplierStatus === currentSupplierFilter);
+                
+                return matchesSearch && matchesTag;
+            });
             
             document.getElementById('kanbanView').classList.toggle('hidden', !isKanban);
             document.getElementById('tableView').classList.toggle('hidden', isKanban);
