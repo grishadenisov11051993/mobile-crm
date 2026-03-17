@@ -16,6 +16,9 @@
         }
         .bx-card { background: #fff; border: 1px solid #e6e9ec; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: box-shadow 0.2s; }
         .bx-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-color: #d5d9dd; }
+        /* Кастомный скролл для таблицы на мобилках */
+        .table-wrapper::-webkit-scrollbar { height: 6px; }
+        .table-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
 <body class="text-slate-800 font-sans pb-20">
@@ -66,7 +69,7 @@
             
             <div class="flex flex-1 md:max-w-md gap-2 w-full">
                 <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск (имя, телефон)..." class="flex-1 bg-slate-50 border border-slate-300 rounded px-3 py-1.5 text-sm outline-none focus:border-sky-500 focus:bg-white transition">
-                <button onclick="toggleView()" id="viewBtn" class="bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wide transition shadow-sm">Списком</button>
+                <button onclick="toggleView()" id="viewBtn" class="bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wide transition shadow-sm w-24 text-center">Таблица ≡</button>
                 <button onclick="toggleForm()" class="hidden md:flex bg-sky-500 hover:bg-sky-600 text-white px-4 py-1.5 rounded text-sm font-semibold shadow-sm transition items-center gap-1">+ Сделка</button>
             </div>
         </div>
@@ -123,16 +126,25 @@
             </div>
         </div>
 
-        <div id="listView" class="hidden">
+        <div id="tableView" class="hidden">
             <div class="bg-white border border-slate-200 rounded shadow-sm overflow-hidden">
-                <div class="hidden md:grid grid-cols-12 gap-4 px-5 py-3 bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    <div class="col-span-4">Сделка / Клиент</div>
-                    <div class="col-span-2">Сумма</div>
-                    <div class="col-span-2">Стадия</div>
-                    <div class="col-span-2">Файл</div>
-                    <div class="col-span-2 text-right">Действия</div>
+                <div class="overflow-x-auto table-wrapper">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                <th class="px-5 py-3 whitespace-nowrap w-16">ID</th>
+                                <th class="px-5 py-3 whitespace-nowrap min-w-[200px]">Клиент</th>
+                                <th class="px-5 py-3 whitespace-nowrap">Сумма</th>
+                                <th class="px-5 py-3 whitespace-nowrap">Стадия</th>
+                                <th class="px-5 py-3 whitespace-nowrap">Связь</th>
+                                <th class="px-5 py-3 whitespace-nowrap">Файл</th>
+                                <th class="px-5 py-3 whitespace-nowrap text-right">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-container" class="divide-y divide-slate-100 text-sm">
+                            </tbody>
+                    </table>
                 </div>
-                <div id="list-container" class="divide-y divide-slate-100"></div>
                 <div id="totalSum" class="bg-slate-50 px-5 py-3 text-right text-slate-700 font-bold text-sm border-t border-slate-200"></div>
             </div>
         </div>
@@ -146,13 +158,13 @@
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let isKanban = localStorage.getItem('crm_view') !== 'list';
+        let isKanban = localStorage.getItem('crm_view') !== 'table';
         let allOrders = [];
-        let currentEditId = null; // ID сделки, которую редактируем
+        let currentEditId = null;
 
         function toggleView() {
             isKanban = !isKanban;
-            localStorage.setItem('crm_view', isKanban ? 'kanban' : 'list');
+            localStorage.setItem('crm_view', isKanban ? 'kanban' : 'table');
             renderData();
         }
 
@@ -169,17 +181,15 @@
             setTimeout(() => t.classList.add('hidden'), 3000);
         }
 
-        // === ЛОГИКА РЕДАКТИРОВАНИЯ ===
+        // Редактирование
         function openEditModal(id) {
             const order = allOrders.find(o => o.id === id);
             if (!order) return;
-            
             currentEditId = id;
             document.getElementById('editName').value = order.customer_name || '';
             document.getElementById('editPrice').value = order.total_price || '';
             document.getElementById('editPhone').value = order.phone || '';
             document.getElementById('editStatus').value = order.status || 'Новый';
-            
             document.getElementById('editModal').classList.remove('hidden');
         }
 
@@ -190,8 +200,7 @@
 
         async function saveEdit() {
             const btn = document.getElementById('saveEditBtn');
-            btn.disabled = true; 
-            btn.innerText = "Загрузка...";
+            btn.disabled = true; btn.innerText = "Загрузка...";
 
             const updates = {
                 customer_name: document.getElementById('editName').value,
@@ -202,19 +211,13 @@
 
             const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
             
-            btn.disabled = false; 
-            btn.innerText = "Сохранить";
+            btn.disabled = false; btn.innerText = "Сохранить";
 
-            if (error) {
-                showToast("Ошибка: " + error.message, true);
-            } else {
-                showToast("Сделка обновлена!");
-                closeEditModal();
-                loadData(); // Перезагружаем данные
-            }
+            if (error) { showToast("Ошибка: " + error.message, true); } 
+            else { showToast("Сделка обновлена!"); closeEditModal(); loadData(); }
         }
-        // ============================
 
+        // Загрузка
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
             if (error) return showToast("Ошибка: " + error.message, true);
@@ -227,15 +230,15 @@
             const filtered = allOrders.filter(o => (o.customer_name || '').toLowerCase().includes(search) || o.phone?.includes(search));
             
             document.getElementById('kanbanView').classList.toggle('hidden', !isKanban);
-            document.getElementById('listView').classList.toggle('hidden', isKanban);
-            document.getElementById('viewBtn').innerText = isKanban ? 'Списком ≡' : 'Доска ◫';
+            document.getElementById('tableView').classList.toggle('hidden', isKanban);
+            document.getElementById('viewBtn').innerText = isKanban ? 'Таблица ≡' : 'Доска ◫';
 
             const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
             const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 };
             let total = 0;
 
             Object.values(containers).forEach(id => document.getElementById(id).innerHTML = '');
-            document.getElementById('list-container').innerHTML = '';
+            document.getElementById('table-container').innerHTML = '';
 
             filtered.forEach(item => {
                 const status = item.status || 'Новый';
@@ -255,51 +258,51 @@
                 } else if (status === 'Завершен') {
                     statusColor = "bg-emerald-100 text-emerald-700";
                     btnTxt = "Выполнено";
-                    btnClass = "text-slate-400 cursor-default hidden md:block opacity-0"; // Прячем кнопку, если завершено
+                    btnClass = "text-slate-400 cursor-default hidden opacity-0"; 
                 }
 
-                const fileBtn = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-sky-500 hover:text-sky-600 text-xs flex items-center gap-1 font-medium">📎 Файл</a>` : '<span class="text-slate-300 text-xs">Нет файла</span>';
+                const fileBtn = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-sky-500 hover:text-sky-600 text-[11px] font-bold uppercase">📎 Открыть</a>` : '<span class="text-slate-300 text-xs">-</span>';
+                const waBtn = item.phone ? `<a href="https://wa.me/${item.phone}" target="_blank" class="text-emerald-500 hover:text-emerald-600 text-[10px] font-bold uppercase tracking-wide">WA</a>` : '<span class="text-slate-300 text-xs">-</span>';
                 
-                // Карточка Канбана (с кликабельным именем)
+                // КАНБАН-КАРТОЧКА
                 const cardHtml = `
                     <div class="bx-card p-3.5 rounded relative group">
                         <div class="flex justify-between items-start mb-1">
-                            <h4 onclick="openEditModal(${item.id})" class="font-bold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate pr-2" title="Нажми, чтобы редактировать">${item.customer_name}</h4>
+                            <h4 onclick="openEditModal(${item.id})" class="font-bold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer text-sm truncate pr-2" title="Редактировать">${item.customer_name}</h4>
                             <div class="text-[10px] text-slate-400">#${item.id}</div>
                         </div>
                         <div class="text-slate-800 font-bold text-base mb-3">${Number(item.total_price).toLocaleString()} ₽</div>
-                        
                         <div class="flex justify-between items-center border-t border-slate-100 pt-3 mt-2">
-                            <div class="flex gap-3 items-center">
-                                ${item.phone ? `<a href="https://wa.me/${item.phone}" target="_blank" class="text-emerald-500 hover:text-emerald-600 text-[10px] font-bold uppercase tracking-wide">WhatsApp</a>` : ''}
-                                ${fileBtn}
-                            </div>
-                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-2 py-1 rounded transition border border-transparent hover:border-current">${btnTxt}</button>` : ''}
+                            <div class="flex gap-3 items-center">${waBtn} ${fileBtn}</div>
+                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-2 py-1 rounded border border-transparent hover:border-current">${btnTxt}</button>` : ''}
                         </div>
                     </div>
                 `;
 
-                // Строка Списка (с кликабельным именем)
-                const listHtml = `
-                    <div class="p-4 md:px-5 md:py-3 flex flex-col md:grid md:grid-cols-12 md:items-center gap-2 hover:bg-slate-50 transition">
-                        <div class="col-span-4 flex justify-between md:block">
-                            <div onclick="openEditModal(${item.id})" class="font-bold text-sm text-sky-600 hover:text-sky-700 hover:underline cursor-pointer" title="Нажми, чтобы редактировать">${item.customer_name}</div>
-                            <span class="md:hidden text-[10px] font-bold px-2 py-0.5 rounded ${statusColor}">${status}</span>
-                        </div>
-                        <div class="col-span-2 text-slate-800 font-medium text-sm">${Number(item.total_price).toLocaleString()} ₽</div>
-                        <div class="col-span-2 hidden md:block"><span class="text-[10px] font-bold px-2 py-0.5 rounded ${statusColor}">${status}</span></div>
-                        <div class="col-span-2">${fileBtn}</div>
-                        <div class="col-span-2 flex items-center justify-between md:justify-end gap-3 mt-2 md:mt-0 pt-2 md:pt-0 border-t border-slate-100 md:border-0">
-                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-2 py-1 rounded shadow-sm">Сдвинуть ➔</button>` : '<span></span>'}
-                            <button onclick="delOrder(${item.id})" class="text-red-400 hover:text-red-500 text-xl leading-none font-light" title="Удалить">×</button>
-                        </div>
-                    </div>
+                // СТРОКА ТАБЛИЦЫ
+                const tableRow = `
+                    <tr class="hover:bg-slate-50 transition group">
+                        <td class="px-5 py-3 text-slate-400 text-xs whitespace-nowrap">#${item.id}</td>
+                        <td class="px-5 py-3 whitespace-nowrap">
+                            <span onclick="openEditModal(${item.id})" class="font-semibold text-sky-600 hover:text-sky-700 hover:underline cursor-pointer">${item.customer_name}</span>
+                        </td>
+                        <td class="px-5 py-3 text-slate-800 font-medium whitespace-nowrap">${Number(item.total_price).toLocaleString()} ₽</td>
+                        <td class="px-5 py-3 whitespace-nowrap">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded ${statusColor}">${status}</span>
+                        </td>
+                        <td class="px-5 py-3 whitespace-nowrap">${waBtn}</td>
+                        <td class="px-5 py-3 whitespace-nowrap">${fileBtn}</td>
+                        <td class="px-5 py-3 whitespace-nowrap text-right">
+                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-2 py-1 rounded shadow-sm mr-2" title="Передвинуть стадию">➔</button>` : ''}
+                            <button onclick="delOrder(${item.id})" class="text-slate-300 hover:text-red-500 text-lg leading-none font-light" title="Удалить">×</button>
+                        </td>
+                    </tr>
                 `;
 
                 if (isKanban) {
                     if (containers[status]) document.getElementById(containers[status]).innerHTML += cardHtml;
                 } else {
-                    document.getElementById('list-container').innerHTML += listHtml;
+                    document.getElementById('table-container').innerHTML += tableRow;
                 }
             });
 
@@ -328,9 +331,8 @@
                 file_url: fileUrl, status: 'Новый'
             }]);
 
-            if(error) {
-                showToast(error.message, true);
-            } else {
+            if(error) { showToast(error.message, true); } 
+            else {
                 document.getElementById('cName').value = '';
                 document.getElementById('cPrice').value = '';
                 document.getElementById('cPhone').value = '';
