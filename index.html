@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон</label><input id="editPhone" type="tel" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Телефон</label><input id="editPhone" type="tel" placeholder="+7 9ХХ ХХХ ХХ ХХ" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Дата отгрузки</label><input id="editShipDate" type="date" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                 </div>
                 
@@ -150,7 +150,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div><label class="block text-xs text-slate-500 mb-1">Свой № заказа</label><input id="cOrderNum" type="text" placeholder="П-104" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                         <div class="md:col-span-2"><label class="block text-xs text-slate-500 mb-1">Имя клиента</label><input id="cName" type="text" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
-                        <div><label class="block text-xs text-slate-500 mb-1">Телефон</label><input id="cPhone" type="tel" placeholder="79XXXXXXXXX" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
+                        <div><label class="block text-xs text-slate-500 mb-1">Телефон</label><input id="cPhone" type="tel" placeholder="+7 9ХХ ХХХ ХХ ХХ" class="w-full p-2 bg-slate-50 border border-slate-300 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                         
                         <div><label class="block text-xs text-slate-500 mb-1">Сумма заказа (₽)</label><input id="cPrice" type="number" class="w-full p-2 bg-sky-50 border border-sky-200 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
                         <div><label class="block text-xs text-slate-500 mb-1">Предоплата (₽)</label><input id="cPrepayment" type="number" placeholder="Сколько внесли" class="w-full p-2 bg-sky-50 border border-sky-200 rounded text-slate-800 text-sm outline-none focus:border-sky-500"></div>
@@ -236,6 +236,25 @@
         let currentDate = new Date(); 
         let currentSupplierFilter = 'Все';
 
+        // --- УМНОЕ ФОРМАТИРОВАНИЕ ТЕЛЕФОНА ---
+        function formatPhone(phone) {
+            if (!phone) return '';
+            let cleaned = phone.replace(/\D/g, ''); // оставляем только цифры
+            if (cleaned.length === 0) return '';
+            
+            // Если номер РФ и начинается с 8 -> меняем на 7
+            if (cleaned.startsWith('8') && cleaned.length === 11) {
+                cleaned = '7' + cleaned.substring(1);
+            } 
+            // Если номер ввели без +7 или 8 (просто 10 цифр) -> добавляем 7
+            else if (cleaned.length === 10) {
+                cleaned = '7' + cleaned;
+            }
+            
+            return '+' + cleaned;
+        }
+
+        // --- ЛОГИКА АВТОРИЗАЦИИ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) {
@@ -432,7 +451,8 @@
                 customer_name: document.getElementById('editName').value,
                 total_price: document.getElementById('editPrice').value,
                 prepayment: document.getElementById('editPrepayment').value || null,
-                phone: document.getElementById('editPhone').value,
+                // ФОРМАТИРУЕМ ТЕЛЕФОН ПЕРЕД СОХРАНЕНИЕМ:
+                phone: formatPhone(document.getElementById('editPhone').value),
                 supplier_invoice: document.getElementById('editInvoice').value,
                 supplier_status: document.getElementById('editSupplierStatus').value,
                 shipment_date: document.getElementById('editShipDate').value || null, 
@@ -523,7 +543,6 @@
                 const displayOrderNum = item.order_number || `#${item.id}`;
                 const fileBtn = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-sky-500 hover:text-sky-600 text-[11px] font-bold uppercase">📎 Файл</a>` : '';
 
-                // === ЛОГИКА РАСЧЕТА ОСТАТКА ===
                 let balanceHtmlCard = '';
                 let balanceHtmlTable = '';
                 if (item.prepayment !== null && item.prepayment !== undefined && item.prepayment !== '') {
@@ -577,7 +596,8 @@
                 customer_name: document.getElementById('cName').value, 
                 total_price: document.getElementById('cPrice').value, 
                 prepayment: document.getElementById('cPrepayment').value || null,
-                phone: document.getElementById('cPhone').value, 
+                // ФОРМАТИРУЕМ ТЕЛЕФОН ПЕРЕД СОХРАНЕНИЕМ:
+                phone: formatPhone(document.getElementById('cPhone').value), 
                 supplier_invoice: document.getElementById('cInvoice').value, 
                 supplier_status: document.getElementById('cSupplierStatus').value, 
                 shipment_date: document.getElementById('cShipDate').value || null, 
