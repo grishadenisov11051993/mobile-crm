@@ -66,7 +66,7 @@
         <div class="bg-white rounded-sm shadow-lg w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
                 <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0 mx-auto">Отгрузки</h3>
+                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0 mx-auto">Планы на день</h3>
                 <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none absolute right-4 sm:right-5">&times;</button>
             </div>
             <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
@@ -74,39 +74,69 @@
     </div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/40 hidden z-[160] flex items-center justify-center p-3 sm:p-4 transition-all">
-        <div class="bg-white rounded-sm shadow-lg w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
+        <div class="bg-white rounded-sm shadow-lg w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
                 <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 class="font-bold text-[#535c69] text-base m-0 mx-auto">Редактирование сделки</h3>
+                <h3 class="font-bold text-[#535c69] text-base m-0 mx-auto">Карточка сделки</h3>
                 <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none absolute right-4 sm:right-5">&times;</button>
             </div>
-            <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-4 flex-1 bg-white text-sm">
+            <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-5 flex-1 bg-white text-sm">
+                
+                <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa]">
+                    <h4 class="font-bold text-[#535c69] uppercase text-[11px] mb-3">Основная информация</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">№ Заказа</label><input id="editOrderNum" type="text" class="bx-input"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Имя клиента</label><input id="editName" type="text" class="bx-input"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">№ Заказа</label><input id="editOrderNum" type="text" class="bx-input"></div>
-                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента</label><input id="editName" type="text" class="bx-input"></div>
+                    <div class="p-4 bg-[#f0f8fb] border border-[#3bc8f5] rounded-sm">
+                        <h4 class="font-bold text-[#2067b0] uppercase text-[11px] mb-3">Финансы (Клиент)</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><label class="block text-[11px] font-semibold text-[#535c69] mb-1">Сумма (₽)</label><input id="editPrice" type="number" class="bx-input"></div>
+                            <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1">Предоплата (₽)</label><input id="editPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
+                        </div>
+                    </div>
+                    <div class="p-4 border border-[#e6e9ec] rounded-sm">
+                        <h4 class="font-bold text-[#535c69] uppercase text-[11px] mb-3">Поставщик</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Счет</label><input id="editInvoice" type="text" class="bx-input"></div>
+                            <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Оплата</label><select id="editSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 bg-[#f8f9fa] border border-[#e6e9ec] rounded-sm">
-                    <div><label class="block text-[11px] font-semibold text-[#535c69] mb-1 uppercase">Сумма (₽)</label><input id="editPrice" type="number" class="bx-input"></div>
-                    <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1 uppercase">Предоплата (₽)</label><input id="editPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
+
+                <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#fffdf2]">
+                    <h4 class="font-bold text-[#9c7800] uppercase text-[11px] mb-3">Логистика, Монтаж и Задачи</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
+                        <div><label class="block text-[11px] font-bold text-[#f05b57] mb-1">След. контакт (Напоминание)</label><input id="editNextContact" type="date" class="bx-input border-[#f05b57]"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#535c69] mb-1">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input border-[#3bc8f5]"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Адрес доставки</label><input id="editAddress" type="text" class="bx-input" placeholder="Город, улица..."></div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-[#ffe066]">
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Нужен ли монтаж?</label><select id="editInstall" class="bx-input"><option value="Нет">Нет</option><option value="Да">Да (Нужен)</option></select></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Цена монтажа (₽)</label><input id="editInstallCost" type="number" placeholder="Оплата мастерам" class="bx-input"></div>
+                    </div>
                 </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input"></div>
-                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input"></div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 border border-[#e6e9ec] rounded-sm">
-                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Счет поставщика</label><input id="editInvoice" type="text" class="bx-input"></div>
-                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Оплата поставщику</label><select id="editSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
-                </div>
-                <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Стадия сделки</label><select id="editStatus" class="bx-input"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select></div>
-                <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий менеджеру</label><textarea id="editComments" rows="2" class="bx-input resize-none"></textarea></div>
-                <div class="p-4 border border-[#e6e9ec] rounded-sm">
-                    <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
-                    <div id="currentFileLink" class="mb-3 text-sm"></div>
-                    <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#f8f9fa] file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Стадия сделки</label>
+                        <select id="editStatus" class="bx-input"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select>
+                        <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase mt-3">Комментарий</label>
+                        <textarea id="editComments" rows="3" class="bx-input resize-none"></textarea>
+                    </div>
+                    <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa]">
+                        <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
+                        <div id="currentFileLink" class="mb-3 text-sm"></div>
+                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-white file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
+                    </div>
                 </div>
             </div>
             <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
-                <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">← Назад</button>
+                <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success text-white" style="color: white !important;">Сохранить</button>
             </div>
         </div>
@@ -132,7 +162,7 @@
             </div>
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">💼 CRM Сделки</a>
-                <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📅 Календарь отгрузок</a>
+                <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📅 Календарь задач</a>
                 <a href="#" onclick="switchSection('archive', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">🗄️ Архив отгруженных</a>
                 <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📊 Аналитика</a>
             </nav>
@@ -159,7 +189,8 @@
                         <div onclick="setView('table')" id="v-table" class="bx-tab mr-0 sm:mr-4">Таблица</div>
                     </div>
                     <div class="flex gap-2 items-center pb-2 sm:pb-0 shrink-0">
-                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Фильтр + поиск" class="bx-input w-40 sm:w-60">
+                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Фильтр + поиск" class="bx-input w-32 sm:w-48">
+                        <button onclick="exportToCSV()" class="hidden sm:flex bx-btn-default text-[#2067b0] border-[#2067b0]" title="Скачать базу">⬇ Excel</button>
                         <button id="addDealBtn" onclick="toggleForm()" class="hidden sm:flex bx-btn-success text-white" style="color: white !important;">+ Создать</button>
                     </div>
                 </div>
@@ -183,12 +214,16 @@
                         
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
                         <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
+                        <div><label class="block text-[11px] font-bold text-[#f05b57] mb-1 uppercase">След. контакт ⏰</label><input id="cNextContact" type="date" class="bx-input border-[#f05b57]"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
+
+                        <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Адрес доставки</label><input id="cAddress" type="text" placeholder="Город, улица, дом..." class="bx-input"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Нужен монтаж?</label><select id="cInstall" class="bx-input"><option value="Нет">Нет</option><option value="Да">Да (Нужен)</option></select></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Цена монтажа (₽)</label><input id="cInstallCost" type="number" class="bx-input"></div>
                         
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
-                        
-                        <div class="lg:col-span-1"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
-                        <div class="sm:col-span-2 lg:col-span-3"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
+                        <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
                         
                         <div class="sm:col-span-4 p-3 border border-[#e6e9ec] bg-[#f8f9fa] rounded-sm">
                             <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл документа</label>
@@ -240,15 +275,14 @@
                 <div id="view-table-container" class="hidden">
                     <div class="bg-white border border-[#e6e9ec] rounded-sm overflow-hidden w-full">
                         <div class="overflow-x-auto no-scrollbar w-full">
-                            <table class="w-full text-left border-collapse min-w-[900px]">
+                            <table class="w-full text-left border-collapse min-w-[1000px]">
                                 <thead>
                                     <tr class="bg-[#f8f9fa] border-b border-[#e6e9ec] text-[10px] font-bold text-[#a0a5aa] uppercase">
-                                        <th class="px-4 py-3 w-20 text-center">№ / Дата</th>
+                                        <th class="px-4 py-3 w-16 text-center">ID</th>
                                         <th class="px-4 py-3">Название сделки / Связь</th>
                                         <th class="px-4 py-3">Сумма (Остаток)</th>
-                                        <th class="px-4 py-3">Стадия</th>
                                         <th class="px-4 py-3">Счет / Поставщик</th>
-                                        <th class="px-4 py-3">Отгрузка</th>
+                                        <th class="px-4 py-3">Отгрузка / Звонок</th>
                                         <th class="px-4 py-3 text-right">Действия</th>
                                     </tr>
                                 </thead>
@@ -287,6 +321,10 @@
                         <button onclick="changeMonth(-1)" class="bx-btn-default h-8 px-4 text-xs font-bold">◀</button>
                         <h2 id="calendarMonthLabel" class="text-lg font-bold text-[#535c69] uppercase"></h2>
                         <button onclick="changeMonth(1)" class="bx-btn-default h-8 px-4 text-xs font-bold">▶</button>
+                    </div>
+                    <div class="flex items-center gap-4 mb-4 text-[11px] font-bold">
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#3bc8f5]"></span> Отгрузки</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#ffc107]"></span> Звонки / Контакты</div>
                     </div>
                     <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[#a0a5aa] uppercase mb-2">
                         <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-[#f05b57]">Сб</div><div class="text-[#f05b57]">Вс</div>
@@ -359,7 +397,7 @@
         let allOrders = [];
         let currentEditId = null;
         let currentDate = new Date(); 
-        let analyticsDate = new Date(); // Отдельная дата для аналитики
+        let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все';
 
         function checkBodyScroll() {
@@ -368,23 +406,12 @@
         }
 
         // --- ЛОГИКА DRAG AND DROP ---
-        function dragStart(e, id) {
-            e.dataTransfer.setData('text/plain', id);
-            setTimeout(() => e.target.classList.add('dragging'), 0);
-        }
-        function dragEnd(e) {
-            e.target.classList.remove('dragging');
-            document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over'));
-        }
+        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
+        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
         function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
         function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-        function dropCard(e, newStatus) {
-            e.preventDefault(); e.currentTarget.classList.remove('drag-over');
-            const orderId = e.dataTransfer.getData('text/plain');
-            if(orderId) changeStatus(orderId, newStatus);
-        }
+        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
 
-        // --- ТЕЛЕФОН ---
         function applyPhoneMask(phoneStr) {
             let val = String(phoneStr).replace(/\D/g, ''); if (!val) return '';
             if (val[0] === '8') val = '7' + val.substring(1); else if (val[0] === '9') val = '7' + val; else if (val[0] !== '7') val = '7' + val; 
@@ -396,12 +423,8 @@
             return res;
         }
         function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
+        function setView(mode) { activeView = mode; localStorage.setItem('crm_view_mode', mode); renderData(); }
 
-        function setView(mode) {
-            activeView = mode; localStorage.setItem('crm_view_mode', mode); renderData();
-        }
-
-        // --- ИНИЦИАЛИЗАЦИЯ И МЕНЮ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
@@ -414,9 +437,8 @@
 
         function unlockCrm() {
             document.getElementById('authScreen').classList.add('hidden');
-            const main = document.getElementById('mainCrm');
-            main.classList.remove('hidden');
-            setTimeout(() => main.classList.remove('opacity-0'), 50);
+            document.getElementById('mainCrm').classList.remove('hidden');
+            setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); }
             loadData(); 
         }
@@ -428,47 +450,62 @@
             allOrders = [];
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('-translate-x-full');
-            document.getElementById('sidebarOverlay').classList.toggle('hidden');
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
 
         function switchSection(sectionId, btnElement) {
             ['deals', 'calendar', 'analytics', 'archive'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
             document.getElementById('section-' + sectionId).classList.remove('hidden');
-            
             const titles = { 'deals': 'Сделки', 'calendar': 'Календарь отгрузок', 'analytics': 'Аналитика', 'archive': 'Архив отгруженных' };
             document.getElementById('headerTitle').innerText = titles[sectionId];
-            
             if (sectionId === 'deals' || sectionId === 'archive') {
                 document.getElementById('dealsToolbar').classList.remove('hidden');
                 document.getElementById('viewToggles').classList.toggle('hidden', sectionId === 'archive');
                 document.getElementById('addDealBtn').classList.toggle('hidden', sectionId === 'archive');
                 document.getElementById('mobileAddBtn').classList.toggle('hidden', sectionId === 'archive');
-            } else {
-                document.getElementById('dealsToolbar').classList.add('hidden');
-                document.getElementById('mobileAddBtn').classList.add('hidden');
-            }
+            } else { document.getElementById('dealsToolbar').classList.add('hidden'); document.getElementById('mobileAddBtn').classList.add('hidden'); }
             
             document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
-            
             if(sectionId === 'analytics') renderAnalytics();
-            
             if(window.innerWidth < 768) toggleSidebar();
+        }
+
+        // ЭКСПОРТ В EXCEL (CSV)
+        function exportToCSV() {
+            if(allOrders.length === 0) return showToast("Нет данных для экспорта", true);
+            let csv = "ID сделки;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет поставщика;Оплата поставщику;Дата отгрузки;След.Контакт;Адрес доставки;Нужен монтаж;Цена монтажа;Комментарий\n";
+            
+            allOrders.forEach(o => {
+                let comments = (o.comments || '').replace(/;/g, ',').replace(/\n/g, ' ');
+                let address = (o.delivery_address || '').replace(/;/g, ',').replace(/\n/g, ' ');
+                let row = [
+                    o.id, o.order_number||'', o.customer_name||'', o.phone||'', 
+                    o.total_price||0, o.prepayment||0, o.status||'Новый', 
+                    o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDateStr(o.shipment_date),
+                    formatDateStr(o.next_contact_date), address, o.need_installation||'Нет', 
+                    o.installation_cost||0, comments
+                ];
+                csv += row.join(';') + "\n";
+            });
+            const blob = new Blob(["\ufeff", csv], {type: 'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; 
+            a.download = `Baza_CRM_${new Date().toLocaleDateString('ru-RU')}.csv`;
+            a.click();
         }
 
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (error) return showToast("Ошибка загрузки", true);
-            allOrders = data; 
-            renderData(); 
-            renderAnalytics(); 
-            checkTodaysShipments();
+            if (error) return showToast("Ошибка загрузки. Проверьте БД.", true);
+            allOrders = data; renderData(); renderAnalytics(); checkTodaysShipments();
         }
 
         function formatDate(dateString) {
             if(!dateString) return '—';
+            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+        function formatDateStr(dateString) {
+            if(!dateString) return '';
             const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
@@ -480,7 +517,6 @@
                 return ms && tag;
             });
             
-            // Управляем видимостью для Сделок
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
             document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
             document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
@@ -492,8 +528,7 @@
 
             const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
             const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 }; 
-            let total = 0;
-            let archiveTotal = 0;
+            let total = 0; let archiveTotal = 0;
 
             Object.values(containers).forEach(id => document.getElementById(id).innerHTML = '');
             document.getElementById('list-items-content').innerHTML = ''; 
@@ -501,23 +536,19 @@
             document.getElementById('archive-items-content').innerHTML = '';
 
             filtered.forEach(item => {
-                const status = item.status || 'Новый'; 
-                counts[status]++; 
+                const status = item.status || 'Новый'; counts[status]++; 
                 if(status !== 'Завершен') total += Number(item.total_price || 0);
 
                 let badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#eef2f4] text-[#535c69]">Новый</span>`;
                 let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-[#3bc8f5] hover:text-[#26a8d0]";
-                
                 let prevSt = null, prevBtnTxt = "⬅ Назад", prevBtnClass = "text-[#a0a5aa] hover:text-[#535c69] bg-transparent border-none cursor-pointer";
 
                 if (status === 'В работе') { 
                     badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#dff3fa] text-[#1198c6]">В работе</span>`;
-                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-[#9dcf00] hover:text-[#7bd500]"; 
-                    prevSt = "Новый";
+                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-[#9dcf00] hover:text-[#7bd500]"; prevSt = "Новый";
                 } else if (status === 'Завершен') {
                     badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#e6f4d3] text-[#5c8a00]">Завершен</span>`;
-                    btnClass = "hidden";
-                    prevSt = "В работе";
+                    btnClass = "hidden"; prevSt = "В работе";
                 }
 
                 let supColor = "bg-[#f8f9fa] text-[#535c69] border border-[#c6cdd3]";
@@ -534,24 +565,16 @@
                 let balHtml = item.prepayment ? `<div class="text-[10px] font-semibold ${bal <= 0 ? 'text-[#5c8a00]' : 'text-[#f05b57]'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
                 
                 const createDate = formatDate(item.created_at);
-                const commentHtml = item.comments ? `<div class="mt-2 text-[11px] text-[#535c69] bg-[#fff9d6] p-2 rounded-sm border border-[#ffe066] border-l-2 border-l-[#ffc107]">💬 ${item.comments}</div>` : '';
+                const contactHtml = item.next_contact_date ? `<div class="flex items-center gap-1 text-[10px] font-bold text-[#f05b57] bg-[#fae2e2] px-1.5 py-0.5 rounded-sm mt-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f05b57]"></span> Звонок: ${formatDate(item.next_contact_date)}</div>` : '';
+                const addressHtml = item.delivery_address ? `<div class="text-[10px] text-[#535c69] mt-1 truncate">📍 ${item.delivery_address}</div>` : '';
 
                 // Отрисовка для АРХИВА
                 if (status === 'Завершен') {
                     archiveTotal += Number(item.total_price || 0);
                     const archiveRow = `
                     <tr class="hover:bg-[#f8f9fa] transition-colors group border-b border-[#e6e9ec]">
-                        <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">
-                            ${displayNum}
-                            <div class="text-[9px] mt-1">${createDate}</div>
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex items-center gap-2">
-                                <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
-                                ${comms}
-                            </div>
-                            ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate max-w-xs">💬 ${item.comments}</div>` : ''}
-                        </td>
+                        <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}<div class="text-[9px] mt-1">${createDate}</div></td>
+                        <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>${comms}</div>${addressHtml}</td>
                         <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div></td>
                         <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
                         <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
@@ -568,17 +591,17 @@
                             <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px] m-0">${item.customer_name}</h4>
                             ${comms}
                         </div>
-                        <div class="text-right pointer-events-none">
-                            <span class="text-[10px] font-semibold text-[#a0a5aa] block">#${displayNum}</span>
-                            <span class="text-[9px] text-[#a0a5aa] block">${createDate}</span>
-                        </div>
+                        <div class="text-right pointer-events-none"><span class="text-[10px] font-semibold text-[#a0a5aa] block">#${displayNum}</span><span class="text-[9px] text-[#a0a5aa] block">${createDate}</span></div>
                     </div>
                     <div class="pointer-events-none"><div class="font-bold text-[15px] text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
-                    <div class="bg-[#f8f9fa] border border-[#e6e9ec] p-2 rounded-sm text-[11px] text-[#80868e] space-y-1 pointer-events-none">
+                    <div class="pointer-events-none">
+                        ${contactHtml}
+                        ${item.need_installation === 'Да' ? `<div class="text-[10px] font-bold text-[#9c7800] bg-[#fff2cc] px-1.5 py-0.5 rounded-sm mt-1 inline-block">🛠️ Нужен монтаж</div>` : ''}
+                    </div>
+                    <div class="bg-[#f8f9fa] border border-[#e6e9ec] p-2 rounded-sm text-[11px] text-[#80868e] space-y-1 pointer-events-none mt-1">
                         <div class="flex justify-between items-center"><span>Счет: <b>${item.supplier_invoice || '—'}</b></span><span class="px-1.5 rounded-sm font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div class="flex items-center gap-1"><span>🚚 Отгрузка:</span> <b class="text-[#535c69]">${formatDate(item.shipment_date)}</b></div>
                     </div>
-                    ${commentHtml}
                     <div class="flex justify-between items-center pt-2 border-t border-[#e6e9ec] mt-1">
                         <div class="pointer-events-auto">${fileLink}</div>
                         <div class="flex items-center gap-3 pointer-events-auto">
@@ -596,8 +619,8 @@
                             <div class="font-bold text-[13px] text-[#2067b0] truncate hover:underline">${item.customer_name}</div>
                             ${comms}
                         </div>
-                        <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
-                        ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate">💬 ${item.comments}</div>` : ''}
+                        <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Отгрузка: ${formatDate(item.shipment_date)}</div>
+                        <div class="flex gap-2">${contactHtml}</div>
                     </div>
                     <div class="text-right ml-3">
                         <div class="font-bold text-[14px] text-[#535c69] mb-1">${Number(item.total_price).toLocaleString()} ₽</div>
@@ -608,21 +631,19 @@
                 // ТАБЛИЦА
                 const table = `
                 <tr class="hover:bg-[#f8f9fa] transition-colors border-b border-[#e6e9ec] last:border-0 group">
-                    <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">
-                        ${displayNum}
-                        <div class="text-[9px] mt-1 text-[#c6cdd3]">${createDate}</div>
-                    </td>
+                    <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}<div class="text-[9px] mt-1 text-[#c6cdd3]">${createDate}</div></td>
                     <td class="px-4 py-3">
                         <div class="flex items-center gap-2">
                             <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
                             ${comms}
                         </div>
-                        ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 line-clamp-2">💬 ${item.comments}</div>` : ''}
+                        ${addressHtml}
+                        ${item.need_installation === 'Да' ? `<div class="text-[10px] text-[#9c7800] mt-1">🛠️ Нужен монтаж</div>` : ''}
                     </td>
                     <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
                     <td class="px-4 py-3">${badge}</td>
                     <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
-                    <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
+                    <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)} ${contactHtml}</td>
                     <td class="px-4 py-3 text-right">
                         <div class="flex justify-end items-center gap-4">
                             ${fileLink}
@@ -645,80 +666,36 @@
         }
 
         // --- АНАЛИТИКА ---
-        function changeAnalyticsMonth(direction) {
-            analyticsDate.setMonth(analyticsDate.getMonth() + direction);
-            renderAnalytics();
-        }
-
+        function changeAnalyticsMonth(direction) { analyticsDate.setMonth(analyticsDate.getMonth() + direction); renderAnalytics(); }
         function renderAnalytics() {
-            const year = analyticsDate.getFullYear();
-            const month = analyticsDate.getMonth();
+            const year = analyticsDate.getFullYear(); const month = analyticsDate.getMonth();
             const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-            
             document.getElementById('analyticsMonthLabel').innerText = `${monthNames[month]} ${year}`;
 
-            // Фильтруем все заказы по ДАТЕ СОЗДАНИЯ в выбранном месяце
             const monthOrders = allOrders.filter(o => {
                 if(!o.created_at) return false;
-                const d = new Date(o.created_at);
-                return d.getFullYear() === year && d.getMonth() === month;
+                const d = new Date(o.created_at); return d.getFullYear() === year && d.getMonth() === month;
             });
 
-            let tCount = monthOrders.length;
-            let tSum = 0;
-            let sSum = 0;
-            let sCount = 0;
-            let dSum = 0;
-
-            let supUnpaid = 0;
-            let supPrepay = 0;
-            let supPaid = 0;
+            let tCount = monthOrders.length, tSum = 0, sSum = 0, sCount = 0, dSum = 0;
+            let supUnpaid = 0, supPrepay = 0, supPaid = 0;
 
             monthOrders.forEach(o => {
-                const price = Number(o.total_price) || 0;
-                const prepay = Number(o.prepayment) || 0;
-
+                const price = Number(o.total_price) || 0; const prepay = Number(o.prepayment) || 0;
                 tSum += price;
-                
-                if(o.status === 'Завершен') {
-                    sSum += price;
-                    sCount++;
-                } else {
-                    const diff = price - prepay;
-                    if(diff > 0) dSum += diff;
-                }
-
-                if(o.supplier_status === 'Оплачен') supPaid++;
-                else if(o.supplier_status === 'Предоплата') supPrepay++;
-                else supUnpaid++;
+                if(o.status === 'Завершен') { sSum += price; sCount++; } 
+                else { const diff = price - prepay; if(diff > 0) dSum += diff; }
+                if(o.supplier_status === 'Оплачен') supPaid++; else if(o.supplier_status === 'Предоплата') supPrepay++; else supUnpaid++;
             });
 
-            document.getElementById('stat-total-count').innerText = tCount;
-            document.getElementById('stat-total-sum').innerText = tSum.toLocaleString() + ' ₽';
-            document.getElementById('stat-success-sum').innerText = sSum.toLocaleString() + ' ₽';
-            document.getElementById('stat-success-count').innerText = sCount + ' сделок';
+            document.getElementById('stat-total-count').innerText = tCount; document.getElementById('stat-total-sum').innerText = tSum.toLocaleString() + ' ₽';
+            document.getElementById('stat-success-sum').innerText = sSum.toLocaleString() + ' ₽'; document.getElementById('stat-success-count').innerText = sCount + ' сделок';
             document.getElementById('stat-debt-sum').innerText = dSum.toLocaleString() + ' ₽';
-
-            document.getElementById('stat-sup-unpaid').innerText = supUnpaid + ' шт.';
-            document.getElementById('stat-sup-prepay').innerText = supPrepay + ' шт.';
+            document.getElementById('stat-sup-unpaid').innerText = supUnpaid + ' шт.'; document.getElementById('stat-sup-prepay').innerText = supPrepay + ' шт.';
             document.getElementById('stat-sup-paid').innerText = supPaid + ' шт.';
         }
 
-        function checkTodaysShipments() {
-            if (sessionStorage.getItem('notified_today') === 'true') return;
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            const todaysOrders = allOrders.filter(o => o.shipment_date === dateStr);
-            if (todaysOrders.length > 0) {
-                if ("Notification" in window && Notification.permission === "granted") {
-                    new Notification("Хорошие полы CRM", { body: `⚠️ Отгрузок на сегодня: ${todaysOrders.length}` });
-                }
-                sessionStorage.setItem('notified_today', 'true');
-            }
-        }
-
         function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
-        
         function setFilter(st) { 
             currentSupplierFilter = st; 
             ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'].forEach(tab => {
@@ -730,11 +707,7 @@
 
         function showToast(m, e) { const t = document.getElementById('toast'); t.innerText = m; t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-sm shadow-md z-[200] text-sm font-semibold transition-all ${e ? 'bg-[#f05b57]' : 'bg-[#535c69]'} text-white block`; setTimeout(() => t.classList.add('hidden'), 3000); }
         async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
-        
-        function closeEditModal() { 
-            document.getElementById('editModal').classList.add('hidden'); currentEditId = null; 
-            if (document.getElementById('dayModal').classList.contains('hidden')) checkBodyScroll(); 
-        }
+        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); currentEditId = null; if (document.getElementById('dayModal').classList.contains('hidden')) checkBodyScroll(); }
 
         function openEditModal(id) {
             const o = allOrders.find(x => x.id === id); if(!o) return; currentEditId = id;
@@ -749,10 +722,15 @@
             document.getElementById('editComments').value = o.comments || '';
             document.getElementById('editStatus').value = o.status || 'Новый';
             
+            // Новые поля
+            document.getElementById('editNextContact').value = o.next_contact_date || '';
+            document.getElementById('editAddress').value = o.delivery_address || '';
+            document.getElementById('editInstall').value = o.need_installation || 'Нет';
+            document.getElementById('editInstallCost').value = o.installation_cost || '';
+            
             const linkDiv = document.getElementById('currentFileLink');
-            if (o.file_url) {
-                linkDiv.innerHTML = `<div class="flex items-center gap-3 mb-2"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-[#2067b0] hover:underline">📎 Открыть текущий документ</a><button type="button" onclick="deleteAttachedFile(${o.id}, '${o.file_url}')" class="text-[11px] font-bold text-[#f05b57] bg-transparent border-none cursor-pointer hover:underline p-0">Удалить</button></div>`;
-            } else { linkDiv.innerHTML = '<span class="text-[#a0a5aa] text-xs">Файл не загружен</span>'; }
+            if (o.file_url) { linkDiv.innerHTML = `<div class="flex items-center gap-3 mb-2"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-[#2067b0] hover:underline">📎 Открыть текущий документ</a><button type="button" onclick="deleteAttachedFile(${o.id}, '${o.file_url}')" class="text-[11px] font-bold text-[#f05b57] bg-transparent border-none cursor-pointer hover:underline p-0">Удалить</button></div>`; } 
+            else { linkDiv.innerHTML = '<span class="text-[#a0a5aa] text-xs">Файл не загружен</span>'; }
             
             document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
         }
@@ -773,7 +751,22 @@
         async function saveEdit() {
             if(!currentEditId) return; const btn = document.getElementById('saveEditBtn'); btn.innerText = 'Сохранение...'; btn.disabled = true;
             const order = allOrders.find(x => x.id === currentEditId); const fileInput = document.getElementById('editFile');
-            let updates = { order_number: document.getElementById('editOrderNum').value, customer_name: document.getElementById('editName').value, total_price: document.getElementById('editPrice').value || null, prepayment: document.getElementById('editPrepayment').value || null, phone: document.getElementById('editPhone').value, supplier_invoice: document.getElementById('editInvoice').value, supplier_status: document.getElementById('editSupplierStatus').value, shipment_date: document.getElementById('editShipDate').value || null, comments: document.getElementById('editComments').value, status: document.getElementById('editStatus').value };
+            let updates = { 
+                order_number: document.getElementById('editOrderNum').value, 
+                customer_name: document.getElementById('editName').value, 
+                total_price: document.getElementById('editPrice').value || null, 
+                prepayment: document.getElementById('editPrepayment').value || null, 
+                phone: document.getElementById('editPhone').value, 
+                supplier_invoice: document.getElementById('editInvoice').value, 
+                supplier_status: document.getElementById('editSupplierStatus').value, 
+                shipment_date: document.getElementById('editShipDate').value || null, 
+                comments: document.getElementById('editComments').value, 
+                status: document.getElementById('editStatus').value,
+                next_contact_date: document.getElementById('editNextContact').value || null,
+                delivery_address: document.getElementById('editAddress').value,
+                need_installation: document.getElementById('editInstall').value,
+                installation_cost: document.getElementById('editInstallCost').value || null
+            };
             try {
                 if (fileInput.files.length > 0) {
                     if (order && order.file_url) { const oldFileName = order.file_url.split('/').pop(); if (oldFileName) await _supabase.storage.from('order-files').remove([oldFileName]); }
@@ -782,15 +775,31 @@
                     const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
                     if (!uploadError) { const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName); updates.file_url = publicUrlData.publicUrl; }
                 }
-                await _supabase.from('orders').update(updates).eq('id', currentEditId);
+                const {error} = await _supabase.from('orders').update(updates).eq('id', currentEditId);
+                if(error) throw error;
                 showToast("Сохранено", false); closeEditModal(); loadData();
-            } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
+            } catch(e) { showToast("Ошибка базы данных", true); console.log(e); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
         async function saveOrder() {
             const btn = document.getElementById('saveBtn'); btn.innerText = 'Создание...'; btn.disabled = true;
             const fileInput = document.getElementById('cFile');
-            let newOrder = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value || null, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, comments: document.getElementById('cComments').value, status: 'Новый' };
+            let newOrder = { 
+                order_number: document.getElementById('cOrderNum').value, 
+                customer_name: document.getElementById('cName').value, 
+                total_price: document.getElementById('cPrice').value || null, 
+                prepayment: document.getElementById('cPrepayment').value || null, 
+                phone: document.getElementById('cPhone').value, 
+                supplier_invoice: document.getElementById('cInvoice').value, 
+                supplier_status: document.getElementById('cSupplierStatus').value, 
+                shipment_date: document.getElementById('cShipDate').value || null, 
+                comments: document.getElementById('cComments').value, 
+                status: 'Новый',
+                next_contact_date: document.getElementById('cNextContact').value || null,
+                delivery_address: document.getElementById('cAddress').value,
+                need_installation: document.getElementById('cInstall').value,
+                installation_cost: document.getElementById('cInstallCost').value || null
+            };
             if (!newOrder.customer_name) { showToast("Укажите имя", true); btn.innerText = 'Сохранить'; btn.disabled = false; return; }
             try {
                 if (fileInput.files.length > 0) {
@@ -799,14 +808,17 @@
                     const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
                     if (!uploadError) { const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName); newOrder.file_url = publicUrlData.publicUrl; }
                 }
-                await _supabase.from('orders').insert([newOrder]); toggleForm(); showToast("Создано", false); 
-                ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('cSupplierStatus').value = 'Не оплачен'; loadData();
-            } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
+                const {error} = await _supabase.from('orders').insert([newOrder]);
+                if(error) throw error;
+                toggleForm(); showToast("Создано", false); 
+                ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile', 'cNextContact', 'cAddress', 'cInstallCost'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('cSupplierStatus').value = 'Не оплачен'; document.getElementById('cInstall').value = 'Нет';
+                loadData();
+            } catch(e) { showToast("Ошибка БД", true); console.log(e); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
+        // --- КАЛЕНДАРЬ ---
         function changeMonth(direction) { currentDate.setMonth(currentDate.getMonth() + direction); renderCalendar(); }
-
         function renderCalendar() {
             const year = currentDate.getFullYear(); const month = currentDate.getMonth();
             const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
@@ -815,61 +827,65 @@
             const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
             const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
             let offset = firstDay === 0 ? 6 : firstDay - 1; 
-            for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="p-2 sm:p-4 rounded-sm"></div>`;
+            for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="p-2 sm:p-4 rounded-sm border border-transparent"></div>`;
 
             const today = new Date();
 
             for (let i = 1; i <= daysInMonth; i++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
                 
-                let orderBadge = '';
-                if(dayOrders.length > 0) {
-                    orderBadge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} дел</div>`;
-                }
+                let shipCount = 0;
+                let contactCount = 0;
+
+                allOrders.forEach(o => {
+                    if(o.shipment_date === dateStr) shipCount++;
+                    if(o.next_contact_date === dateStr) contactCount++;
+                });
+                
+                let badges = '';
+                if(shipCount > 0) badges += `<div class="mt-1 text-[9px] sm:text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-1 sm:px-2 py-0.5 sm:py-1 inline-block w-full text-center truncate">${shipCount} отгруз.</div>`;
+                if(contactCount > 0) badges += `<div class="mt-1 text-[9px] sm:text-[10px] font-bold bg-[#fff9d6] text-[#9c7800] rounded-sm px-1 sm:px-2 py-0.5 sm:py-1 inline-block w-full text-center truncate">${contactCount} звонков</div>`;
 
                 const isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
                 const cellClasses = isToday ? 'bg-[#f0f8fb] border-[#3bc8f5] shadow-sm' : 'bg-white border-[#e6e9ec]';
 
                 grid.innerHTML += `
-                <div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-4 rounded-sm border ${cellClasses} hover:border-[#c6cdd3] cursor-pointer transition-all min-h-[70px] sm:min-h-[100px] flex flex-col items-center sm:items-start">
+                <div onclick="openDayModal('${dateStr}')" class="p-1 sm:p-2 rounded-sm border ${cellClasses} hover:border-[#c6cdd3] cursor-pointer transition-all min-h-[70px] sm:min-h-[100px] flex flex-col items-center sm:items-start">
                     <span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm sm:text-base">${i}</span>
-                    ${orderBadge}
+                    <div class="w-full mt-1 flex flex-col gap-1">${badges}</div>
                 </div>`;
             }
         }
 
         function openDayModal(dateStr) {
-            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
+            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr || o.next_contact_date === dateStr);
             const list = document.getElementById('dayOrdersList');
-            document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dateStr)}`;
+            document.getElementById('dayModalTitle').innerText = `Планы на: ${formatDate(dateStr)}`;
             
             if(dayOrders.length === 0) {
-                list.innerHTML = `<div class="text-center text-[#a0a5aa] py-8 text-sm font-medium">На этот день отгрузок не запланировано</div>`;
+                list.innerHTML = `<div class="text-center text-[#a0a5aa] py-8 text-sm font-medium">На этот день ничего не запланировано</div>`;
             } else {
                 list.innerHTML = dayOrders.map(o => {
-                    const statusColors = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]');
+                    const isShip = o.shipment_date === dateStr;
+                    const isContact = o.next_contact_date === dateStr;
+                    let typeBadge = '';
+                    if(isShip) typeBadge += `<span class="px-1.5 py-0.5 bg-[#3bc8f5] text-white text-[9px] font-bold rounded-sm uppercase">Отгрузка</span> `;
+                    if(isContact) typeBadge += `<span class="px-1.5 py-0.5 bg-[#f05b57] text-white text-[9px] font-bold rounded-sm uppercase">Звонок</span>`;
+
                     return `
                     <div class="p-4 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-2" onclick="openEditModal(${o.id})">
                         <div class="flex justify-between items-start">
                             <div class="font-bold text-[#2067b0]">${o.customer_name}</div>
-                            <span class="px-2 py-0.5 rounded-sm uppercase text-[9px] font-bold ${statusColors}">${o.status || 'Новый'}</span>
+                            <div>${typeBadge}</div>
                         </div>
                         <div class="text-[11px] font-mono text-[#a0a5aa]">Заказ #${o.order_number || o.id}</div>
                         <div class="text-sm font-extrabold text-[#535c69] mt-1">${Number(o.total_price || 0).toLocaleString()} ₽</div>
                     </div>
                 `}).join('');
             }
-            
-            document.getElementById('dayModal').classList.remove('hidden');
-            checkBodyScroll();
+            document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
         }
-
-        function closeDayModal() {
-            document.getElementById('dayModal').classList.add('hidden');
-            checkBodyScroll();
-        }
-
+        function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
     </script>
 </body>
 </html>
