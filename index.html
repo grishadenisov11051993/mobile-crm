@@ -7,13 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; } 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
@@ -36,15 +35,8 @@
         .input-modern:focus { background-color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
 
         .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
-        
-        /* Стиль иконок связи */
-        .comm-link { width: 32px; height: 32px; display: flex; items-center; justify-content: center; border-radius: 8px; transition: all 0.2s; }
-        .icon-whatsapp { background-color: #25D366; color: white; }
-        .icon-telegram { background-color: #0088cc; color: white; }
-        .icon-phone { background-color: #3b82f6; color: white; }
-        .comm-link:hover { transform: scale(1.1); filter: brightness(1.1); }
-
         .view-btn-active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
     </style>
 </head>
 <body class="text-slate-800 transition-all duration-300">
@@ -58,7 +50,7 @@
                 <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto tracking-tight">Отгрузки</h3>
                 <button onclick="closeDayModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none absolute right-4 sm:right-5">&times;</button>
             </div>
-            <div id="dayOrdersList" class="p-4 sm:p-5 overflow-y-auto overscroll-contain space-y-3 flex-1 bg-slate-50"></div>
+            <div id="dayOrdersList" class="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1 bg-slate-50"></div>
         </div>
     </div>
 
@@ -111,9 +103,8 @@
     </div>
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
-        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
-        
-        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800">
+        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden transition-opacity"></div>
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800 shadow-2xl">
             <div class="p-6 text-xl font-extrabold flex justify-between items-center tracking-tight text-white">
                 <span>Хорошие <span class="text-blue-500">полы</span></span>
                 <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-white text-3xl leading-none">&times;</button>
@@ -127,38 +118,38 @@
         </aside>
 
         <main class="flex-1 md:ml-64 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
-            <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-4 w-full">
-                <div class="flex items-center justify-between w-full lg:w-auto">
+            <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col sm:flex-row lg:flex-row items-center justify-between gap-4 w-full">
+                <div class="flex items-center justify-between w-full sm:w-auto">
                     <div class="flex items-center gap-3">
                         <button onclick="toggleSidebar()" class="md:hidden text-slate-600 text-2xl">☰</button>
                         <h1 id="headerTitle" class="text-xl sm:text-2xl font-bold text-slate-800">Сделки</h1>
                     </div>
-                    <button onclick="toggleForm()" class="lg:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
+                    <button onclick="toggleForm()" class="sm:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
                 </div>
-                <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-center sm:justify-end">
+                <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
                     <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner mr-2">
                         <button onclick="setView('kanban')" id="v-kanban" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase">Доска</button>
                         <button onclick="setView('list')" id="v-list" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase">Список</button>
                         <button onclick="setView('table')" id="v-table" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase">Таблица</button>
                     </div>
                     <input id="searchInput" oninput="renderData()" type="text" placeholder="🔍 Поиск..." class="input-modern flex-1 sm:flex-none sm:w-48 py-2 shadow-sm">
-                    <button onclick="toggleForm()" class="hidden lg:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
+                    <button onclick="toggleForm()" class="hidden sm:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
                 </div>
             </header>
 
             <div id="section-deals" class="p-3 sm:p-6 max-w-7xl mx-auto w-full">
                 <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
-                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-white shadow-md">Все</button>
-                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600">Не оплачен</button>
-                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600">Предоплата</button>
-                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600">Оплачен</button>
+                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-white shadow-md">Все сделки</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Оплачен</button>
                 </div>
 
                 <div id="formSection" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-slate-100 shadow-md mb-8">
                     <h2 class="text-lg font-bold mb-5 border-b border-slate-100 pb-3">Новый заказ</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
                         <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">№ Заказа</label><input id="cOrderNum" type="text" placeholder="П-104" class="input-modern w-full"></div>
-                        <div class="sm:col-span-2"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Имя клиента</label><input id="cName" type="text" class="input-modern w-full"></div>
+                        <div class="sm:col-span-2 lg:col-span-2"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Имя клиента</label><input id="cName" type="text" class="input-modern w-full"></div>
                         <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" placeholder="+7(9ХХ)..." class="input-modern w-full font-mono"></div>
                         <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="input-modern w-full"></div>
                         <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="input-modern w-full"></div>
@@ -166,18 +157,18 @@
                         <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Оплата пост.</label><select id="cSupplierStatus" class="input-modern w-full"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                         <div class="lg:col-span-1"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="input-modern w-full text-slate-600"></div>
                         <div class="sm:col-span-2 lg:col-span-3"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Комментарий</label><input id="cComments" type="text" class="input-modern w-full"></div>
-                        <div class="sm:col-span-2 lg:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <div class="sm:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Файл</label>
                             <input id="cFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:bg-blue-50 file:text-blue-700 file:border-0 file:rounded-lg cursor-pointer">
                         </div>
                     </div>
-                    <div class="flex gap-3"><button onclick="saveOrder()" id="saveBtn" class="btn-primary px-6 py-2.5 rounded-xl font-semibold">Сохранить</button><button onclick="toggleForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition">Отмена</button></div>
+                    <div class="flex gap-3"><button onclick="saveOrder()" id="saveBtn" class="btn-primary px-6 py-2.5 rounded-xl font-semibold">Сохранить</button><button onclick="toggleForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold transition">Отмена</button></div>
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-3 gap-6 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-slate-500 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span>Новые</h3><span id="cnt-new" class="bg-white border text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-new" class="space-y-4"></div></div>
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-blue-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span>В работе</h3><span id="cnt-work" class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-work" class="space-y-4"></div></div>
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-emerald-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Успешно</h3><span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-done" class="space-y-4"></div></div>
+                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-slate-500 uppercase flex items-center gap-2">Новые</h3><span id="cnt-new" class="bg-white border text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-new" class="space-y-4"></div></div>
+                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-blue-600 uppercase flex items-center gap-2">В работе</h3><span id="cnt-work" class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-work" class="space-y-4"></div></div>
+                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-emerald-600 uppercase flex items-center gap-2">Успешно</h3><span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-done" class="space-y-4"></div></div>
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-3"><div id="list-items-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
@@ -185,11 +176,9 @@
                 <div id="view-table-container" class="hidden">
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden w-full">
                         <div class="overflow-x-auto no-scrollbar w-full">
-                            <table class="w-full text-left border-collapse min-w-[1000px]">
+                            <table class="w-full text-left border-collapse min-w-[900px]">
                                 <thead>
-                                    <tr class="bg-slate-50/50 border-b border-slate-200 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                        <th class="px-5 py-4 w-16 text-center">№</th><th class="px-5 py-4">Клиент / Связь</th><th class="px-5 py-4">Сумма / Остаток</th><th class="px-4 py-4 text-center">Действия</th><th class="px-5 py-4">Поставщик</th><th class="px-5 py-4">Отгрузка</th><th class="px-5 py-4 text-right">Файл / Статус</th>
-                                    </tr>
+                                    <tr class="bg-slate-50/50 border-b border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider"><th class="px-5 py-4 w-16 text-center">№</th><th class="px-5 py-4 min-w-[200px]">Клиент / Связь</th><th class="px-5 py-4">Сумма / Остаток</th><th class="px-5 py-4">Стадия</th><th class="px-5 py-4">Поставщик</th><th class="px-5 py-4">Отгрузка</th><th class="px-5 py-4 text-right">Файл / Действие</th></tr>
                                 </thead>
                                 <tbody id="table-items-content" class="divide-y divide-slate-100 text-sm"></tbody>
                             </table>
@@ -199,230 +188,112 @@
                 </div>
             </div>
 
-            <div id="section-calendar" class="hidden p-4 sm:p-6"><div class="bg-white p-5 sm:p-8 rounded-2xl border shadow-sm"><div class="flex justify-between items-center mb-8"><button onclick="changeMonth(-1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">◀</button><h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-slate-800 capitalize"></h2><button onclick="changeMonth(1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">▶</button></div><div class="grid grid-cols-7 gap-2 text-center text-[10px] font-extrabold text-slate-400 uppercase mb-3"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-400">Сб</div><div class="text-red-400">Вс</div></div><div id="calendarGrid" class="grid grid-cols-7 gap-2 md:gap-3"></div></div></div>
-            <div id="section-analytics" class="hidden p-10"><div class="bg-white p-12 rounded-3xl border text-center shadow-sm"><div class="text-6xl mb-5">📊</div><h2 class="text-2xl font-extrabold text-slate-800 mb-2">Аналитика</h2><p class="text-slate-500 font-medium">Раздел в разработке</p></div></div>
+            <div id="section-calendar" class="hidden p-4 sm:p-6"><div class="bg-white p-5 sm:p-8 rounded-2xl border shadow-sm"><div class="flex justify-between items-center mb-8"><button onclick="changeMonth(-1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">◀</button><h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-slate-800 capitalize"></h2><button onclick="changeMonth(1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">▶</button></div><div class="grid grid-cols-7 gap-2 text-center text-[10px] font-extrabold text-slate-400 uppercase mb-3"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-400">Сб</div><div class="text-red-400">Вс</div></div><div id="calendarGrid" class="grid grid-cols-7 gap-2"></div></div></div>
+            <div id="section-analytics" class="hidden p-10"><div class="bg-white p-12 rounded-3xl border text-center shadow-sm"><div class="text-6xl mb-5">📊</div><h2 class="text-2xl font-extrabold text-slate-800 mb-2">Аналитика</h2><p class="text-slate-500 font-medium">В разработке</p></div></div>
         </main>
     </div>
 
     <script>
-        // === ВСТАВЬ СВОИ КЛЮЧИ SUPABASE СЮДА !!! ===
+        // === КЛЮЧИ ===
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
-        // ===========================================
-        
-        // === ТВОЙ ПАРОЛЬ ===
+        // === ПИН-КОД ===
         const SECRET_PIN = '1234';
-        // ===================
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         let activeView = localStorage.getItem('crm_view_mode') || 'kanban'; 
-        let allOrders = [];
-        let currentEditId = null;
-        let currentDate = new Date(); 
-        let currentSupplierFilter = 'Все';
+        let allOrders = [], currentEditId = null, currentDate = new Date(), currentSupplierFilter = 'Все';
 
         function checkBodyScroll() {
-            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
-            if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
+            const hasOpen = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
+            document.body.classList.toggle('overflow-hidden', hasOpen);
         }
 
-        // Умное форматирование телефона
-        function applyPhoneMask(phoneStr) {
-            let val = String(phoneStr).replace(/\D/g, ''); 
-            if (!val) return '';
-            if (val[0] === '8') val = '7' + val.substring(1);
-            if (val[0] === '9') val = '7' + val;
-            if (val[0] !== '7') val = '7' + val; 
-            let formatted = '+7';
-            if (val.length > 1) formatted += ' (' + val.substring(1, 4);
-            if (val.length >= 5) formatted += ') ' + val.substring(4, 7);
-            if (val.length >= 8) formatted += '-' + val.substring(7, 9);
-            if (val.length >= 10) formatted += '-' + val.substring(9, 11);
-            return formatted;
+        function applyPhoneMask(v) {
+            let val = String(v).replace(/\D/g, ''); if (!val) return '';
+            if (val[0] === '8') val = '7' + val.substring(1); else if (val[0] === '9') val = '7' + val; else if (val[0] !== '7') val = '7' + val;
+            let res = '+7';
+            if (val.length > 1) res += ' (' + val.substring(1, 4);
+            if (val.length >= 5) res += ') ' + val.substring(4, 7);
+            if (val.length >= 8) res += '-' + val.substring(7, 9);
+            if (val.length >= 10) res += '-' + val.substring(9, 11);
+            return res;
         }
 
         function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
 
-        // Генерация кнопок связи
-        function getCommsHtml(phone) {
-            if (!phone) return '';
-            const clean = phone.replace(/\D/g, '');
-            return `
-                <div class="flex gap-2">
-                    <a href="tel:+${clean}" class="comm-link icon-phone shadow-sm" title="Звонок"><i class="fa-solid fa-phone text-xs"></i></a>
-                    <a href="https://wa.me/${clean}" target="_blank" class="comm-link icon-whatsapp shadow-sm" title="WhatsApp"><i class="fa-brands fa-whatsapp text-lg"></i></a>
-                    <a href="https://t.me/+${clean}" target="_blank" class="comm-link icon-telegram shadow-sm" title="Telegram"><i class="fa-solid fa-paper-plane text-xs"></i></a>
-                </div>
-            `;
-        }
-
-        function setView(mode) { activeView = mode; localStorage.setItem('crm_view_mode', mode); renderData(); }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
-            document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
-        });
-
         function checkPin() {
             if (document.getElementById('pinInput').value === SECRET_PIN) { sessionStorage.setItem('crm_auth', 'true'); unlockCrm(); } 
-            else { showToast("Неверный PIN-код", true); document.getElementById('pinInput').value = ''; }
+            else { showToast("Ошибка", true); document.getElementById('pinInput').value = ''; }
         }
 
-        function unlockCrm() {
-            document.getElementById('authScreen').classList.add('hidden');
-            const main = document.getElementById('mainCrm');
-            main.classList.remove('hidden');
-            setTimeout(() => main.classList.remove('opacity-0'), 50);
-            loadData(); 
-        }
-
+        function unlockCrm() { document.getElementById('authScreen').classList.add('hidden'); document.getElementById('mainCrm').classList.remove('hidden'); setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50); loadData(); }
         function lockCrm() { sessionStorage.removeItem('crm_auth'); location.reload(); }
+        function setView(m) { activeView = m; localStorage.setItem('crm_view_mode', m); renderData(); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('-translate-x-full');
-            document.getElementById('sidebarOverlay').classList.toggle('hidden');
-        }
-
-        function switchSection(sectionId, btnElement) {
+        function switchSection(sid, btn) {
             ['deals', 'calendar', 'analytics'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
-            document.getElementById('section-' + sectionId).classList.remove('hidden');
-            const titleElement = document.getElementById('headerTitle');
-            const toolbar = document.getElementById('dealsToolbar');
-            if(sectionId === 'deals') { titleElement.innerText = "Сделки"; toolbar.classList.remove('hidden'); } 
-            else if (sectionId === 'calendar') { titleElement.innerText = "Календарь"; toolbar.classList.add('hidden'); renderCalendar(); } 
-            else if (sectionId === 'analytics') { titleElement.innerText = "Аналитика"; toolbar.classList.add('hidden'); }
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.className = 'nav-btn block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white font-medium transition-all');
-            btnElement.className = 'nav-btn block px-4 py-2.5 rounded-lg bg-blue-600/10 text-blue-400 font-semibold transition-all';
+            document.getElementById('section-' + sid).classList.remove('hidden');
+            document.getElementById('headerTitle').innerText = sid === 'deals' ? 'Сделки' : (sid === 'calendar' ? 'Календарь' : 'Аналитика');
+            document.getElementById('dealsToolbar').classList.toggle('hidden', sid !== 'deals');
+            document.querySelectorAll('.nav-btn').forEach(b => b.className = 'nav-btn block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white font-medium transition-all');
+            btn.className = 'nav-btn block px-4 py-2.5 rounded-lg bg-blue-600/10 text-blue-400 font-semibold transition-all';
             if(window.innerWidth < 768) toggleSidebar();
+            if(sid === 'calendar') renderCalendar();
         }
 
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (error) return showToast("Ошибка загрузки", true);
-            allOrders = data; renderData();
+            if (error) return showToast("Ошибка", true); allOrders = data; renderData();
         }
 
-        function formatDate(dateString) {
-            if(!dateString) return '—';
-            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' });
-        }
+        function formatDate(ds) { if(!ds) return '—'; const d = new Date(ds); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' }); }
 
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allOrders.filter(o => {
-                const matchesSearch = (o.customer_name || '').toLowerCase().includes(search) || (o.phone || '').includes(search) || (o.order_number || '').toLowerCase().includes(search);
-                const actualSupplierStatus = o.supplier_status || 'Не оплачен';
-                const matchesTag = (currentSupplierFilter === 'Все') || (actualSupplierStatus === currentSupplierFilter);
-                return matchesSearch && matchesTag;
+                const ms = (o.customer_name || '').toLowerCase().includes(search) || (o.phone || '').includes(search) || (o.order_number || '').toLowerCase().includes(search);
+                const tag = currentSupplierFilter === 'Все' || (o.supplier_status || 'Не оплачен') === currentSupplierFilter;
+                return ms && tag;
             });
             
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
             document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
             document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
+            ['kanban', 'list', 'table'].forEach(m => document.getElementById('v-' + m).className = `px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold uppercase ${activeView === m ? 'view-btn-active shadow-sm' : 'text-slate-400'}`);
 
-            ['kanban', 'list', 'table'].forEach(m => {
-                document.getElementById('v-' + m).className = `px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide ${activeView === m ? 'view-btn-active shadow-sm' : 'text-slate-400 hover:text-slate-600'}`;
-            });
-
-            const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
-            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 };
-            let total = 0;
-
-            Object.values(containers).forEach(id => document.getElementById(id).innerHTML = '');
-            document.getElementById('list-items-content').innerHTML = '';
-            document.getElementById('table-items-content').innerHTML = '';
+            const cols = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
+            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 }; let total = 0;
+            Object.values(cols).forEach(id => document.getElementById(id).innerHTML = '');
+            document.getElementById('list-items-content').innerHTML = ''; document.getElementById('table-items-content').innerHTML = '';
 
             filtered.forEach(item => {
-                const status = item.status || 'Новый'; counts[status]++; total += Number(item.total_price || 0);
+                const st = item.status || 'Новый'; counts[st]++; total += Number(item.total_price || 0);
+                let badge = `bg-slate-100 text-slate-600`, btn = "В работу", nxt = "В работе", bcl = "bg-blue-50 text-blue-600";
+                if(st === 'В работе') { badge = `bg-blue-100 text-blue-700`; btn = "Успех"; nxt = "Завершен"; bcl = "bg-emerald-50 text-emerald-600"; }
+                else if(st === 'Завершен') { badge = `bg-emerald-100 text-emerald-700`; bcl = "hidden"; }
 
-                let statusBadge = `<span class="px-2 py-0.5 rounded-md font-bold uppercase text-[9px] bg-slate-100 text-slate-600">Новый</span>`;
-                let btnTxt = "В работу", nextSt = "В работе", btnClass = "bg-blue-50 text-blue-600";
-                if (status === 'В работе') { 
-                    statusBadge = `<span class="px-2 py-0.5 rounded-md font-bold uppercase text-[9px] bg-blue-100 text-blue-700">В работе</span>`;
-                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "bg-emerald-50 text-emerald-600"; 
-                } else if (status === 'Завершен') {
-                    statusBadge = `<span class="px-2 py-0.5 rounded-md font-bold uppercase text-[9px] bg-emerald-100 text-emerald-700">Завершен</span>`;
-                    btnClass = "hidden";
-                }
+                let sup = "bg-slate-100 text-slate-600";
+                if(item.supplier_status === 'Оплачен') sup = "bg-emerald-50 text-emerald-700";
+                else if(item.supplier_status === 'Предоплата') sup = "bg-amber-50 text-amber-700";
+                else if(item.supplier_status === 'Не оплачен') sup = "bg-red-50 text-red-600";
 
-                let supColor = "bg-slate-100 text-slate-600";
-                if(item.supplier_status === 'Оплачен') supColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                else if(item.supplier_status === 'Предоплата') supColor = "bg-amber-50 text-amber-700 border-amber-200";
-                else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border-red-200";
+                const clean = item.phone ? item.phone.replace(/\D/g, '') : '';
+                const comms = clean ? `<div class="flex gap-2"><a href="tel:+${clean}">📞</a><a href="https://wa.me/${clean}" target="_blank">💬</a></div>` : '';
+                const bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
+                const balHtml = item.prepayment ? `<div class="text-[10px] font-medium ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
 
-                const comms = getCommsHtml(item.phone);
-                const displayNum = item.order_number || `#${item.id}`;
-                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px] uppercase">📎 Файл</a>` : '';
-
-                let bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
-                let balHtml = item.prepayment ? `<div class="text-[10px] font-medium ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
-
-                // КАНБАН
-                const card = `
-                <div class="bx-card p-4 flex flex-col gap-3">
-                    <div class="flex justify-between items-start">
-                        <div class="min-w-0">
-                            <h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 truncate transition-colors text-sm">${item.customer_name}</h4>
-                            <div class="mt-2">${comms}</div>
-                        </div>
-                        <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">${displayNum}</span>
-                    </div>
-                    <div><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
-                    <div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1">
-                        <div class="flex justify-between items-center"><span>Счет: ${item.supplier_invoice || '—'}</span><span class="px-1.5 rounded font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
-                        <div>🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div>
-                    </div>
-                    <div class="flex justify-between items-center pt-2 border-t mt-1">
-                        <div class="flex items-center gap-2">${fileLink}</div>
-                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg">${btnTxt}</button>
-                    </div>
-                </div>`;
-
-                // СПИСОК
-                const list = `
-                <div class="bx-card p-4 flex items-center justify-between gap-4">
-                    <div class="flex-1 min-w-0" onclick="openEditModal(${item.id})">
-                        <div class="font-bold text-slate-800 truncate">${item.customer_name}</div>
-                        <div class="text-[11px] text-slate-400 mt-1">${displayNum} • ${formatDate(item.shipment_date)}</div>
-                    </div>
-                    <div class="flex flex-col items-end gap-2">
-                        <div class="font-extrabold text-slate-800 text-sm">${Number(item.total_price).toLocaleString()} ₽</div>
-                        ${comms}
-                    </div>
-                </div>`;
-
-                // ТАБЛИЦА
-                const table = `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${displayNum}</td>
-                    <td class="px-5 py-4">
-                        <div class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors mb-2" onclick="openEditModal(${item.id})">${item.customer_name}</div>
-                        ${comms}
-                    </td>
-                    <td class="px-5 py-4"><div class="font-extrabold text-slate-800">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
-                    <td class="px-5 py-4 text-center">
-                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} w-8 h-8 flex items-center justify-center rounded-lg text-lg ${status === 'Завершен' ? 'hidden' : ''}">➔</button>
-                    </td>
-                    <td class="px-5 py-4"><div class="text-xs font-bold text-slate-700">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded font-bold uppercase ${supColor}">${item.supplier_status || 'Не оплачен'}</span></td>
-                    <td class="px-5 py-4 text-xs text-slate-500">${formatDate(item.shipment_date)}</td>
-                    <td class="px-5 py-4 text-right">
-                        <div class="flex flex-col items-end gap-2">
-                            ${fileLink}
-                            ${statusBadge}
-                        </div>
-                    </td>
-                </tr>`;
-
-                if(activeView === 'kanban' && containers[status]) document.getElementById(containers[status]).innerHTML += card;
+                const card = `<div class="bx-card p-4 flex flex-col gap-3"><div class="flex justify-between items-start"><h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 hover:text-blue-600 cursor-pointer truncate pr-2 text-sm">${item.customer_name}</h4><span class="text-[10px] font-mono text-slate-400">#${item.order_number || item.id}</span></div><div><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div><div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1"><div class="flex justify-between items-center"><span>Счет: ${item.supplier_invoice || '—'}</span><span class="px-1.5 rounded font-bold uppercase text-[8px] ${sup}">${item.supplier_status || 'Не оплачен'}</span></div><div>🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div></div><div class="flex justify-between items-center pt-2 border-t">${comms}<div class="flex items-center gap-2">${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 text-[10px] font-bold">ФАЙЛ</a>`:''}<button onclick="changeStatus(${item.id}, '${nxt}')" class="${bcl} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg">${btn}</button></div></div></div>`;
+                if(activeView === 'kanban' && cols[st]) document.getElementById(cols[st]).innerHTML += card;
+                const list = `<div class="bx-card p-4 flex items-center justify-between cursor-pointer" onclick="openEditModal(${item.id})"><div><div class="font-bold">${item.customer_name}</div><div class="text-[11px] text-slate-400 mt-1">#${item.order_number || item.id} • ${formatDate(item.shipment_date)}</div></div><div class="text-right"><div class="font-extrabold">${Number(item.total_price).toLocaleString()} ₽</div><span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${badge}">${st}</span></div></div>`;
                 if(activeView === 'list') document.getElementById('list-items-content').innerHTML += list;
+                const table = `<tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${item.order_number || item.id}</td><td class="px-5 py-4 font-bold cursor-pointer hover:text-blue-600" onclick="openEditModal(${item.id})">${item.customer_name}<div class="mt-1">${comms}</div></td><td class="px-5 py-4"><div class="font-extrabold">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${badge}">${st}</span></td><td class="px-5 py-4"><div class="text-xs font-bold">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded font-bold uppercase ${sup}">${item.supplier_status || 'Не оплачен'}</span></td><td class="px-5 py-4 text-xs text-slate-500">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right"><div class="flex flex-col items-end gap-2">${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px]">📎 ФАЙЛ</a>`:''}<button onclick="changeStatus(${item.id}, '${nxt}')" class="${bcl} w-8 h-8 flex items-center justify-center rounded-lg">➔</button></div></td></tr>`;
                 if(activeView === 'table') document.getElementById('table-items-content').innerHTML += table;
             });
-
-            document.getElementById('cnt-new').innerText = counts['Новый'];
-            document.getElementById('cnt-work').innerText = counts['В работе'];
-            document.getElementById('cnt-done').innerText = counts['Завершен'];
-            document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
+            document.getElementById('cnt-new').innerText = counts['Новый']; document.getElementById('cnt-work').innerText = counts['В работе']; document.getElementById('cnt-done').innerText = counts['Завершен'];
+            document.getElementById('totalSum').innerText = "ИТОГО: " + total.toLocaleString() + " ₽";
+            if(activeView === 'calendar') renderCalendar();
         }
 
         function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
@@ -432,80 +303,52 @@
         function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); currentEditId = null; checkBodyScroll(); }
         function openEditModal(id) {
             const o = allOrders.find(x => x.id === id); if(!o) return; currentEditId = id;
-            document.getElementById('editOrderNum').value = o.order_number || '';
-            document.getElementById('editName').value = o.customer_name || '';
-            document.getElementById('editPrice').value = o.total_price || '';
-            document.getElementById('editPrepayment').value = o.prepayment || '';
-            document.getElementById('editPhone').value = applyPhoneMask(o.phone || '');
-            document.getElementById('editInvoice').value = o.supplier_invoice || '';
-            document.getElementById('editSupplierStatus').value = o.supplier_status || 'Не оплачен';
-            document.getElementById('editShipDate').value = o.shipment_date || '';
-            document.getElementById('editComments').value = o.comments || '';
-            document.getElementById('editStatus').value = o.status || 'Новый';
-            const linkDiv = document.getElementById('currentFileLink');
-            if (o.file_url) linkDiv.innerHTML = `<a href="${o.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs">📎 Открыть файл</a>`;
-            else linkDiv.innerHTML = `<span class="text-xs text-slate-400">Файл не прикреплен</span>`;
+            document.getElementById('editOrderNum').value = o.order_number || ''; document.getElementById('editName').value = o.customer_name || '';
+            document.getElementById('editPrice').value = o.total_price || ''; document.getElementById('editPrepayment').value = o.prepayment || '';
+            document.getElementById('editPhone').value = applyPhoneMask(o.phone || ''); document.getElementById('editInvoice').value = o.supplier_invoice || '';
+            document.getElementById('editSupplierStatus').value = o.supplier_status || 'Не оплачен'; document.getElementById('editShipDate').value = o.shipment_date || '';
+            document.getElementById('editComments').value = o.comments || ''; document.getElementById('editStatus').value = o.status || 'Новый';
+            const l = document.getElementById('currentFileLink'); l.innerHTML = o.file_url ? `<a href="${o.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs">📎 Файл</a>` : `<span class="text-xs text-slate-400">Нет файла</span>`;
             document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
         }
 
         async function saveEdit() {
-            const btn = document.getElementById('saveEditBtn'); btn.disabled = true;
-            const newFile = document.getElementById('editFile').files[0];
-            let updates = { order_number: document.getElementById('editOrderNum').value, customer_name: document.getElementById('editName').value, total_price: document.getElementById('editPrice').value, prepayment: document.getElementById('editPrepayment').value || null, phone: document.getElementById('editPhone').value, supplier_invoice: document.getElementById('editInvoice').value, supplier_status: document.getElementById('editSupplierStatus').value, shipment_date: document.getElementById('editShipDate').value || null, comments: document.getElementById('editComments').value, status: document.getElementById('editStatus').value };
+            const btn = document.getElementById('saveEditBtn'); btn.disabled = true; const f = document.getElementById('editFile').files[0];
+            let up = { order_number: document.getElementById('editOrderNum').value, customer_name: document.getElementById('editName').value, total_price: document.getElementById('editPrice').value, prepayment: document.getElementById('editPrepayment').value || null, phone: document.getElementById('editPhone').value, supplier_invoice: document.getElementById('editInvoice').value, supplier_status: document.getElementById('editSupplierStatus').value, shipment_date: document.getElementById('editShipDate').value || null, comments: document.getElementById('editComments').value, status: document.getElementById('editStatus').value };
             try {
-                if (newFile) {
-                    const name = Date.now() + "_" + newFile.name; await _supabase.storage.from('order-files').upload(name, newFile);
-                    updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
-                }
-                await _supabase.from('orders').update(updates).eq('id', currentEditId);
-                showToast("Сохранено", false); closeEditModal(); loadData();
+                if(f) { const n = Date.now() + "_" + f.name; await _supabase.storage.from('order-files').upload(n, f); up.file_url = _supabase.storage.from('order-files').getPublicUrl(n).data.publicUrl; }
+                await _supabase.from('orders').update(up).eq('id', currentEditId); showToast("ОК", false); closeEditModal(); loadData();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; }
         }
 
         async function saveOrder() {
-            const btn = document.getElementById('saveBtn'); btn.disabled = true;
-            const file = document.getElementById('cFile').files[0];
-            let newOrder = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, comments: document.getElementById('cComments').value, status: 'Новый' };
+            const btn = document.getElementById('saveBtn'); btn.disabled = true; const f = document.getElementById('cFile').files[0];
+            let o = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, comments: document.getElementById('cComments').value, status: 'Новый' };
             try {
-                if (file) {
-                    const name = Date.now() + "_" + file.name; await _supabase.storage.from('order-files').upload(name, file);
-                    newOrder.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
-                }
-                await _supabase.from('orders').insert([newOrder]);
-                ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile'].forEach(id => document.getElementById(id).value = '');
-                toggleForm(); showToast("Сделка создана", false); loadData();
+                if(f) { const n = Date.now() + "_" + f.name; await _supabase.storage.from('order-files').upload(n, f); o.file_url = _supabase.storage.from('order-files').getPublicUrl(n).data.publicUrl; }
+                await _supabase.from('orders').insert([o]); toggleForm(); showToast("ОК", false); loadData();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; }
         }
 
         function renderCalendar() {
-            const year = currentDate.getFullYear(); const month = currentDate.getMonth();
-            const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-            document.getElementById('calendarMonthLabel').innerText = `${monthNames[month]} ${year}`;
-            const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
-            let firstDay = new Date(year, month, 1).getDay(); firstDay = firstDay === 0 ? 6 : firstDay - 1; 
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div class="bg-slate-50/50 rounded-xl min-h-[60px] border border-transparent"></div>`;
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
-                let ordersHtml = '';
-                dayOrders.forEach(o => {
-                    let c = o.status === 'Завершен' ? "bg-emerald-500" : (o.status === 'В работе' ? "bg-blue-500" : "bg-slate-400");
-                    ordersHtml += `<div class="w-2 h-2 rounded-full ${c} border border-white"></div>`;
-                });
-                const isToday = new Date().toDateString() === new Date(year, month, d).toDateString();
-                grid.innerHTML += `<div onclick="openDayModal('${dateStr}')" class="${isToday ? 'border-blue-500 bg-blue-50/20' : 'border-slate-200 bg-white'} cursor-pointer rounded-xl p-2 min-h-[60px] border shadow-sm flex flex-col items-center"><div class="text-xs font-black ${isToday ? 'text-blue-600' : 'text-slate-300'} mb-1">${d}</div><div class="flex flex-wrap gap-1 justify-center">${ordersHtml}</div></div>`;
+            const y = currentDate.getFullYear(), m = currentDate.getMonth(); const mn = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            document.getElementById('calendarMonthLabel').innerText = `${mn[m]} ${y}`;
+            const g = document.getElementById('calendarGrid'); g.innerHTML = '';
+            let f = new Date(y, m, 1).getDay(); f = f === 0 ? 6 : f - 1; const dm = new Date(y, m + 1, 0).getDate();
+            for(let i=0; i<f; i++) g.innerHTML += `<div class="bg-slate-50/50 rounded-xl min-h-[70px]"></div>`;
+            for(let d=1; d<=dm; d++) {
+                const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const ord = allOrders.filter(o => o.shipment_date === ds); let h = '';
+                ord.forEach(o => { const c = o.status === 'Завершен' ? "bg-emerald-500" : (o.status === 'В работе' ? "bg-blue-500" : "bg-slate-400"); h += `<div class="w-2 h-2 rounded-full ${c} border border-white"></div>`; });
+                const isToday = new Date().toDateString() === new Date(y, m, d).toDateString();
+                g.innerHTML += `<div onclick="openDayModal('${ds}')" class="${isToday ? 'border-blue-500 bg-blue-50/20':'border-slate-200 bg-white'} cursor-pointer rounded-xl p-2 min-h-[70px] border shadow-sm flex flex-col items-center"><div class="text-xs font-black ${isToday ? 'text-blue-600':'text-slate-300'} mb-1">${d}</div><div class="flex flex-wrap gap-1 justify-center">${h}</div></div>`;
             }
         }
         function changeMonth(o) { currentDate.setMonth(currentDate.getMonth() + o); renderCalendar(); }
         function openDayModal(ds) {
-            const dayOrders = allOrders.filter(o => o.shipment_date === ds);
-            document.getElementById('dayModalTitle').innerText = formatDate(ds);
-            const container = document.getElementById('dayOrdersList'); container.innerHTML = '';
-            if(dayOrders.length === 0) container.innerHTML = '<div class="text-center text-slate-400 p-10 font-medium">Нет отгрузок</div>';
-            else dayOrders.forEach(o => {
-                container.innerHTML += `<div class="bg-white border rounded-xl p-4 flex justify-between items-center" onclick="openEditModal(${o.id})"><div><div class="font-bold text-slate-800">${o.customer_name}</div><div class="text-xs text-slate-400 mt-1">${o.order_number || ''} • ${Number(o.total_price).toLocaleString()} ₽</div></div><div class="text-slate-300">›</div></div>`;
-            });
+            const ord = allOrders.filter(o => o.shipment_date === ds); document.getElementById('dayModalTitle').innerText = formatDate(ds);
+            const c = document.getElementById('dayOrdersList'); c.innerHTML = ord.length ? '' : '<div class="text-center text-slate-400 p-10 font-medium">Нет отгрузок</div>';
+            ord.forEach(o => c.innerHTML += `<div class="bg-white border rounded-xl p-4 flex justify-between items-center" onclick="openEditModal(${o.id})"><div><div class="font-bold">${o.customer_name}</div><div class="text-xs text-slate-400 mt-1">${o.order_number || ''} • ${Number(o.total_price).toLocaleString()} ₽</div></div><div class="text-slate-300">›</div></div>`);
             document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
         }
         function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
