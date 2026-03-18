@@ -15,8 +15,7 @@
         ::-webkit-scrollbar-thumb { background: #c6cdd3; border-radius: 3px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Битрикс Цвета и Элементы */
-        .bx-header { background: #ffffff; border-bottom: 1px solid #e6e9ec; }
+        .glass-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); }
         .bx-sidebar { background-color: #1e2530; }
         .bx-sidebar-item { color: #a0a5aa; border-radius: 2px; transition: 0.2s; font-size: 14px; text-decoration: none; }
         .bx-sidebar-item:hover, .bx-sidebar-item.active { background-color: #283240; color: #ffffff; }
@@ -63,21 +62,22 @@
 
     <div id="dayModal" class="fixed inset-0 bg-slate-900/40 hidden z-[155] flex items-center justify-center p-3 sm:p-4 transition-all">
         <div class="bg-white rounded-sm shadow-lg w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
-                <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0 mx-auto">Планы на день</h3>
-                <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none absolute right-4 sm:right-5">&times;</button>
+            <div class="p-4 border-b border-[#e6e9ec] flex justify-center items-center bg-[#f8f9fa] shrink-0 relative">
+                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0">Планы на день</h3>
+                <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none absolute right-4 bg-transparent border-none cursor-pointer transition-colors">&times;</button>
             </div>
             <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
+            <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex justify-end shrink-0">
+                <button onclick="closeDayModal()" class="bx-btn-default w-full sm:w-auto">Закрыть</button>
+            </div>
         </div>
     </div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/40 hidden z-[160] flex items-center justify-center p-3 sm:p-4 transition-all">
         <div class="bg-white rounded-sm shadow-lg w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
-            <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
-                <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 class="font-bold text-[#535c69] text-base m-0 mx-auto">Карточка сделки</h3>
-                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none absolute right-4 sm:right-5">&times;</button>
+            <div class="p-4 border-b border-[#e6e9ec] flex justify-center items-center bg-[#f8f9fa] shrink-0 relative">
+                <h3 class="font-bold text-[#535c69] text-base m-0">Карточка сделки</h3>
+                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none absolute right-4 bg-transparent border-none cursor-pointer transition-colors">&times;</button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-5 flex-1 bg-white text-sm">
                 
@@ -125,7 +125,7 @@
                     <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa]">
                         <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
                         <div id="currentFileLink" class="mb-3 text-sm"></div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-white file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
+                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#f8f9fa] file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
                     </div>
                 </div>
             </div>
@@ -153,7 +153,7 @@
         <aside id="sidebar" class="bx-sidebar fixed inset-y-0 left-0 w-60 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-lg">
             <div class="p-5 text-lg font-bold flex justify-between items-center text-white border-b border-[#283240]">
                 <span>Хорошие <span style="color: #3bc8f5;">полы</span></span>
-                <button onclick="toggleSidebar()" class="md:hidden text-[#a0a5aa] text-2xl">&times;</button>
+                <button onclick="toggleSidebar()" class="md:hidden text-[#a0a5aa] text-2xl bg-transparent border-none cursor-pointer">&times;</button>
             </div>
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">💼 CRM Сделки</a>
@@ -204,20 +204,20 @@
                     <h2 class="text-sm font-bold mb-4 uppercase text-[#80868e] border-b border-[#e6e9ec] pb-2">Создание сделки</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">№ Заказа</label><input id="cOrderNum" type="text" placeholder="Свой номер" class="bx-input"></div>
-                        <div class="sm:col-span-2 lg:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
+                        <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" placeholder="+7 (999)..." class="bx-input font-mono"></div>
                         
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
                         <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
-                        
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                         
-                        <div class="lg:col-span-1"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
-                        <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Адрес доставки</label><input id="cAddress" type="text" placeholder="Город, улица, дом..." class="bx-input"></div>
-                        <div class="sm:col-span-4 lg:col-span-4"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
+                        <div class="sm:col-span-3"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Адрес доставки</label><input id="cAddress" type="text" placeholder="Город, улица, дом..." class="bx-input"></div>
                         
-                        <div class="sm:col-span-4 p-3 border border-[#e6e9ec] bg-[#f8f9fa] rounded-sm">
+                        <div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
+                        
+                        <div class="lg:col-span-4 p-3 border border-[#e6e9ec] bg-[#f8f9fa] rounded-sm">
                             <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл документа</label>
                             <input id="cFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-3 file:py-1.5 file:px-3 file:bg-white file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer">
                         </div>
@@ -556,7 +556,6 @@
 
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
                 
-                // Добавлена кнопка "Поделиться" (иконка 📤) во все карточки
                 let commsHtml = `<div class="flex flex-wrap gap-1 ml-2 pointer-events-auto">`;
                 if (cleanPhone) {
                     commsHtml += `<a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a>
