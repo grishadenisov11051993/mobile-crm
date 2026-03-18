@@ -27,6 +27,12 @@
             background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)) !important;
         }
 
+        /* ПЛАВНАЯ ПРОКРУТКА (Инерционный скролл для телефонов) */
+        .overflow-y-auto, .overflow-x-auto {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #c6cdd3; border-radius: 3px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -84,7 +90,6 @@
         .file-name { font-size: 11px; font-weight: 600; color: #535c69; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
         .folder-icon { color: #ffca28; }
         
-        /* Кнопки действий на файлах */
         .file-action-btn { position: absolute; top: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border: 1px solid #e6e9ec; border-radius: 2px; font-size: 13px; cursor: pointer; transition: 0.2s; color: #535c69; z-index: 10; }
         .file-action-btn:hover { background: #e6e9ec; }
         .btn-share { right: 6px; }
