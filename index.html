@@ -276,22 +276,7 @@
                     <button onclick="switchSection('deals', document.querySelectorAll('.bx-sidebar-item')[1]); toggleForm();" class="bx-btn-success text-[#535c69] h-10 px-6 hidden sm:inline-flex">+ Новая сделка</button>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    <div class="dash-widget border-l-4 border-[#3bc8f5]">
-                        <div class="dash-label">Сделок в работе</div>
-                        <div class="dash-value" id="dash-active-deals">0</div>
-                    </div>
-                    <div class="dash-widget border-l-4 border-[#bbed21]">
-                        <div class="dash-label">Сумма в работе (₽)</div>
-                        <div class="dash-value" id="dash-active-sum">0</div>
-                    </div>
-                    <div class="dash-widget border-l-4 border-[#ff9900]">
-                        <div class="dash-label">Открытых задач</div>
-                        <div class="dash-value" id="dash-active-tasks">0</div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     <div class="bg-white border border-[#e6e9ec] rounded-sm p-5 shadow-sm">
                         <div class="flex justify-between items-center border-b border-[#e6e9ec] pb-3 mb-4">
                             <h3 class="font-bold text-[#535c69] text-sm uppercase">🚚 Отгрузки сегодня</h3>
@@ -321,6 +306,21 @@
                         </div>
                         <div id="dash-recent-tasks" class="space-y-2 max-h-[250px] overflow-y-auto pr-1">
                             </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="dash-widget border-l-4 border-[#3bc8f5]">
+                        <div class="dash-label">Сделок в работе</div>
+                        <div class="dash-value" id="dash-active-deals">0</div>
+                    </div>
+                    <div class="dash-widget border-l-4 border-[#bbed21]">
+                        <div class="dash-label">Сумма в работе (₽)</div>
+                        <div class="dash-value" id="dash-active-sum">0</div>
+                    </div>
+                    <div class="dash-widget border-l-4 border-[#ff9900]">
+                        <div class="dash-label">Открытых задач</div>
+                        <div class="dash-value" id="dash-active-tasks">0</div>
                     </div>
                 </div>
             </div>
@@ -680,7 +680,6 @@
             let dActiveSum = document.getElementById('dash-active-sum'); if(dActiveSum) dActiveSum.innerText = totalActiveSum.toLocaleString();
             let dActiveTasks = document.getElementById('dash-active-tasks'); if(dActiveTasks) dActiveTasks.innerText = openTasks.length;
 
-            // Отгрузки сегодня
             const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             const todaysOrders = allOrders.filter(o => o.shipment_date === todayStr);
             const shipmentsContainer = document.getElementById('dash-todays-shipments');
@@ -701,7 +700,6 @@
                 }
             }
 
-            // БЛИЖАЙШИЕ ОТГРУЗКИ
             const upcomingOrders = allOrders
                 .filter(o => o.shipment_date && o.shipment_date > todayStr && o.status !== 'Завершен')
                 .sort((a, b) => new Date(a.shipment_date) - new Date(b.shipment_date))
