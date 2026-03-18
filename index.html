@@ -18,27 +18,27 @@
         /* Битрикс Цвета и Элементы */
         .bx-header { background: #ffffff; border-bottom: 1px solid #e6e9ec; }
         .bx-sidebar { background-color: #1e2530; }
-        .bx-sidebar-item { color: #a0a5aa; border-radius: 2px; transition: 0.2s; font-size: 14px; }
+        .bx-sidebar-item { color: #a0a5aa; border-radius: 2px; transition: 0.2s; font-size: 14px; text-decoration: none; }
         .bx-sidebar-item:hover, .bx-sidebar-item.active { background-color: #283240; color: #ffffff; }
         
         .bx-input { background-color: #ffffff; border: 1px solid #c6cdd3; border-radius: 2px; padding: 0 11px; height: 38px; font-size: 14px; outline: none; transition: 0.2s; color: #535c69; width: 100%; }
         .bx-input:focus { border-color: #3bc8f5; }
         textarea.bx-input { height: auto; padding: 8px 11px; }
         
-        .bx-btn-success { background-color: #bbed21; color: #535c69; text-transform: uppercase; font-weight: 700; font-size: 12px; border-radius: 2px; padding: 0 20px; height: 38px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .bx-btn-success { background-color: #bbed21; color: #535c69; text-transform: uppercase; font-weight: 700; font-size: 12px; border-radius: 2px; padding: 0 20px; height: 38px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
         .bx-btn-success:hover { background-color: #a5c91b; }
         
-        .bx-btn-primary { background-color: #3bc8f5; color: #ffffff; text-transform: uppercase; font-weight: 700; font-size: 12px; border-radius: 2px; padding: 0 16px; height: 32px; transition: 0.2s; border: none; }
+        .bx-btn-primary { background-color: #3bc8f5; color: #ffffff; text-transform: uppercase; font-weight: 700; font-size: 12px; border-radius: 2px; padding: 0 16px; height: 32px; transition: 0.2s; border: none; cursor: pointer; }
         .bx-btn-primary:hover { background-color: #26a8d0; }
         
-        .bx-btn-default { background-color: #ffffff; border: 1px solid #c6cdd3; color: #535c69; border-radius: 2px; font-weight: 600; font-size: 13px; padding: 0 16px; height: 38px; transition: 0.2s; }
+        .bx-btn-default { background-color: #ffffff; border: 1px solid #c6cdd3; color: #535c69; border-radius: 2px; font-weight: 600; font-size: 13px; padding: 0 16px; height: 38px; transition: 0.2s; cursor: pointer; }
         .bx-btn-default:hover { border-color: #a0a5aa; background-color: #f8f9fa; }
 
         .bx-tab { text-transform: uppercase; font-size: 12px; font-weight: 700; color: #80868e; border-bottom: 2px solid transparent; padding: 18px 0 16px 0; margin-right: 24px; transition: 0.2s; cursor: pointer; display: inline-block; }
         .bx-tab:hover { color: #535c69; }
         .bx-tab.active { color: #535c69; border-bottom-color: #3bc8f5; }
 
-        .bx-card { background: #ffffff; border: 1px solid #e6e9ec; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: box-shadow 0.2s, border-color 0.2s; cursor: grab; position: relative; }
+        .bx-card { background: #ffffff; border: 1px solid #e6e9ec; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: box-shadow 0.2s, border-color 0.2s; position: relative; }
         .bx-card:hover { border-color: #c6cdd3; box-shadow: 0 3px 6px rgba(0,0,0,0.08); }
         .bx-card-title { color: #2067b0; transition: 0.2s; }
         .bx-card-title:hover { color: #105294; text-decoration: underline; }
@@ -50,6 +50,7 @@
         .comm-btn:hover { background: #e6e9ec; }
         
         /* Drag-and-Drop */
+        .cursor-grab { cursor: grab; }
         .cursor-grab:active { cursor: grabbing; }
         .drag-over { background-color: #e4e9ec !important; border: 1px dashed #a0a5aa !important; }
         .dragging { opacity: 0.6; transform: scale(0.98); }
@@ -64,8 +65,9 @@
     <div id="dayModal" class="fixed inset-0 bg-slate-900/40 hidden z-[155] flex items-center justify-center p-3 sm:p-4 transition-all">
         <div class="bg-white rounded-sm shadow-lg w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
-                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0">Отгрузки</h3>
-                <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none">&times;</button>
+                <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0 mx-auto">Отгрузки</h3>
+                <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none absolute right-4 sm:right-5">&times;</button>
             </div>
             <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
         </div>
@@ -74,8 +76,9 @@
     <div id="editModal" class="fixed inset-0 bg-slate-900/40 hidden z-[160] flex items-center justify-center p-3 sm:p-4 transition-all">
         <div class="bg-white rounded-sm shadow-lg w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
-                <h3 class="font-bold text-[#535c69] text-base m-0">Редактирование сделки</h3>
-                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none">&times;</button>
+                <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <h3 class="font-bold text-[#535c69] text-base m-0 mx-auto">Редактирование сделки</h3>
+                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none absolute right-4 sm:right-5">&times;</button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-4 flex-1 bg-white text-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -103,7 +106,7 @@
                 </div>
             </div>
             <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
-                <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
+                <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">← Назад</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success text-white" style="color: white !important;">Сохранить</button>
             </div>
         </div>
@@ -128,12 +131,13 @@
                 <button onclick="toggleSidebar()" class="md:hidden text-[#a0a5aa] text-2xl">&times;</button>
             </div>
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">CRM Сделки</a>
-                <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">Календарь отгрузок</a>
-                <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">Аналитика</a>
+                <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">💼 CRM Сделки</a>
+                <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📅 Календарь отгрузок</a>
+                <a href="#" onclick="switchSection('archive', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">🗄️ Архив отгруженных</a>
+                <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📊 Аналитика</a>
             </nav>
             <div class="p-4 border-t border-[#283240]">
-                <button onclick="lockCrm()" class="w-full px-3 py-2 text-[#a0a5aa] hover:text-white text-left font-semibold text-sm transition-colors">🚪 Выход</button>
+                <button onclick="lockCrm()" class="w-full px-3 py-2 text-[#a0a5aa] hover:text-white text-left font-semibold text-sm transition-colors cursor-pointer bg-transparent border-none">🚪 Выход</button>
             </div>
         </aside>
 
@@ -142,21 +146,21 @@
             <header class="bx-header sticky top-0 z-40 px-4 sm:px-6 h-auto sm:h-[60px] flex flex-col sm:flex-row items-center justify-between w-full">
                 <div class="flex items-center w-full sm:w-auto h-[60px] sm:h-auto border-b sm:border-0 border-[#e6e9ec] justify-between">
                     <div class="flex items-center gap-3">
-                        <button onclick="toggleSidebar()" class="md:hidden text-[#80868e] text-2xl">☰</button>
-                        <h1 id="headerTitle" class="text-lg font-semibold text-[#535c69]">Сделки</h1>
+                        <button onclick="toggleSidebar()" class="md:hidden text-[#80868e] text-2xl bg-transparent border-none cursor-pointer">☰</button>
+                        <h1 id="headerTitle" class="text-lg font-semibold text-[#535c69] m-0">Сделки</h1>
                     </div>
-                    <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-8 h-8 p-0 text-white rounded-sm">+</button>
+                    <button id="mobileAddBtn" onclick="toggleForm()" class="sm:hidden bx-btn-success w-8 h-8 p-0 text-white rounded-sm">+</button>
                 </div>
                 
                 <div id="dealsToolbar" class="flex flex-wrap items-center w-full sm:w-auto h-[60px] sm:h-auto justify-between sm:justify-end gap-4 overflow-x-auto no-scrollbar">
-                    <div class="flex shrink-0">
+                    <div id="viewToggles" class="flex shrink-0">
                         <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active">Канбан</div>
                         <div onclick="setView('list')" id="v-list" class="bx-tab">Список</div>
                         <div onclick="setView('table')" id="v-table" class="bx-tab mr-0 sm:mr-4">Таблица</div>
                     </div>
                     <div class="flex gap-2 items-center pb-2 sm:pb-0 shrink-0">
                         <input id="searchInput" oninput="renderData()" type="text" placeholder="Фильтр + поиск" class="bx-input w-40 sm:w-60">
-                        <button onclick="toggleForm()" class="hidden sm:flex bx-btn-success text-white" style="color: white !important;">+ Создать</button>
+                        <button id="addDealBtn" onclick="toggleForm()" class="hidden sm:flex bx-btn-success text-white" style="color: white !important;">+ Создать</button>
                     </div>
                 </div>
             </header>
@@ -164,10 +168,10 @@
             <div id="section-deals" class="p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 
                 <div class="flex gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar w-full snap-x">
-                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-[#535c69] text-white">Все</button>
-                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]">Не оплачен</button>
-                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]">Предоплата</button>
-                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]">Оплачен</button>
+                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-[#535c69] text-white cursor-pointer border-none">Все</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69] cursor-pointer">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69] cursor-pointer">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69] cursor-pointer">Оплачен</button>
                 </div>
 
                 <div id="formSection" class="hidden bg-white p-5 sm:p-6 border border-[#e6e9ec] rounded-sm mb-6 shadow-sm">
@@ -245,7 +249,7 @@
                                         <th class="px-4 py-3">Стадия</th>
                                         <th class="px-4 py-3">Счет / Поставщик</th>
                                         <th class="px-4 py-3">Отгрузка</th>
-                                        <th class="px-4 py-3 text-right">Действия</th>
+                                        <th class="px-4 py-3 text-right">Документ</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-items-content" class="divide-y divide-[#e6e9ec] text-[13px]"></tbody>
@@ -253,6 +257,27 @@
                         </div>
                         <div id="totalSum" class="bg-[#f8f9fa] px-4 py-3 text-right text-[#535c69] font-bold text-sm border-t border-[#e6e9ec]"></div>
                     </div>
+                </div>
+            </div>
+
+            <div id="section-archive" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="bg-white border border-[#e6e9ec] rounded-sm overflow-hidden w-full shadow-sm">
+                    <div class="overflow-x-auto no-scrollbar w-full">
+                        <table class="w-full text-left border-collapse min-w-[900px]">
+                            <thead>
+                                <tr class="bg-[#f8f9fa] border-b border-[#e6e9ec] text-[10px] font-bold text-[#a0a5aa] uppercase">
+                                    <th class="px-4 py-3 w-16 text-center">ID</th>
+                                    <th class="px-4 py-3">Имя клиента / Связь</th>
+                                    <th class="px-4 py-3">Итоговая сумма</th>
+                                    <th class="px-4 py-3">Счет / Поставщик</th>
+                                    <th class="px-4 py-3">Дата отгрузки</th>
+                                    <th class="px-4 py-3 text-right">Договор / Файл</th>
+                                </tr>
+                            </thead>
+                            <tbody id="archive-items-content" class="divide-y divide-[#e6e9ec] text-[13px]"></tbody>
+                        </table>
+                    </div>
+                    <div id="archiveTotalSum" class="bg-[#e6f4d3] px-4 py-3 text-right text-[#5c8a00] font-bold text-sm border-t border-[#c2e28a]"></div>
                 </div>
             </div>
 
@@ -312,9 +337,7 @@
             e.target.classList.remove('dragging');
             document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over'));
         }
-        function allowDrop(e) {
-            e.preventDefault(); e.currentTarget.classList.add('drag-over');
-        }
+        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
         function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
         function dropCard(e, newStatus) {
             e.preventDefault(); e.currentTarget.classList.remove('drag-over');
@@ -372,10 +395,21 @@
         }
 
         function switchSection(sectionId, btnElement) {
-            ['deals', 'calendar', 'analytics'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
+            ['deals', 'calendar', 'analytics', 'archive'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
             document.getElementById('section-' + sectionId).classList.remove('hidden');
-            document.getElementById('headerTitle').innerText = sectionId === 'deals' ? 'Сделки' : (sectionId === 'calendar' ? 'Календарь отгрузок' : 'Аналитика');
-            document.getElementById('dealsToolbar').classList.toggle('hidden', sectionId !== 'deals');
+            
+            const titles = { 'deals': 'Сделки', 'calendar': 'Календарь отгрузок', 'analytics': 'Аналитика', 'archive': 'Архив отгруженных' };
+            document.getElementById('headerTitle').innerText = titles[sectionId];
+            
+            if (sectionId === 'deals' || sectionId === 'archive') {
+                document.getElementById('dealsToolbar').classList.remove('hidden');
+                document.getElementById('viewToggles').classList.toggle('hidden', sectionId === 'archive');
+                document.getElementById('addDealBtn').classList.toggle('hidden', sectionId === 'archive');
+                document.getElementById('mobileAddBtn').classList.toggle('hidden', sectionId === 'archive');
+            } else {
+                document.getElementById('dealsToolbar').classList.add('hidden');
+                document.getElementById('mobileAddBtn').classList.add('hidden');
+            }
             
             document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
@@ -401,6 +435,7 @@
                 return ms && tag;
             });
             
+            // Управляем видимостью для Сделок
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
             document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
             document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
@@ -411,18 +446,24 @@
             });
 
             const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
-            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 }; let total = 0;
+            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 }; 
+            let total = 0;
+            let archiveTotal = 0;
+
             Object.values(containers).forEach(id => document.getElementById(id).innerHTML = '');
-            document.getElementById('list-items-content').innerHTML = ''; document.getElementById('table-items-content').innerHTML = '';
+            document.getElementById('list-items-content').innerHTML = ''; 
+            document.getElementById('table-items-content').innerHTML = '';
+            document.getElementById('archive-items-content').innerHTML = '';
 
             filtered.forEach(item => {
-                const status = item.status || 'Новый'; counts[status]++; total += Number(item.total_price || 0);
+                const status = item.status || 'Новый'; 
+                counts[status]++; 
+                if(status !== 'Завершен') total += Number(item.total_price || 0);
 
                 let badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#eef2f4] text-[#535c69]">Новый</span>`;
                 let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-[#3bc8f5] hover:text-[#26a8d0]";
                 
-                // Переменные для кнопки НАЗАД
-                let prevSt = null, prevBtnTxt = "⬅ Назад", prevBtnClass = "text-[#a0a5aa] hover:text-[#535c69]";
+                let prevSt = null, prevBtnTxt = "⬅ Назад", prevBtnClass = "text-[#a0a5aa] hover:text-[#535c69] bg-transparent border-none cursor-pointer";
 
                 if (status === 'В работе') { 
                     badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#dff3fa] text-[#1198c6]">В работе</span>`;
@@ -442,17 +483,37 @@
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
                 const comms = cleanPhone ? `<div class="flex gap-1 ml-2 pointer-events-auto"><a href="tel:+${cleanPhone}" class="comm-btn">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn text-[#25D366]">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn text-[#0088cc]">✈️</a></div>` : '';
                 const displayNum = item.order_number || item.id;
-                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-[#a0a5aa] hover:text-[#535c69] text-[11px] font-bold pointer-events-auto uppercase flex items-center gap-1 transition-colors">📎 Файл</a>` : '';
+                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-[#a0a5aa] hover:text-[#535c69] text-[11px] font-bold pointer-events-auto uppercase flex items-center gap-1 transition-colors text-decoration-none">📎 Файл</a>` : '';
 
                 let bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
                 let balHtml = item.prepayment ? `<div class="text-[10px] font-semibold ${bal <= 0 ? 'text-[#5c8a00]' : 'text-[#f05b57]'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
+
+                // Отрисовка для АРХИВА
+                if (status === 'Завершен') {
+                    archiveTotal += Number(item.total_price || 0);
+                    const archiveRow = `
+                    <tr class="hover:bg-[#f8f9fa] transition-colors group border-b border-[#e6e9ec]">
+                        <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
+                                ${comms}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div></td>
+                        <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
+                        <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
+                        <td class="px-4 py-3 text-right">${fileLink}</td>
+                    </tr>`;
+                    document.getElementById('archive-items-content').innerHTML += archiveRow;
+                }
 
                 // КАНБАН
                 const card = `
                 <div class="bx-card p-3.5 flex flex-col gap-2 cursor-grab" draggable="true" ondragstart="dragStart(event, ${item.id})" ondragend="dragEnd(event)">
                     <div class="flex justify-between items-start pointer-events-none">
                         <div class="flex items-center flex-1 min-w-0 pr-2 pointer-events-auto">
-                            <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px]">${item.customer_name}</h4>
+                            <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px] m-0">${item.customer_name}</h4>
                             ${comms}
                         </div>
                         <span class="text-[10px] font-semibold text-[#a0a5aa] shrink-0 pointer-events-none">#${displayNum}</span>
@@ -466,14 +527,14 @@
                         <div class="pointer-events-auto">${fileLink}</div>
                         <div class="flex items-center gap-3 pointer-events-auto">
                             ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="${prevBtnClass} text-[10px] font-bold uppercase transition-colors">${prevBtnTxt}</button>` : ''}
-                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase transition-colors">${btnTxt} ➔</button>` : ''}
+                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} bg-transparent border-none cursor-pointer text-[10px] font-bold uppercase transition-colors p-0">${btnTxt} ➔</button>` : ''}
                         </div>
                     </div>
                 </div>`;
 
                 // СПИСОК
                 const list = `
-                <div class="bx-card p-3 flex items-center justify-between cursor-pointer" onclick="openEditModal(${item.id})">
+                <div class="bx-card p-3 flex items-center justify-between cursor-pointer mb-2" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
                             <div class="font-bold text-[13px] text-[#2067b0] truncate hover:underline">${item.customer_name}</div>
@@ -502,23 +563,24 @@
                     <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
                     <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
                     <td class="px-4 py-3 text-right">
-                        <div class="flex justify-end items-center gap-3">
+                        <div class="flex justify-end items-center gap-4">
                             ${fileLink}
-                            ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="text-xs font-bold uppercase text-[#a0a5aa] hover:text-[#535c69]" title="Вернуть назад">⬅</button>` : ''}
-                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-xs font-bold uppercase ${status === 'Завершен' ? 'hidden' : ''}" title="Вперед">➔</button>
+                            ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="${prevBtnClass} text-xs font-bold uppercase" title="Вернуть назад">⬅</button>` : ''}
+                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} bg-transparent border-none cursor-pointer text-xs font-bold uppercase ${status === 'Завершен' ? 'hidden' : ''}" title="Вперед">➔</button>
                         </div>
                     </td>
                 </tr>`;
 
                 if(activeView === 'kanban' && containers[status]) document.getElementById(containers[status]).innerHTML += card;
-                if(activeView === 'list') document.getElementById('list-items-content').innerHTML += list;
-                if(activeView === 'table') document.getElementById('table-items-content').innerHTML += table;
+                if(activeView === 'list' && status !== 'Завершен') document.getElementById('list-items-content').innerHTML += list;
+                if(activeView === 'table' && status !== 'Завершен') document.getElementById('table-items-content').innerHTML += table;
             });
 
             document.getElementById('cnt-new').innerText = counts['Новый'];
             document.getElementById('cnt-work').innerText = counts['В работе'];
             document.getElementById('cnt-done').innerText = counts['Завершен'];
             document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
+            document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
         }
 
         function checkTodaysShipments() {
@@ -540,7 +602,7 @@
             currentSupplierFilter = st; 
             ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'].forEach(tab => {
                 const btn = document.getElementById('filter-' + tab);
-                if (btn) btn.className = tab === st ? 'filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-[#535c69] text-white' : 'filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]';
+                if (btn) btn.className = tab === st ? 'filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-[#535c69] text-white cursor-pointer border-none' : 'filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69] cursor-pointer';
             });
             renderData(); 
         }
@@ -568,7 +630,7 @@
             
             const linkDiv = document.getElementById('currentFileLink');
             if (o.file_url) {
-                linkDiv.innerHTML = `<div class="flex items-center gap-3 mb-2"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-[#2067b0] hover:underline">📎 Открыть текущий документ</a><button type="button" onclick="deleteAttachedFile(${o.id}, '${o.file_url}')" class="text-[11px] font-bold text-[#f05b57] hover:underline">Удалить</button></div>`;
+                linkDiv.innerHTML = `<div class="flex items-center gap-3 mb-2"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-[#2067b0] hover:underline">📎 Открыть текущий документ</a><button type="button" onclick="deleteAttachedFile(${o.id}, '${o.file_url}')" class="text-[11px] font-bold text-[#f05b57] bg-transparent border-none cursor-pointer hover:underline p-0">Удалить</button></div>`;
             } else { linkDiv.innerHTML = '<span class="text-[#a0a5aa] text-xs">Файл не загружен</span>'; }
             
             document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
@@ -649,7 +711,7 @@
             } else {
                 list.innerHTML = dayOrders.map(o => {
                     const st = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]');
-                    return `<div class="p-3 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-1.5" onclick="openEditModal(${o.id})"><div class="flex justify-between items-start"><div class="font-bold text-[#2067b0] text-[13px]">${o.customer_name}</div><span class="px-1.5 py-0.5 rounded-sm uppercase text-[9px] font-bold ${st}">${o.status || 'Новый'}</span></div><div class="text-[11px] font-mono text-[#a0a5aa]">Заказ #${o.order_number || o.id}</div><div class="text-[14px] font-bold text-[#535c69]">${Number(o.total_price || 0).toLocaleString()} ₽</div></div>`
+                    return `<div class="p-3 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-1.5" onclick="openEditModal(${o.id})"><div class="flex justify-between items-start"><div class="font-bold text-[#2067b0] text-[13px] hover:underline">${o.customer_name}</div><span class="px-1.5 py-0.5 rounded-sm uppercase text-[9px] font-bold ${st}">${o.status || 'Новый'}</span></div><div class="text-[11px] font-mono text-[#a0a5aa]">Заказ #${o.order_number || o.id}</div><div class="text-[14px] font-bold text-[#535c69]">${Number(o.total_price || 0).toLocaleString()} ₽</div></div>`
                 }).join('');
             }
             document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
