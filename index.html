@@ -27,6 +27,7 @@
             background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)) !important;
         }
 
+        /* ПЛАВНАЯ ПРОКРУТКА */
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -55,7 +56,7 @@
         .bx-tab:hover { color: #535c69 !important; }
         .bx-tab.active { color: #535c69 !important; border-bottom-color: #3bc8f5 !important; }
 
-        .bx-card { border: 1px solid #e6e9ec !important; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: box-shadow 0.2s, border-color 0.2s; position: relative; background: #fff !important; }
+        .bx-card { border: 1px solid #e6e9ec !important; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: box-shadow 0.2s, border-color 0.2s; position: relative; }
         .bx-card:hover { border-color: #c6cdd3 !important; box-shadow: 0 3px 6px rgba(0,0,0,0.08); }
         .bx-card-title { color: #2067b0 !important; transition: 0.2s; }
         .bx-card-title:hover { color: #105294 !important; text-decoration: underline; }
@@ -79,6 +80,7 @@
         
         .bx-tag { display: inline-block; background-color: #e6e9ec; color: #535c69; border-radius: 2px; padding: 2px 6px; font-size: 10px; text-transform: lowercase; font-weight: 600; white-space: nowrap; }
 
+        /* Стили для файлового менеджера */
         .file-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; border: 1px solid #e6e9ec; border-radius: 4px; background: #fff; transition: 0.2s; height: 120px; cursor: pointer; }
         .file-item:hover { border-color: #3bc8f5; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transform: translateY(-2px); }
         .file-icon { font-size: 40px; margin-bottom: 8px; pointer-events: none; }
@@ -208,9 +210,10 @@
 
         <aside id="sidebar" class="bx-sidebar fixed inset-y-0 left-0 w-60 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-lg">
             <div class="p-5 text-lg font-bold flex justify-between items-center text-white border-b border-[#283240]">
-                <span>Хорошие <span style="color: #3bc8f5;">полы</span></span>
+                <span onclick="switchSection('dashboard', document.getElementById('nav-dashboard'))" class="cursor-pointer hover:opacity-80 transition-opacity">Хорошие <span style="color: #3bc8f5;">полы</span></span>
                 <button onclick="toggleSidebar()" class="md:hidden text-[#a0a5aa] text-2xl bg-transparent border-none cursor-pointer">&times;</button>
             </div>
+            
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 <a href="#" id="nav-dashboard" onclick="switchSection('dashboard', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">🏠 Главная</a>
                 <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">💼 Сделки</a>
@@ -288,13 +291,22 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bg-white border border-[#e6e9ec] rounded-sm p-5 shadow-sm">
                         <div class="flex justify-between items-center border-b border-[#e6e9ec] pb-3 mb-4">
-                            <h3 class="font-bold text-[#535c69] text-sm uppercase">🚚 Отгрузки на сегодня</h3>
+                            <h3 class="font-bold text-[#535c69] text-sm uppercase">🚚 Отгрузки сегодня</h3>
                             <button onclick="switchSection('calendar', document.querySelectorAll('.bx-sidebar-item')[4])" class="text-[11px] font-bold text-[#3bc8f5] bg-transparent border-none cursor-pointer hover:underline p-0">Календарь →</button>
                         </div>
-                        <div id="dash-todays-shipments" class="space-y-2">
+                        <div id="dash-todays-shipments" class="space-y-2 max-h-[250px] overflow-y-auto pr-1">
+                            </div>
+                    </div>
+
+                    <div class="bg-white border border-[#e6e9ec] rounded-sm p-5 shadow-sm">
+                        <div class="flex justify-between items-center border-b border-[#e6e9ec] pb-3 mb-4">
+                            <h3 class="font-bold text-[#535c69] text-sm uppercase">🔜 Ближайшие отгрузки</h3>
+                            <button onclick="switchSection('calendar', document.querySelectorAll('.bx-sidebar-item')[4])" class="text-[11px] font-bold text-[#3bc8f5] bg-transparent border-none cursor-pointer hover:underline p-0">Календарь →</button>
+                        </div>
+                        <div id="dash-upcoming-shipments" class="space-y-2 max-h-[250px] overflow-y-auto pr-1">
                             </div>
                     </div>
 
@@ -610,7 +622,6 @@
             document.getElementById('mainCrm').classList.remove('hidden');
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
             try { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); } } catch(e) {}
-            // Инициализация Дашборда по умолчанию
             switchSection('dashboard', document.getElementById('nav-dashboard'));
             loadData(); loadTasks(); loadFiles();
         }
@@ -659,51 +670,75 @@
         function renderDashboard() {
             const today = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('dash-date').innerText = "Сегодня: " + today.toLocaleDateString('ru-RU', options);
+            let dEl = document.getElementById('dash-date'); if(dEl) dEl.innerText = "Сегодня: " + today.toLocaleDateString('ru-RU', options);
 
             const activeDeals = allOrders.filter(o => o.status !== 'Завершен');
             const totalActiveSum = activeDeals.reduce((sum, o) => sum + (Number(o.total_price) || 0), 0);
             const openTasks = allTasks.filter(t => !t.is_completed);
 
-            document.getElementById('dash-active-deals').innerText = activeDeals.length;
-            document.getElementById('dash-active-sum').innerText = totalActiveSum.toLocaleString();
-            document.getElementById('dash-active-tasks').innerText = openTasks.length;
+            let dActiveDeals = document.getElementById('dash-active-deals'); if(dActiveDeals) dActiveDeals.innerText = activeDeals.length;
+            let dActiveSum = document.getElementById('dash-active-sum'); if(dActiveSum) dActiveSum.innerText = totalActiveSum.toLocaleString();
+            let dActiveTasks = document.getElementById('dash-active-tasks'); if(dActiveTasks) dActiveTasks.innerText = openTasks.length;
 
-            // Отгрузки на сегодня
+            // Отгрузки сегодня
             const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             const todaysOrders = allOrders.filter(o => o.shipment_date === todayStr);
             const shipmentsContainer = document.getElementById('dash-todays-shipments');
             
-            if (todaysOrders.length === 0) {
-                shipmentsContainer.innerHTML = `<div class="text-[#a0a5aa] text-sm text-center py-4">На сегодня отгрузок не запланировано.</div>`;
-            } else {
-                shipmentsContainer.innerHTML = todaysOrders.map(o => `
-                    <div class="flex justify-between items-center p-3 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa] hover:border-[#c6cdd3] cursor-pointer" onclick="openEditModal(${o.id})">
-                        <div>
-                            <div class="font-bold text-[#2067b0] text-sm">${o.customer_name}</div>
-                            <div class="text-[11px] text-[#a0a5aa] mt-1">${o.delivery_address || 'Адрес не указан'}</div>
+            if(shipmentsContainer) {
+                if (todaysOrders.length === 0) {
+                    shipmentsContainer.innerHTML = `<div class="text-[#a0a5aa] text-sm text-center py-4">На сегодня отгрузок не запланировано.</div>`;
+                } else {
+                    shipmentsContainer.innerHTML = todaysOrders.map(o => `
+                        <div class="flex justify-between items-center p-3 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa] hover:border-[#c6cdd3] cursor-pointer" onclick="openEditModal(${o.id})">
+                            <div class="min-w-0 pr-2">
+                                <div class="font-bold text-[#2067b0] text-sm truncate">${o.customer_name}</div>
+                                <div class="text-[11px] text-[#a0a5aa] mt-1 truncate">${o.delivery_address || 'Адрес не указан'}</div>
+                            </div>
+                            <span class="px-2 py-1 rounded-sm uppercase text-[8px] font-bold bg-[#dff3fa] text-[#1198c6] whitespace-nowrap">${o.status || 'Новый'}</span>
                         </div>
-                        <span class="px-2 py-1 rounded-sm uppercase text-[9px] font-bold bg-[#dff3fa] text-[#1198c6]">${o.status || 'Новый'}</span>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
 
-            // Задачи (первые 5 открытых)
+            // БЛИЖАЙШИЕ ОТГРУЗКИ
+            const upcomingOrders = allOrders
+                .filter(o => o.shipment_date && o.shipment_date > todayStr && o.status !== 'Завершен')
+                .sort((a, b) => new Date(a.shipment_date) - new Date(b.shipment_date))
+                .slice(0, 5);
+                
+            const upcomingContainer = document.getElementById('dash-upcoming-shipments');
+            if(upcomingContainer) {
+                if (upcomingOrders.length === 0) {
+                    upcomingContainer.innerHTML = `<div class="text-[#a0a5aa] text-sm text-center py-4">Предстоящих отгрузок нет.</div>`;
+                } else {
+                    upcomingContainer.innerHTML = upcomingOrders.map(o => `
+                        <div class="flex justify-between items-center p-3 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa] hover:border-[#c6cdd3] cursor-pointer" onclick="openEditModal(${o.id})">
+                            <div class="min-w-0 pr-2">
+                                <div class="font-bold text-[#2067b0] text-sm truncate">${o.customer_name}</div>
+                                <div class="text-[11px] font-bold text-[#f05b57] mt-1">📅 ${formatDateStr(o.shipment_date)}</div>
+                            </div>
+                            <span class="px-2 py-1 rounded-sm uppercase text-[8px] font-bold bg-[#eef2f4] text-[#535c69] whitespace-nowrap">${o.status || 'Новый'}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
             const tasksContainer = document.getElementById('dash-recent-tasks');
-            const topTasks = openTasks.slice(0, 5);
-            
-            if (topTasks.length === 0) {
-                tasksContainer.innerHTML = `<div class="text-[#a0a5aa] text-sm text-center py-4">Нет открытых задач. Вы молодец! 🎉</div>`;
-            } else {
-                tasksContainer.innerHTML = topTasks.map(t => `
-                    <div class="flex items-center gap-3 p-2.5 border-b border-[#e6e9ec] last:border-0 hover:bg-[#f8f9fa] cursor-pointer" onclick="toggleTask(${t.id}, true)">
-                        <div class="w-4 h-4 border-2 border-[#c6cdd3] rounded-sm flex-shrink-0 hover:border-[#3bc8f5] transition-colors"></div>
-                        <div class="text-sm text-[#535c69] truncate flex-1">${t.title}</div>
-                    </div>
-                `).join('');
+            if(tasksContainer) {
+                const topTasks = openTasks.slice(0, 5);
+                if (topTasks.length === 0) {
+                    tasksContainer.innerHTML = `<div class="text-[#a0a5aa] text-sm text-center py-4">Нет открытых задач. Вы молодец! 🎉</div>`;
+                } else {
+                    tasksContainer.innerHTML = topTasks.map(t => `
+                        <div class="flex items-center gap-3 p-2.5 border-b border-[#e6e9ec] last:border-0 hover:bg-[#f8f9fa] cursor-pointer" onclick="toggleTask(${t.id}, true)">
+                            <div class="w-4 h-4 border-2 border-[#c6cdd3] rounded-sm flex-shrink-0 hover:border-[#3bc8f5] transition-colors"></div>
+                            <div class="text-sm text-[#535c69] truncate flex-1">${t.title}</div>
+                        </div>
+                    `).join('');
+                }
             }
         }
-
 
         // ================= ФАЙЛОВЫЙ МЕНЕДЖЕР =================
         async function loadFiles() {
@@ -865,7 +900,7 @@
                 const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
                 allTasks = data || []; renderTasks();
-                if(activeView === 'dashboard' || !document.getElementById('section-dashboard').classList.contains('hidden')) renderDashboard(); // Update dash
+                if(activeView === 'dashboard' || !document.getElementById('section-dashboard').classList.contains('hidden')) renderDashboard(); 
             } catch (err) { console.log("Таблица задач еще не создана."); }
         }
 
@@ -944,7 +979,7 @@
                 if (error) throw error;
                 allOrders = data || []; 
                 renderData(); renderAnalytics(); checkTodaysShipments();
-                if(activeView === 'dashboard' || !document.getElementById('section-dashboard').classList.contains('hidden')) renderDashboard(); // Update dash
+                if(activeView === 'dashboard' || !document.getElementById('section-dashboard').classList.contains('hidden')) renderDashboard(); 
             } catch (err) { showToast("Сначала выполните SQL скрипт для тегов", true); }
         }
 
@@ -978,7 +1013,7 @@
 
             ['kanban', 'list', 'table'].forEach(m => {
                 const el = document.getElementById('v-' + m);
-                el.className = activeView === m ? 'bx-tab active' : 'bx-tab';
+                if(el) el.className = activeView === m ? 'bx-tab active' : 'bx-tab';
             });
 
             const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'На складе': 'col-stock', 'Завершен': 'col-done' };
