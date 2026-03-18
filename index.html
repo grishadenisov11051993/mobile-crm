@@ -12,6 +12,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; } 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
@@ -48,7 +49,7 @@
     <div id="dayModal" class="fixed inset-0 bg-slate-900/60 hidden z-[155] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeDayModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
                 <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Отгрузки</h3>
                 <button onclick="closeDayModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
             </div>
@@ -59,7 +60,7 @@
     <div id="editModal" class="fixed inset-0 bg-slate-900/60 hidden z-[160] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeEditModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
                 <h3 class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Карточка заказа</h3>
                 <button onclick="closeEditModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
             </div>
@@ -86,7 +87,6 @@
                     <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Документы</label>
                     <div id="currentFileLink" class="mb-3 text-sm text-slate-600"></div>
                     <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-3 file:bg-white file:text-blue-700 file:border file:border-blue-200 file:rounded-lg cursor-pointer hover:file:bg-blue-50 transition">
-                    <p class="text-[9px] text-slate-400 mt-2">Чтобы заменить файл, просто выберите новый и нажмите "Сохранить".</p>
                 </div>
             </div>
             <div class="p-4 sm:p-5 border-t border-slate-100 bg-white flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 shrink-0 rounded-b-2xl">
@@ -107,11 +107,10 @@
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
-        
         <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800 shadow-2xl">
-            <div class="p-6 text-xl font-extrabold flex justify-between items-center tracking-tight text-white">
+            <div class="p-6 text-xl font-extrabold flex justify-between items-center text-white">
                 <span>Хорошие <span class="text-blue-500">полы</span></span>
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-white text-3xl leading-none">&times;</button>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 text-3xl">&times;</button>
             </div>
             <nav class="flex-1 px-4 py-2 space-y-1.5 overflow-y-auto">
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 ml-3 mt-4">Рабочая область</p>
@@ -123,22 +122,22 @@
         </aside>
 
         <main class="flex-1 md:ml-64 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
-            <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col sm:flex-row lg:flex-row items-center justify-between gap-4 w-full">
-                <div class="flex items-center justify-between w-full sm:w-auto">
+            <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-4 w-full">
+                <div class="flex items-center justify-between w-full lg:w-auto">
                     <div class="flex items-center gap-3">
                         <button onclick="toggleSidebar()" class="md:hidden text-slate-600 text-2xl">☰</button>
                         <h1 id="headerTitle" class="text-xl sm:text-2xl font-bold text-slate-800">Сделки</h1>
                     </div>
-                    <button onclick="toggleForm()" class="sm:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
+                    <button onclick="toggleForm()" class="lg:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
                 </div>
-                <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
+                <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-center sm:justify-end">
                     <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner mr-2">
                         <button onclick="setView('kanban')" id="v-kanban" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Доска</button>
                         <button onclick="setView('list')" id="v-list" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Список</button>
                         <button onclick="setView('table')" id="v-table" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Таблица</button>
                     </div>
                     <input id="searchInput" oninput="renderData()" type="text" placeholder="🔍 Поиск..." class="input-modern flex-1 sm:flex-none sm:w-48 py-2 shadow-sm">
-                    <button onclick="toggleForm()" class="hidden sm:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
+                    <button onclick="toggleForm()" class="hidden lg:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
                 </div>
             </header>
 
@@ -388,7 +387,6 @@
                 let bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
                 let balHtml = item.prepayment ? `<div class="text-[10px] font-medium ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
 
-                // КАНБАН КАРТОЧКА
                 const card = `
                 <div class="bx-card p-4 flex flex-col gap-3">
                     <div class="flex justify-between items-start">
@@ -411,7 +409,6 @@
                     </div>
                 </div>`;
 
-                // СПИСОК
                 const list = `
                 <div class="bx-card p-4 flex items-center justify-between gap-4 cursor-pointer" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0">
@@ -427,7 +424,6 @@
                     </div>
                 </div>`;
 
-                // ТАБЛИЦА
                 const table = `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${displayNum}</td>
@@ -461,6 +457,7 @@
         }
 
         function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
+        
         function setFilter(st) { 
             currentSupplierFilter = st; 
             const allFilters = ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'];
@@ -511,29 +508,22 @@
             checkBodyScroll();
         }
 
-        // УДАЛЕНИЕ ФАЙЛА ИЗ БАЗЫ
         async function deleteAttachedFile(orderId, fileUrl) {
             if(!confirm("Удалить этот файл навсегда?")) return;
-            
             try {
-                // Вытаскиваем имя файла из ссылки
                 const fileName = fileUrl.split('/').pop();
-                
                 if (fileName) {
                     await _supabase.storage.from('order-files').remove([fileName]);
                 }
-                
                 await _supabase.from('orders').update({ file_url: null }).eq('id', orderId);
                 
                 const linkDiv = document.getElementById('currentFileLink');
                 linkDiv.innerHTML = '<span class="text-slate-400 text-xs font-medium">Файл успешно удален</span>';
                 document.getElementById('editFile').value = '';
                 
-                // Обновляем данные локально, чтобы файл пропал с доски
                 const order = allOrders.find(o => o.id === orderId);
                 if (order) order.file_url = null;
                 renderData();
-                
                 showToast("Файл удален", false);
             } catch (err) {
                 showToast("Ошибка удаления файла", true);
@@ -561,15 +551,11 @@
             };
 
             try {
-                // Умная загрузка: если выбран новый файл
                 if (fileInput.files.length > 0) {
-                    // 1. Сначала удаляем старый (если он был)
                     if (order && order.file_url) {
                         const oldFileName = order.file_url.split('/').pop();
                         if (oldFileName) await _supabase.storage.from('order-files').remove([oldFileName]);
                     }
-                    
-                    // 2. Грузим новый
                     const file = fileInput.files[0];
                     const fileExt = file.name.split('.').pop();
                     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
@@ -668,10 +654,11 @@
             if(dayOrders.length === 0) {
                 list.innerHTML = `<div class="text-center text-slate-400 py-8 text-sm font-medium">На этот день отгрузок не запланировано</div>`;
             } else {
+                // ИСПРАВЛЕНИЕ: здесь убран closeDayModal(), чтобы модалка дня не закрывалась
                 list.innerHTML = dayOrders.map(o => {
                     const statusColors = o.status === 'Завершен' ? 'bg-emerald-50 text-emerald-600' : (o.status === 'В работе' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600');
                     return `
-                    <div class="p-4 bg-white border border-slate-100 rounded-xl shadow-sm cursor-pointer hover:border-blue-300 hover:shadow-md transition-all flex flex-col gap-2" onclick="closeDayModal(); openEditModal(${o.id})">
+                    <div class="p-4 bg-white border border-slate-100 rounded-xl shadow-sm cursor-pointer hover:border-blue-300 hover:shadow-md transition-all flex flex-col gap-2" onclick="openEditModal(${o.id})">
                         <div class="flex justify-between items-start">
                             <div class="font-bold text-slate-800">${o.customer_name}</div>
                             <span class="px-2 py-0.5 rounded uppercase text-[9px] font-bold ${statusColors}">${o.status || 'Новый'}</span>
