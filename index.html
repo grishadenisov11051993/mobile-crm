@@ -12,32 +12,18 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; } 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-
-        .glass-header { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8); 
-        }
-
-        .bx-card { 
-            background: #ffffff; border: 1px solid #e2e8f0; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s ease; border-radius: 14px; 
-        }
+        .glass-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); }
+        .bx-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s ease; border-radius: 14px; }
         .bx-card:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -3px rgba(0,0,0,0.05); border-color: #cbd5e1; }
-
-        .input-modern { 
-            background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; 
-            padding: 10px 14px; font-size: 0.875rem; outline: none; transition: all 0.2s; color: #1e293b;
-        }
+        .input-modern { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 0.875rem; outline: none; transition: all 0.2s; color: #1e293b; }
         .input-modern:focus { background-color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-
         .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
-        .btn-primary:hover { box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); transform: translateY(-1px); }
-
         .view-btn-active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .comm-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 16px; transition: all 0.2s; background: #f1f5f9; border: 1px solid #e2e8f0; text-decoration: none;}
+        .comm-btn:hover { transform: translateY(-2px); background: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
     </style>
 </head>
 <body class="text-slate-800 transition-all duration-300">
@@ -47,20 +33,20 @@
     <div id="dayModal" class="fixed inset-0 bg-slate-900/60 hidden z-[155] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto tracking-tight">Отгрузки</h3>
-                <button onclick="closeDayModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none absolute right-4 sm:right-5">&times;</button>
+                <button onclick="closeDayModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Отгрузки</h3>
+                <button onclick="closeDayModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
             </div>
-            <div id="dayOrdersList" class="p-4 sm:p-5 overflow-y-auto overscroll-contain space-y-3 flex-1 bg-slate-50"></div>
+            <div id="dayOrdersList" class="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1 bg-slate-50"></div>
         </div>
     </div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/60 hidden z-[160] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 class="font-bold text-slate-800 text-base sm:text-lg mx-auto tracking-tight">Карточка заказа</h3>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none absolute right-4 sm:right-5">&times;</button>
+                <button onclick="closeEditModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <h3 class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Карточка заказа</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
             </div>
             <div class="p-4 sm:p-6 overflow-y-auto overscroll-contain space-y-5 flex-1 bg-white">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -82,35 +68,33 @@
                 <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Стадия</label><select id="editStatus" class="input-modern w-full"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select></div>
                 <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Комментарий</label><textarea id="editComments" rows="2" class="input-modern w-full resize-none"></textarea></div>
                 <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                    <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Файл</label>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Документы</label>
                     <div id="currentFileLink" class="mb-3 text-sm text-slate-600"></div>
                     <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:bg-blue-100 file:text-blue-700 file:border-0 file:rounded-lg cursor-pointer">
                 </div>
             </div>
-            <div class="p-4 sm:p-5 border-t border-slate-100 bg-white flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 shrink-0">
-                <button onclick="closeEditModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-slate-600 font-semibold hover:bg-slate-100 transition-colors">Отмена</button>
-                <button onclick="saveEdit()" id="saveEditBtn" class="btn-primary w-full sm:w-auto px-6 py-2.5 rounded-xl font-semibold">Сохранить</button>
+            <div class="p-4 sm:p-5 border-t border-slate-100 bg-white flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 shrink-0 rounded-b-2xl">
+                <button onclick="closeEditModal()" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl text-slate-600 font-semibold hover:bg-slate-100 transition-colors">Отмена</button>
+                <button onclick="saveEdit()" id="saveEditBtn" class="btn-primary w-full sm:w-auto px-6 py-3 rounded-xl font-semibold">Сохранить</button>
             </div>
         </div>
     </div>
 
     <div id="authScreen" class="fixed inset-0 bg-[#0f172a] z-[150] flex flex-col items-center justify-center p-4">
         <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl w-full max-w-sm text-center">
-            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">🔒</div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2 tracking-tight">Хорошие полы</h2>
-            <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 transition mb-6 pin-input text-slate-800 text-center text-xl tracking-[0.5em]">
+            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">🔒</div>
+            <h2 class="text-2xl font-extrabold text-slate-800 mb-6 tracking-tight">Хорошие полы</h2>
+            <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 transition mb-6 pin-input text-slate-800 outline-none focus:border-blue-500">
             <button onclick="checkPin()" class="btn-primary w-full py-4 rounded-2xl text-lg font-bold">Войти</button>
         </div>
     </div>
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
-        
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
-
-        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800">
-            <div class="p-6 text-xl font-extrabold flex justify-between items-center tracking-tight">
-                <span class="text-white">Хорошие <span class="text-blue-500">полы</span></span>
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-white text-3xl leading-none">&times;</button>
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800 shadow-2xl">
+            <div class="p-6 text-xl font-extrabold flex justify-between items-center text-white">
+                <span>Хорошие <span class="text-blue-500">полы</span></span>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 text-3xl">&times;</button>
             </div>
             <nav class="flex-1 px-4 py-2 space-y-1.5 overflow-y-auto">
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 ml-3 mt-4">Рабочая область</p>
@@ -118,31 +102,27 @@
                 <a href="#" onclick="switchSection('calendar', this)" class="nav-btn block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white font-medium transition-all">📅 Календарь</a>
                 <a href="#" onclick="switchSection('analytics', this)" class="nav-btn block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white font-medium transition-all">📊 Аналитика</a>
             </nav>
-            <div class="p-4 border-t border-slate-800/50">
-                <button onclick="lockCrm()" class="w-full px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 text-left font-semibold flex items-center gap-3 transition-colors"><span>🔒</span> Заблокировать</button>
-            </div>
+            <div class="p-4 border-t border-slate-800/50"><button onclick="lockCrm()" class="w-full px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 text-left font-semibold flex items-center gap-3 transition-colors"><span>🔒</span> Заблокировать</button></div>
         </aside>
 
         <main class="flex-1 md:ml-64 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
             
-            <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-4 w-full">
-                <div class="flex items-center justify-between w-full lg:w-auto">
+            <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col sm:flex-row lg:flex-row items-center justify-between gap-4 w-full">
+                <div class="flex items-center justify-between w-full sm:w-auto">
                     <div class="flex items-center gap-3">
                         <button onclick="toggleSidebar()" class="md:hidden text-slate-600 text-2xl">☰</button>
                         <h1 id="headerTitle" class="text-xl sm:text-2xl font-bold text-slate-800">Сделки</h1>
                     </div>
-                    <button onclick="toggleForm()" class="lg:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
+                    <button onclick="toggleForm()" class="sm:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
                 </div>
-                
-                <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-center sm:justify-end">
+                <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
                     <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner mr-2">
                         <button onclick="setView('kanban')" id="v-kanban" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Доска</button>
                         <button onclick="setView('list')" id="v-list" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Список</button>
                         <button onclick="setView('table')" id="v-table" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Таблица</button>
                     </div>
-
                     <input id="searchInput" oninput="renderData()" type="text" placeholder="🔍 Поиск..." class="input-modern flex-1 sm:flex-none sm:w-48 py-2 shadow-sm">
-                    <button onclick="toggleForm()" class="hidden lg:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
+                    <button onclick="toggleForm()" class="hidden sm:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
                 </div>
             </header>
 
@@ -179,32 +159,12 @@
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-3 gap-6 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col">
-                        <div class="flex justify-between items-center mb-4 px-1">
-                            <h3 class="text-xs font-extrabold text-slate-500 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span>Новые</h3>
-                            <span id="cnt-new" class="bg-white border text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="col-new" class="space-y-4"></div>
-                    </div>
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col">
-                        <div class="flex justify-between items-center mb-4 px-1">
-                            <h3 class="text-xs font-extrabold text-blue-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span>В работе</h3>
-                            <span id="cnt-work" class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="col-work" class="space-y-4"></div>
-                    </div>
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col">
-                        <div class="flex justify-between items-center mb-4 px-1">
-                            <h3 class="text-xs font-extrabold text-emerald-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Успешно</h3>
-                            <span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="col-done" class="space-y-4"></div>
-                    </div>
+                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-slate-500 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span>Новые</h3><span id="cnt-new" class="bg-white border text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-new" class="space-y-4"></div></div>
+                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-blue-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span>В работе</h3><span id="cnt-work" class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-work" class="space-y-4"></div></div>
+                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-emerald-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Успешно</h3><span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-done" class="space-y-4"></div></div>
                 </div>
 
-                <div id="view-list-container" class="hidden space-y-3">
-                    <div id="list-items-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                </div>
+                <div id="view-list-container" class="hidden space-y-3"><div id="list-items-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
 
                 <div id="view-table-container" class="hidden">
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden w-full">
@@ -233,7 +193,7 @@
                 <div class="bg-white p-5 sm:p-8 rounded-2xl border shadow-sm">
                     <div class="flex justify-between items-center mb-8">
                         <button onclick="changeMonth(-1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">◀</button>
-                        <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-slate-800 capitalize"></h2>
+                        <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-slate-800 capitalize tracking-tight"></h2>
                         <button onclick="changeMonth(1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">▶</button>
                     </div>
                     <div class="grid grid-cols-7 gap-2 text-center text-[10px] font-extrabold text-slate-400 uppercase mb-3">
@@ -292,22 +252,25 @@
 
         function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
 
-        // ПЕРЕКЛЮЧАТЕЛЬ ВИДОВ
         function setView(mode) {
             activeView = mode;
             localStorage.setItem('crm_view_mode', mode);
             renderData();
         }
 
-        // АВТОРИЗАЦИЯ
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
         });
 
         function checkPin() {
-            if (document.getElementById('pinInput').value === SECRET_PIN) { sessionStorage.setItem('crm_auth', 'true'); unlockCrm(); } 
-            else { showToast("Неверный PIN-код", true); document.getElementById('pinInput').value = ''; }
+            if (document.getElementById('pinInput').value === SECRET_PIN) { 
+                sessionStorage.setItem('crm_auth', 'true'); 
+                unlockCrm(); 
+            } else { 
+                showToast("Неверный PIN-код", true); 
+                document.getElementById('pinInput').value = ''; 
+            }
         }
 
         function unlockCrm() {
@@ -315,6 +278,11 @@
             const main = document.getElementById('mainCrm');
             main.classList.remove('hidden');
             setTimeout(() => main.classList.remove('opacity-0'), 50);
+            
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+            
             loadData(); 
         }
 
@@ -343,11 +311,12 @@
             if(window.innerWidth < 768) toggleSidebar();
         }
 
-        // ДАННЫЕ
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
             if (error) return showToast("Ошибка загрузки", true);
-            allOrders = data; renderData();
+            allOrders = data; 
+            renderData();
+            checkTodaysShipments();
         }
 
         function formatDate(dateString) {
@@ -364,12 +333,10 @@
                 return matchesSearch && matchesTag;
             });
             
-            // Управление видимостью контейнеров
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
             document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
             document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
 
-            // Подсветка активной кнопки вида
             ['kanban', 'list', 'table'].forEach(m => {
                 document.getElementById('v-' + m).className = `px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide ${activeView === m ? 'view-btn-active shadow-sm' : 'text-slate-400 hover:text-slate-600'}`;
             });
@@ -401,7 +368,7 @@
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border-red-200";
 
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
-                const comms = cleanPhone ? `<div class="flex gap-2"><a href="tel:+${cleanPhone}" class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full">📞</a><a href="https://wa.me/${cleanPhone}" class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full">💬</a></div>` : '';
+                const comms = cleanPhone ? `<div class="flex gap-2 ml-2"><a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn" title="WhatsApp">💬</a></div>` : '';
                 const displayNum = item.order_number || `#${item.id}`;
                 const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px] uppercase">📎 Файл</a>` : '';
 
@@ -412,20 +379,22 @@
                 const card = `
                 <div class="bx-card p-4 flex flex-col gap-3">
                     <div class="flex justify-between items-start">
-                        <h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors">${item.customer_name}</h4>
-                        <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">${displayNum}</span>
+                        <div class="flex items-center flex-1 min-w-0 pr-2">
+                            <h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors truncate text-sm">${item.customer_name}</h4>
+                            ${comms}
+                        </div>
+                        <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded shrink-0">${displayNum}</span>
                     </div>
                     <div><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
                     <div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1">
                         <div class="flex justify-between"><span>Счет: ${item.supplier_invoice || '—'}</span><span class="px-1.5 rounded font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div>🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div>
                     </div>
-                    <div class="flex justify-between items-center pt-2 border-t">
-                        ${comms}
+                    <div class="flex justify-between items-center pt-2 border-t mt-1">
                         <div class="flex items-center gap-2">
                             ${fileLink}
-                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg transition-colors">${btnTxt}</button>
                         </div>
+                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg transition-colors">${btnTxt}</button>
                     </div>
                 </div>`;
 
@@ -433,7 +402,10 @@
                 const list = `
                 <div class="bx-card p-4 flex items-center justify-between gap-4 cursor-pointer" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0">
-                        <div class="font-bold text-slate-800 truncate">${item.customer_name}</div>
+                        <div class="flex items-center gap-2">
+                            <div class="font-bold text-slate-800 truncate">${item.customer_name}</div>
+                            ${comms}
+                        </div>
                         <div class="text-[11px] text-slate-400 mt-1">${displayNum} • ${formatDate(item.shipment_date)}</div>
                     </div>
                     <div class="text-right">
@@ -446,7 +418,12 @@
                 const table = `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${displayNum}</td>
-                    <td class="px-5 py-4 font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</td>
+                    <td class="px-5 py-4">
+                        <div class="flex items-center gap-2">
+                            <div class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
+                            ${comms}
+                        </div>
+                    </td>
                     <td class="px-5 py-4"><div class="font-extrabold text-slate-800">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
                     <td class="px-5 py-4">${statusBadge}</td>
                     <td class="px-5 py-4"><div class="text-xs font-bold text-slate-700">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded font-bold uppercase ${supColor}">${item.supplier_status || 'Не оплачен'}</span></td>
@@ -454,7 +431,7 @@
                     <td class="px-5 py-4 text-right">
                         <div class="flex justify-end items-center gap-3">
                             ${fileLink}
-                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} w-8 h-8 flex items-center justify-center rounded-lg text-lg">➔</button>
+                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} w-8 h-8 flex items-center justify-center rounded-lg text-lg ${status === 'Завершен' ? 'hidden' : ''}">➔</button>
                         </div>
                     </td>
                 </tr>`;
@@ -470,17 +447,45 @@
             document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
         }
 
-        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        function checkTodaysShipments() {
+            if (sessionStorage.getItem('notified_today') === 'true') return;
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            
+            const todaysOrders = allOrders.filter(o => o.shipment_date === dateStr);
+            if (todaysOrders.length > 0) {
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("Хорошие полы", { body: `⚠️ Внимание: на сегодня запланировано отгрузок: ${todaysOrders.length}` });
+                }
+                sessionStorage.setItem('notified_today', 'true');
+            }
+        }
+
         function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
-        function setFilter(st) { currentSupplierFilter = st; renderData(); }
+        
+        function setFilter(st) { 
+            currentSupplierFilter = st; 
+            const allFilters = ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'];
+            allFilters.forEach(tab => {
+                const btn = document.getElementById('filter-' + tab);
+                if (btn) {
+                    if (tab === st) {
+                        btn.className = 'filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-white shadow-md transition';
+                    } else {
+                        btn.className = 'filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition';
+                    }
+                }
+            });
+            renderData(); 
+        }
+
         function showToast(m, e) { const t = document.getElementById('toast'); t.innerText = m; t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-xl z-[200] text-sm font-bold transition-all ${e ? 'bg-red-500' : 'bg-slate-800'} text-white block`; setTimeout(() => t.classList.add('hidden'), 3000); }
         async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
         
-        function closeEditModal() { 
-            document.getElementById('editModal').classList.add('hidden'); 
-            currentEditId = null; 
-            checkBodyScroll(); 
-        }
+        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); currentEditId = null; checkBodyScroll(); }
 
         function openEditModal(id) {
             const o = allOrders.find(x => x.id === id); 
@@ -500,7 +505,7 @@
             
             const linkDiv = document.getElementById('currentFileLink');
             if (o.file_url) {
-                linkDiv.innerHTML = `<a href="${o.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs hover:bg-blue-100 transition">Посмотреть текущий файл</a>`;
+                linkDiv.innerHTML = `<a href="${o.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs hover:bg-blue-100 transition">Посмотреть прикрепленный файл</a>`;
             } else {
                 linkDiv.innerHTML = '<span class="text-slate-400 text-xs font-medium">Файл не загружен</span>';
             }
@@ -509,17 +514,15 @@
             checkBodyScroll();
         }
 
-        // СОХРАНЕНИЕ ИЗМЕНЕНИЙ (РЕДАКТИРОВАНИЕ)
         async function saveEdit() {
             if(!currentEditId) return;
-            const btn = document.getElementById('saveEditBtn');
-            btn.innerText = 'Сохранение...'; btn.disabled = true;
+            const btn = document.getElementById('saveEditBtn'); btn.innerText = 'Сохранение...'; btn.disabled = true;
 
             const updates = {
                 order_number: document.getElementById('editOrderNum').value,
                 customer_name: document.getElementById('editName').value,
-                total_price: document.getElementById('editPrice').value || 0,
-                prepayment: document.getElementById('editPrepayment').value || 0,
+                total_price: document.getElementById('editPrice').value || null,
+                prepayment: document.getElementById('editPrepayment').value || null,
                 phone: document.getElementById('editPhone').value,
                 supplier_invoice: document.getElementById('editInvoice').value,
                 supplier_status: document.getElementById('editSupplierStatus').value,
@@ -528,45 +531,33 @@
                 status: document.getElementById('editStatus').value
             };
 
-            // Логика загрузки файла в Supabase Storage (Бакет 'documents')
             const fileInput = document.getElementById('editFile');
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-                
-                const { error: uploadError } = await _supabase.storage.from('documents').upload(fileName, file);
+                const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
                 if (!uploadError) {
-                    const { data: publicUrlData } = _supabase.storage.from('documents').getPublicUrl(fileName);
+                    const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName);
                     updates.file_url = publicUrlData.publicUrl;
-                } else {
-                    console.error("Ошибка загрузки файла:", uploadError);
                 }
             }
 
             const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
             btn.innerText = 'Сохранить'; btn.disabled = false;
             
-            if (error) { 
-                showToast("Ошибка сохранения", true); 
-                console.error(error);
-            } else { 
-                showToast("Изменения сохранены!"); 
-                closeEditModal(); 
-                loadData(); 
-            }
+            if (error) { showToast("Ошибка сохранения", true); } 
+            else { showToast("Изменения сохранены!"); closeEditModal(); loadData(); }
         }
 
-        // СОЗДАНИЕ НОВОГО ЗАКАЗА
         async function saveOrder() {
-            const btn = document.getElementById('saveBtn');
-            btn.innerText = 'Создание...'; btn.disabled = true;
+            const btn = document.getElementById('saveBtn'); btn.innerText = 'Создание...'; btn.disabled = true;
 
             const newOrder = {
                 order_number: document.getElementById('cOrderNum').value,
                 customer_name: document.getElementById('cName').value,
-                total_price: document.getElementById('cPrice').value || 0,
-                prepayment: document.getElementById('cPrepayment').value || 0,
+                total_price: document.getElementById('cPrice').value || null,
+                prepayment: document.getElementById('cPrepayment').value || null,
                 phone: document.getElementById('cPhone').value,
                 supplier_invoice: document.getElementById('cInvoice').value,
                 supplier_status: document.getElementById('cSupplierStatus').value,
@@ -575,22 +566,16 @@
                 status: 'Новый'
             };
 
-            if (!newOrder.customer_name) {
-                showToast("Укажите имя клиента", true);
-                btn.innerText = 'Сохранить'; btn.disabled = false;
-                return;
-            }
+            if (!newOrder.customer_name) { showToast("Укажите имя клиента", true); btn.innerText = 'Сохранить'; btn.disabled = false; return; }
 
-            // Загрузка файла
             const fileInput = document.getElementById('cFile');
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-                
-                const { error: uploadError } = await _supabase.storage.from('documents').upload(fileName, file);
+                const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
                 if (!uploadError) {
-                    const { data: publicUrlData } = _supabase.storage.from('documents').getPublicUrl(fileName);
+                    const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName);
                     newOrder.file_url = publicUrlData.publicUrl;
                 }
             }
@@ -598,50 +583,32 @@
             const { error } = await _supabase.from('orders').insert([newOrder]);
             btn.innerText = 'Сохранить'; btn.disabled = false;
 
-            if (error) { 
-                showToast("Ошибка создания сделки", true); 
-                console.error(error);
-            } else { 
+            if (error) { showToast("Ошибка создания", true); } 
+            else { 
                 showToast("Сделка успешно создана!"); 
                 toggleForm(); 
-                // Очистка формы
                 ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile'].forEach(id => document.getElementById(id).value = '');
                 document.getElementById('cSupplierStatus').value = 'Не оплачен';
                 loadData(); 
             }
         }
 
-        // --- КАЛЕНДАРЬ ОТГРУЗОК ---
-
-        function changeMonth(direction) {
-            currentDate.setMonth(currentDate.getMonth() + direction);
-            renderCalendar();
-        }
+        function changeMonth(direction) { currentDate.setMonth(currentDate.getMonth() + direction); renderCalendar(); }
 
         function renderCalendar() {
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear(); const month = currentDate.getMonth();
             const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-            
             document.getElementById('calendarMonthLabel').innerText = `${monthNames[month]} ${year}`;
 
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-
-            // Корректировка для начала недели с понедельника
+            const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
             let offset = firstDay === 0 ? 6 : firstDay - 1; 
 
-            // Пустые ячейки до начала месяца
-            for (let i = 0; i < offset; i++) {
-                grid.innerHTML += `<div class="p-2 sm:p-4 rounded-xl border border-transparent"></div>`;
-            }
+            for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="p-2 sm:p-4 rounded-xl border border-transparent"></div>`;
 
             const today = new Date();
 
             for (let i = 1; i <= daysInMonth; i++) {
-                // Форматируем дату в YYYY-MM-DD для сравнения с БД
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
                 
@@ -651,9 +618,7 @@
                 }
 
                 const isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
-                const cellClasses = isToday 
-                    ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-100 shadow-sm' 
-                    : 'bg-white border-slate-100';
+                const cellClasses = isToday ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-100 shadow-sm' : 'bg-white border-slate-100';
 
                 grid.innerHTML += `
                 <div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-4 rounded-xl border ${cellClasses} hover:border-blue-300 hover:shadow-md cursor-pointer transition-all min-h-[70px] sm:min-h-[100px] flex flex-col items-center sm:items-start">
@@ -684,16 +649,10 @@
                     </div>
                 `}).join('');
             }
-            
-            document.getElementById('dayModal').classList.remove('hidden');
-            checkBodyScroll();
+            document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
         }
 
-        function closeDayModal() {
-            document.getElementById('dayModal').classList.add('hidden');
-            checkBodyScroll();
-        }
-
+        function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
     </script>
 </body>
 </html>
