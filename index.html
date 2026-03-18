@@ -12,7 +12,6 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; } 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
@@ -36,7 +35,10 @@
 
         .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
         .view-btn-active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-        .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
+        
+        /* Кнопки связи мини */
+        .comm-btn { width: 28px; height: 28px; display: flex; items-center; justify-content: center; border-radius: 8px; font-size: 14px; transition: all 0.2s; background: #f1f5f9; }
+        .comm-btn:hover { transform: scale(1.1); background: #e2e8f0; }
     </style>
 </head>
 <body class="text-slate-800 transition-all duration-300">
@@ -96,14 +98,14 @@
     <div id="authScreen" class="fixed inset-0 bg-[#0f172a] z-[150] flex flex-col items-center justify-center p-4">
         <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl w-full max-w-sm text-center">
             <div class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">🔒</div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2">Хорошие полы</h2>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2 tracking-tight">Хорошие полы</h2>
             <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 transition mb-6 pin-input text-slate-800">
             <button onclick="checkPin()" class="btn-primary w-full py-4 rounded-2xl text-lg font-bold">Войти</button>
         </div>
     </div>
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
-        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden transition-opacity"></div>
+        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
         <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800 shadow-2xl">
             <div class="p-6 text-xl font-extrabold flex justify-between items-center tracking-tight text-white">
                 <span>Хорошие <span class="text-blue-500">полы</span></span>
@@ -119,12 +121,12 @@
 
         <main class="flex-1 md:ml-64 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
             <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col sm:flex-row lg:flex-row items-center justify-between gap-4 w-full">
-                <div class="flex items-center justify-between w-full sm:w-auto">
+                <div class="flex items-center justify-between w-full lg:w-auto">
                     <div class="flex items-center gap-3">
                         <button onclick="toggleSidebar()" class="md:hidden text-slate-600 text-2xl">☰</button>
                         <h1 id="headerTitle" class="text-xl sm:text-2xl font-bold text-slate-800">Сделки</h1>
                     </div>
-                    <button onclick="toggleForm()" class="sm:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
+                    <button onclick="toggleForm()" class="lg:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
                 </div>
                 <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
                     <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner mr-2">
@@ -133,16 +135,16 @@
                         <button onclick="setView('table')" id="v-table" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase">Таблица</button>
                     </div>
                     <input id="searchInput" oninput="renderData()" type="text" placeholder="🔍 Поиск..." class="input-modern flex-1 sm:flex-none sm:w-48 py-2 shadow-sm">
-                    <button onclick="toggleForm()" class="hidden sm:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
+                    <button onclick="toggleForm()" class="hidden lg:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
                 </div>
             </header>
 
             <div id="section-deals" class="p-3 sm:p-6 max-w-7xl mx-auto w-full">
                 <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
-                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-white shadow-md">Все сделки</button>
-                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Не оплачен</button>
-                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Предоплата</button>
-                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Оплачен</button>
+                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-white shadow-md">Все</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600">Оплачен</button>
                 </div>
 
                 <div id="formSection" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-slate-100 shadow-md mb-8">
@@ -176,7 +178,7 @@
                 <div id="view-table-container" class="hidden">
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden w-full">
                         <div class="overflow-x-auto no-scrollbar w-full">
-                            <table class="w-full text-left border-collapse min-w-[900px]">
+                            <table class="w-full text-left border-collapse min-w-[1000px]">
                                 <thead>
                                     <tr class="bg-slate-50/50 border-b border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider"><th class="px-5 py-4 w-16 text-center">№</th><th class="px-5 py-4 min-w-[200px]">Клиент / Связь</th><th class="px-5 py-4">Сумма / Остаток</th><th class="px-5 py-4">Стадия</th><th class="px-5 py-4">Поставщик</th><th class="px-5 py-4">Отгрузка</th><th class="px-5 py-4 text-right">Файл / Действие</th></tr>
                                 </thead>
@@ -195,8 +197,8 @@
 
     <script>
         // === КЛЮЧИ ===
-        const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
+        const SUPABASE_URL = 'ВСТАВЬ_СЮДА_URL';
+        const SUPABASE_KEY = 'ВСТАВЬ_СЮДА_KEY';
         // === ПИН-КОД ===
         const SECRET_PIN = '1234';
 
@@ -245,10 +247,21 @@
 
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (error) return showToast("Ошибка", true); allOrders = data; renderData();
+            if (error) return showToast("Ошибка загрузки", true); allOrders = data; renderData();
         }
 
         function formatDate(ds) { if(!ds) return '—'; const d = new Date(ds); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' }); }
+
+        function getComms(phone) {
+            if(!phone) return '';
+            const c = phone.replace(/\D/g, '');
+            return `
+            <div class="flex gap-1.5">
+                <a href="tel:+${c}" class="comm-btn" title="Звонок">📞</a>
+                <a href="https://wa.me/${c}" target="_blank" class="comm-btn" title="WhatsApp" style="color:#25D366">💬</a>
+                <a href="https://t.me/+${c}" target="_blank" class="comm-btn" title="Telegram" style="color:#0088cc">✈️</a>
+            </div>`;
+        }
 
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
@@ -279,21 +292,20 @@
                 else if(item.supplier_status === 'Предоплата') sup = "bg-amber-50 text-amber-700";
                 else if(item.supplier_status === 'Не оплачен') sup = "bg-red-50 text-red-600";
 
-                const clean = item.phone ? item.phone.replace(/\D/g, '') : '';
-                const comms = clean ? `<div class="flex gap-2"><a href="tel:+${clean}">📞</a><a href="https://wa.me/${clean}" target="_blank">💬</a></div>` : '';
+                const comms = getComms(item.phone);
+                const displayNum = item.order_number || item.id;
                 const bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
                 const balHtml = item.prepayment ? `<div class="text-[10px] font-medium ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
 
-                const card = `<div class="bx-card p-4 flex flex-col gap-3"><div class="flex justify-between items-start"><h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 hover:text-blue-600 cursor-pointer truncate pr-2 text-sm">${item.customer_name}</h4><span class="text-[10px] font-mono text-slate-400">#${item.order_number || item.id}</span></div><div><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div><div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1"><div class="flex justify-between items-center"><span>Счет: ${item.supplier_invoice || '—'}</span><span class="px-1.5 rounded font-bold uppercase text-[8px] ${sup}">${item.supplier_status || 'Не оплачен'}</span></div><div>🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div></div><div class="flex justify-between items-center pt-2 border-t">${comms}<div class="flex items-center gap-2">${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 text-[10px] font-bold">ФАЙЛ</a>`:''}<button onclick="changeStatus(${item.id}, '${nxt}')" class="${bcl} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg">${btn}</button></div></div></div>`;
+                const card = `<div class="bx-card p-4 flex flex-col gap-3"><div class="flex justify-between items-start"><div class="overflow-hidden mr-2"><h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 hover:text-blue-600 cursor-pointer truncate text-sm mb-2">${item.customer_name}</h4>${comms}</div><span class="text-[10px] font-mono text-slate-400 shrink-0">#${displayNum}</span></div><div><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div><div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1"><div class="flex justify-between items-center"><span>Счет: ${item.supplier_invoice || '—'}</span><span class="px-1.5 rounded font-bold uppercase text-[8px] ${sup}">${item.supplier_status || 'Не оплачен'}</span></div><div>🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div></div><div class="flex justify-between items-center pt-2 border-t"><div class="flex items-center gap-2">${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 text-[10px] font-bold">ФАЙЛ</a>`:''}<button onclick="changeStatus(${item.id}, '${nxt}')" class="${bcl} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg">${btn}</button></div></div></div>`;
                 if(activeView === 'kanban' && cols[st]) document.getElementById(cols[st]).innerHTML += card;
-                const list = `<div class="bx-card p-4 flex items-center justify-between cursor-pointer" onclick="openEditModal(${item.id})"><div><div class="font-bold">${item.customer_name}</div><div class="text-[11px] text-slate-400 mt-1">#${item.order_number || item.id} • ${formatDate(item.shipment_date)}</div></div><div class="text-right"><div class="font-extrabold">${Number(item.total_price).toLocaleString()} ₽</div><span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${badge}">${st}</span></div></div>`;
+                const list = `<div class="bx-card p-4 flex items-center justify-between cursor-pointer" onclick="openEditModal(${item.id})"><div class="min-w-0 flex-1"><div class="flex items-center gap-3 mb-2"><div class="font-bold truncate">${item.customer_name}</div>${comms}</div><div class="text-[11px] text-slate-400">#${displayNum} • ${formatDate(item.shipment_date)}</div></div><div class="text-right ml-4"><div class="font-extrabold">${Number(item.total_price).toLocaleString()} ₽</div><span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${badge}">${st}</span></div></div>`;
                 if(activeView === 'list') document.getElementById('list-items-content').innerHTML += list;
-                const table = `<tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${item.order_number || item.id}</td><td class="px-5 py-4 font-bold cursor-pointer hover:text-blue-600" onclick="openEditModal(${item.id})">${item.customer_name}<div class="mt-1">${comms}</div></td><td class="px-5 py-4"><div class="font-extrabold">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${badge}">${st}</span></td><td class="px-5 py-4"><div class="text-xs font-bold">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded font-bold uppercase ${sup}">${item.supplier_status || 'Не оплачен'}</span></td><td class="px-5 py-4 text-xs text-slate-500">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right"><div class="flex flex-col items-end gap-2">${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px]">📎 ФАЙЛ</a>`:''}<button onclick="changeStatus(${item.id}, '${nxt}')" class="${bcl} w-8 h-8 flex items-center justify-center rounded-lg">➔</button></div></td></tr>`;
+                const table = `<tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${displayNum}</td><td class="px-5 py-4"><div class="flex items-center gap-3"><div class="font-bold cursor-pointer hover:text-blue-600" onclick="openEditModal(${item.id})">${item.customer_name}</div>${comms}</div></td><td class="px-5 py-4"><div class="font-extrabold">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${badge}">${st}</span></td><td class="px-5 py-4"><div class="text-xs font-bold">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded font-bold uppercase ${sup}">${item.supplier_status || 'Не оплачен'}</span></td><td class="px-5 py-4 text-xs text-slate-500">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right"><div class="flex flex-col items-end gap-2">${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px]">📎 ФАЙЛ</a>`:''}<button onclick="changeStatus(${item.id}, '${nxt}')" class="${bcl} w-8 h-8 flex items-center justify-center rounded-lg">➔</button></div></td></tr>`;
                 if(activeView === 'table') document.getElementById('table-items-content').innerHTML += table;
             });
             document.getElementById('cnt-new').innerText = counts['Новый']; document.getElementById('cnt-work').innerText = counts['В работе']; document.getElementById('cnt-done').innerText = counts['Завершен'];
             document.getElementById('totalSum').innerText = "ИТОГО: " + total.toLocaleString() + " ₽";
-            if(activeView === 'calendar') renderCalendar();
         }
 
         function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
@@ -308,7 +320,7 @@
             document.getElementById('editPhone').value = applyPhoneMask(o.phone || ''); document.getElementById('editInvoice').value = o.supplier_invoice || '';
             document.getElementById('editSupplierStatus').value = o.supplier_status || 'Не оплачен'; document.getElementById('editShipDate').value = o.shipment_date || '';
             document.getElementById('editComments').value = o.comments || ''; document.getElementById('editStatus').value = o.status || 'Новый';
-            const l = document.getElementById('currentFileLink'); l.innerHTML = o.file_url ? `<a href="${o.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs">📎 Файл</a>` : `<span class="text-xs text-slate-400">Нет файла</span>`;
+            const l = document.getElementById('currentFileLink'); l.innerHTML = o.file_url ? `<a href="${o.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs">📎 Открыть файл</a>` : `<span class="text-xs text-slate-400">Нет файла</span>`;
             document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
         }
 
@@ -340,7 +352,7 @@
                 const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const ord = allOrders.filter(o => o.shipment_date === ds); let h = '';
                 ord.forEach(o => { const c = o.status === 'Завершен' ? "bg-emerald-500" : (o.status === 'В работе' ? "bg-blue-500" : "bg-slate-400"); h += `<div class="w-2 h-2 rounded-full ${c} border border-white"></div>`; });
-                const isToday = new Date().toDateString() === new Date(y, m, d).toDateString();
+                const isToday = new Date().toDateString() === new Date(year, month, d).toDateString();
                 g.innerHTML += `<div onclick="openDayModal('${ds}')" class="${isToday ? 'border-blue-500 bg-blue-50/20':'border-slate-200 bg-white'} cursor-pointer rounded-xl p-2 min-h-[70px] border shadow-sm flex flex-col items-center"><div class="text-xs font-black ${isToday ? 'text-blue-600':'text-slate-300'} mb-1">${d}</div><div class="flex flex-wrap gap-1 justify-center">${h}</div></div>`;
             }
         }
