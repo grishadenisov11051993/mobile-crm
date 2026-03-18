@@ -243,13 +243,13 @@
                             <table class="w-full text-left border-collapse min-w-[900px]">
                                 <thead>
                                     <tr class="bg-[#f8f9fa] border-b border-[#e6e9ec] text-[10px] font-bold text-[#a0a5aa] uppercase">
-                                        <th class="px-4 py-3 w-16 text-center">ID</th>
+                                        <th class="px-4 py-3 w-20 text-center">№ / Дата</th>
                                         <th class="px-4 py-3">Название сделки / Связь</th>
                                         <th class="px-4 py-3">Сумма (Остаток)</th>
                                         <th class="px-4 py-3">Стадия</th>
                                         <th class="px-4 py-3">Счет / Поставщик</th>
                                         <th class="px-4 py-3">Отгрузка</th>
-                                        <th class="px-4 py-3 text-right">Документ</th>
+                                        <th class="px-4 py-3 text-right">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-items-content" class="divide-y divide-[#e6e9ec] text-[13px]"></tbody>
@@ -266,7 +266,7 @@
                         <table class="w-full text-left border-collapse min-w-[900px]">
                             <thead>
                                 <tr class="bg-[#f8f9fa] border-b border-[#e6e9ec] text-[10px] font-bold text-[#a0a5aa] uppercase">
-                                    <th class="px-4 py-3 w-16 text-center">ID</th>
+                                    <th class="px-4 py-3 w-20 text-center">№ / Дата</th>
                                     <th class="px-4 py-3">Имя клиента / Связь</th>
                                     <th class="px-4 py-3">Итоговая сумма</th>
                                     <th class="px-4 py-3">Счет / Поставщик</th>
@@ -487,18 +487,25 @@
 
                 let bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
                 let balHtml = item.prepayment ? `<div class="text-[10px] font-semibold ${bal <= 0 ? 'text-[#5c8a00]' : 'text-[#f05b57]'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
+                
+                const createDate = formatDate(item.created_at);
+                const commentHtml = item.comments ? `<div class="mt-2 text-[11px] text-[#535c69] bg-[#fff9d6] p-2 rounded-sm border border-[#ffe066] border-l-2 border-l-[#ffc107]">💬 ${item.comments}</div>` : '';
 
                 // Отрисовка для АРХИВА
                 if (status === 'Завершен') {
                     archiveTotal += Number(item.total_price || 0);
                     const archiveRow = `
                     <tr class="hover:bg-[#f8f9fa] transition-colors group border-b border-[#e6e9ec]">
-                        <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}</td>
+                        <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">
+                            ${displayNum}
+                            <div class="text-[9px] mt-1">${createDate}</div>
+                        </td>
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-2">
                                 <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
                                 ${comms}
                             </div>
+                            ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate max-w-xs">💬 ${item.comments}</div>` : ''}
                         </td>
                         <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div></td>
                         <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
@@ -516,13 +523,17 @@
                             <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px] m-0">${item.customer_name}</h4>
                             ${comms}
                         </div>
-                        <span class="text-[10px] font-semibold text-[#a0a5aa] shrink-0 pointer-events-none">#${displayNum}</span>
+                        <div class="text-right pointer-events-none">
+                            <span class="text-[10px] font-semibold text-[#a0a5aa] block">#${displayNum}</span>
+                            <span class="text-[9px] text-[#a0a5aa] block">${createDate}</span>
+                        </div>
                     </div>
                     <div class="pointer-events-none"><div class="font-bold text-[15px] text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
                     <div class="bg-[#f8f9fa] border border-[#e6e9ec] p-2 rounded-sm text-[11px] text-[#80868e] space-y-1 pointer-events-none">
                         <div class="flex justify-between items-center"><span>Счет: <b>${item.supplier_invoice || '—'}</b></span><span class="px-1.5 rounded-sm font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div class="flex items-center gap-1"><span>🚚 Отгрузка:</span> <b class="text-[#535c69]">${formatDate(item.shipment_date)}</b></div>
                     </div>
+                    ${commentHtml}
                     <div class="flex justify-between items-center pt-2 border-t border-[#e6e9ec] mt-1">
                         <div class="pointer-events-auto">${fileLink}</div>
                         <div class="flex items-center gap-3 pointer-events-auto">
@@ -540,7 +551,8 @@
                             <div class="font-bold text-[13px] text-[#2067b0] truncate hover:underline">${item.customer_name}</div>
                             ${comms}
                         </div>
-                        <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Отгрузка: ${formatDate(item.shipment_date)}</div>
+                        <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
+                        ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate">💬 ${item.comments}</div>` : ''}
                     </div>
                     <div class="text-right ml-3">
                         <div class="font-bold text-[14px] text-[#535c69] mb-1">${Number(item.total_price).toLocaleString()} ₽</div>
@@ -551,12 +563,16 @@
                 // ТАБЛИЦА
                 const table = `
                 <tr class="hover:bg-[#f8f9fa] transition-colors border-b border-[#e6e9ec] last:border-0 group">
-                    <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}</td>
+                    <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">
+                        ${displayNum}
+                        <div class="text-[9px] mt-1 text-[#c6cdd3]">${createDate}</div>
+                    </td>
                     <td class="px-4 py-3">
                         <div class="flex items-center gap-2">
                             <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
                             ${comms}
                         </div>
+                        ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 line-clamp-2">💬 ${item.comments}</div>` : ''}
                     </td>
                     <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
                     <td class="px-4 py-3">${badge}</td>
@@ -565,7 +581,7 @@
                     <td class="px-4 py-3 text-right">
                         <div class="flex justify-end items-center gap-4">
                             ${fileLink}
-                            ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="${prevBtnClass} text-xs font-bold uppercase" title="Вернуть назад">⬅</button>` : ''}
+                            ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="text-xs font-bold uppercase text-[#a0a5aa] hover:text-[#535c69] bg-transparent border-none cursor-pointer" title="Вернуть назад">⬅</button>` : ''}
                             <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} bg-transparent border-none cursor-pointer text-xs font-bold uppercase ${status === 'Завершен' ? 'hidden' : ''}" title="Вперед">➔</button>
                         </div>
                     </td>
