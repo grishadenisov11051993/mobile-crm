@@ -245,7 +245,7 @@
                                         <th class="px-4 py-3">Стадия</th>
                                         <th class="px-4 py-3">Счет / Поставщик</th>
                                         <th class="px-4 py-3">Отгрузка</th>
-                                        <th class="px-4 py-3 text-right">Документ</th>
+                                        <th class="px-4 py-3 text-right">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-items-content" class="divide-y divide-[#e6e9ec] text-[13px]"></tbody>
@@ -420,12 +420,18 @@
 
                 let badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#eef2f4] text-[#535c69]">Новый</span>`;
                 let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-[#3bc8f5] hover:text-[#26a8d0]";
+                
+                // Переменные для кнопки НАЗАД
+                let prevSt = null, prevBtnTxt = "⬅ Назад", prevBtnClass = "text-[#a0a5aa] hover:text-[#535c69]";
+
                 if (status === 'В работе') { 
                     badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#dff3fa] text-[#1198c6]">В работе</span>`;
                     btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-[#9dcf00] hover:text-[#7bd500]"; 
+                    prevSt = "Новый";
                 } else if (status === 'Завершен') {
                     badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#e6f4d3] text-[#5c8a00]">Завершен</span>`;
                     btnClass = "hidden";
+                    prevSt = "В работе";
                 }
 
                 let supColor = "bg-[#f8f9fa] text-[#535c69] border border-[#c6cdd3]";
@@ -458,7 +464,10 @@
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-[#e6e9ec] mt-1">
                         <div class="pointer-events-auto">${fileLink}</div>
-                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase pointer-events-auto transition-colors">${btnTxt} ➔</button>
+                        <div class="flex items-center gap-3 pointer-events-auto">
+                            ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="${prevBtnClass} text-[10px] font-bold uppercase transition-colors">${prevBtnTxt}</button>` : ''}
+                            ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase transition-colors">${btnTxt} ➔</button>` : ''}
+                        </div>
                     </div>
                 </div>`;
 
@@ -493,9 +502,10 @@
                     <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
                     <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
                     <td class="px-4 py-3 text-right">
-                        <div class="flex justify-end items-center gap-4">
+                        <div class="flex justify-end items-center gap-3">
                             ${fileLink}
-                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-xs font-bold uppercase ${status === 'Завершен' ? 'hidden' : ''}">➔</button>
+                            ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="text-xs font-bold uppercase text-[#a0a5aa] hover:text-[#535c69]" title="Вернуть назад">⬅</button>` : ''}
+                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-xs font-bold uppercase ${status === 'Завершен' ? 'hidden' : ''}" title="Вперед">➔</button>
                         </div>
                     </td>
                 </tr>`;
