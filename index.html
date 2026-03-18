@@ -295,11 +295,49 @@
                 </div>
             </div>
             
-            <div id="section-analytics" class="hidden p-10">
-                <div class="bg-white p-10 border border-[#e6e9ec] rounded-sm text-center shadow-sm">
-                    <div class="text-4xl mb-4 text-[#a0a5aa]">📊</div>
-                    <h2 class="text-lg font-bold text-[#535c69] mb-2 uppercase">Аналитика</h2>
-                    <p class="text-[13px] text-[#a0a5aa]">Раздел находится в разработке</p>
+            <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="bg-white border border-[#e6e9ec] rounded-sm p-5 sm:p-8 shadow-sm">
+                    <div class="flex justify-between items-center mb-6 border-b border-[#e6e9ec] pb-4">
+                        <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-8 px-4 text-xs font-bold">◀</button>
+                        <h2 id="analyticsMonthLabel" class="text-lg font-bold text-[#535c69] uppercase m-0"></h2>
+                        <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-8 px-4 text-xs font-bold">▶</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="p-4 bg-[#f8f9fa] border border-[#e6e9ec] rounded-sm border-l-4 border-l-[#535c69]">
+                            <div class="text-[11px] text-[#a0a5aa] font-bold uppercase mb-1">Создано сделок</div>
+                            <div class="text-2xl font-bold text-[#535c69]" id="stat-total-count">0</div>
+                        </div>
+                        <div class="p-4 bg-[#f8f9fa] border border-[#e6e9ec] rounded-sm border-l-4 border-l-[#3bc8f5]">
+                            <div class="text-[11px] text-[#a0a5aa] font-bold uppercase mb-1">На общую сумму</div>
+                            <div class="text-2xl font-bold text-[#535c69]" id="stat-total-sum">0 ₽</div>
+                        </div>
+                        <div class="p-4 bg-[#f8f9fa] border border-[#e6e9ec] rounded-sm border-l-4 border-l-[#9dcf00]">
+                            <div class="text-[11px] text-[#a0a5aa] font-bold uppercase mb-1">Завершено (Успешно)</div>
+                            <div class="text-2xl font-bold text-[#5c8a00]" id="stat-success-sum">0 ₽</div>
+                            <div class="text-[10px] text-[#a0a5aa] mt-1" id="stat-success-count">0 сделок</div>
+                        </div>
+                        <div class="p-4 bg-[#f8f9fa] border border-[#e6e9ec] rounded-sm border-l-4 border-l-[#f05b57]">
+                            <div class="text-[11px] text-[#a0a5aa] font-bold uppercase mb-1">Остаток долга клиентов</div>
+                            <div class="text-2xl font-bold text-[#f05b57]" id="stat-debt-sum">0 ₽</div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-sm font-bold text-[#535c69] uppercase border-b border-[#e6e9ec] pb-2 mb-4">Счета поставщикам (за этот месяц)</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="p-4 border border-[#f5b8b8] bg-[#fae2e2] rounded-sm text-center">
+                            <div class="text-[11px] text-[#d0021b] font-bold uppercase mb-1">Не оплачено</div>
+                            <div class="text-xl font-bold text-[#d0021b]" id="stat-sup-unpaid">0 шт.</div>
+                        </div>
+                        <div class="p-4 border border-[#ffe066] bg-[#fff2cc] rounded-sm text-center">
+                            <div class="text-[11px] text-[#9c7800] font-bold uppercase mb-1">Внесены предоплаты</div>
+                            <div class="text-xl font-bold text-[#9c7800]" id="stat-sup-prepay">0 шт.</div>
+                        </div>
+                        <div class="p-4 border border-[#c2e28a] bg-[#e6f4d3] rounded-sm text-center">
+                            <div class="text-[11px] text-[#5c8a00] font-bold uppercase mb-1">Оплачено полностью</div>
+                            <div class="text-xl font-bold text-[#5c8a00]" id="stat-sup-paid">0 шт.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -321,6 +359,7 @@
         let allOrders = [];
         let currentEditId = null;
         let currentDate = new Date(); 
+        let analyticsDate = new Date(); // Отдельная дата для аналитики
         let currentSupplierFilter = 'Все';
 
         function checkBodyScroll() {
@@ -413,13 +452,19 @@
             
             document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
+            
+            if(sectionId === 'analytics') renderAnalytics();
+            
             if(window.innerWidth < 768) toggleSidebar();
         }
 
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
             if (error) return showToast("Ошибка загрузки", true);
-            allOrders = data; renderData(); checkTodaysShipments();
+            allOrders = data; 
+            renderData(); 
+            renderAnalytics(); 
+            checkTodaysShipments();
         }
 
         function formatDate(dateString) {
@@ -599,6 +644,66 @@
             document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
         }
 
+        // --- АНАЛИТИКА ---
+        function changeAnalyticsMonth(direction) {
+            analyticsDate.setMonth(analyticsDate.getMonth() + direction);
+            renderAnalytics();
+        }
+
+        function renderAnalytics() {
+            const year = analyticsDate.getFullYear();
+            const month = analyticsDate.getMonth();
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            
+            document.getElementById('analyticsMonthLabel').innerText = `${monthNames[month]} ${year}`;
+
+            // Фильтруем все заказы по ДАТЕ СОЗДАНИЯ в выбранном месяце
+            const monthOrders = allOrders.filter(o => {
+                if(!o.created_at) return false;
+                const d = new Date(o.created_at);
+                return d.getFullYear() === year && d.getMonth() === month;
+            });
+
+            let tCount = monthOrders.length;
+            let tSum = 0;
+            let sSum = 0;
+            let sCount = 0;
+            let dSum = 0;
+
+            let supUnpaid = 0;
+            let supPrepay = 0;
+            let supPaid = 0;
+
+            monthOrders.forEach(o => {
+                const price = Number(o.total_price) || 0;
+                const prepay = Number(o.prepayment) || 0;
+
+                tSum += price;
+                
+                if(o.status === 'Завершен') {
+                    sSum += price;
+                    sCount++;
+                } else {
+                    const diff = price - prepay;
+                    if(diff > 0) dSum += diff;
+                }
+
+                if(o.supplier_status === 'Оплачен') supPaid++;
+                else if(o.supplier_status === 'Предоплата') supPrepay++;
+                else supUnpaid++;
+            });
+
+            document.getElementById('stat-total-count').innerText = tCount;
+            document.getElementById('stat-total-sum').innerText = tSum.toLocaleString() + ' ₽';
+            document.getElementById('stat-success-sum').innerText = sSum.toLocaleString() + ' ₽';
+            document.getElementById('stat-success-count').innerText = sCount + ' сделок';
+            document.getElementById('stat-debt-sum').innerText = dSum.toLocaleString() + ' ₽';
+
+            document.getElementById('stat-sup-unpaid').innerText = supUnpaid + ' шт.';
+            document.getElementById('stat-sup-prepay').innerText = supPrepay + ' шт.';
+            document.getElementById('stat-sup-paid').innerText = supPaid + ' шт.';
+        }
+
         function checkTodaysShipments() {
             if (sessionStorage.getItem('notified_today') === 'true') return;
             const today = new Date();
@@ -706,33 +811,65 @@
             const year = currentDate.getFullYear(); const month = currentDate.getMonth();
             const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
             document.getElementById('calendarMonthLabel').innerText = `${monthNames[month]} ${year}`;
+
             const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
             const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
             let offset = firstDay === 0 ? 6 : firstDay - 1; 
             for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="p-2 sm:p-4 rounded-sm"></div>`;
+
             const today = new Date();
+
             for (let i = 1; i <= daysInMonth; i++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
-                let badge = ''; if(dayOrders.length > 0) badge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} дел</div>`;
+                
+                let orderBadge = '';
+                if(dayOrders.length > 0) {
+                    orderBadge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} дел</div>`;
+                }
+
                 const isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
-                grid.innerHTML += `<div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-3 rounded-sm border ${isToday ? 'border-[#3bc8f5] bg-[#f0f8fb]' : 'border-[#e6e9ec] bg-white'} hover:border-[#a0a5aa] cursor-pointer transition-all min-h-[70px] sm:min-h-[90px] flex flex-col items-center sm:items-start"><span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm">${i}</span>${badge}</div>`;
+                const cellClasses = isToday ? 'bg-[#f0f8fb] border-[#3bc8f5] shadow-sm' : 'bg-white border-[#e6e9ec]';
+
+                grid.innerHTML += `
+                <div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-4 rounded-sm border ${cellClasses} hover:border-[#c6cdd3] cursor-pointer transition-all min-h-[70px] sm:min-h-[100px] flex flex-col items-center sm:items-start">
+                    <span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm sm:text-base">${i}</span>
+                    ${orderBadge}
+                </div>`;
             }
         }
 
         function openDayModal(dateStr) {
-            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr); const list = document.getElementById('dayOrdersList');
+            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
+            const list = document.getElementById('dayOrdersList');
             document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dateStr)}`;
-            if(dayOrders.length === 0) { list.innerHTML = `<div class="text-center text-[#a0a5aa] py-6 text-[13px] font-semibold">На этот день ничего не запланировано</div>`;
+            
+            if(dayOrders.length === 0) {
+                list.innerHTML = `<div class="text-center text-[#a0a5aa] py-8 text-sm font-medium">На этот день отгрузок не запланировано</div>`;
             } else {
                 list.innerHTML = dayOrders.map(o => {
-                    const st = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]');
-                    return `<div class="p-3 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-1.5" onclick="openEditModal(${o.id})"><div class="flex justify-between items-start"><div class="font-bold text-[#2067b0] text-[13px] hover:underline">${o.customer_name}</div><span class="px-1.5 py-0.5 rounded-sm uppercase text-[9px] font-bold ${st}">${o.status || 'Новый'}</span></div><div class="text-[11px] font-mono text-[#a0a5aa]">Заказ #${o.order_number || o.id}</div><div class="text-[14px] font-bold text-[#535c69]">${Number(o.total_price || 0).toLocaleString()} ₽</div></div>`
-                }).join('');
+                    const statusColors = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]');
+                    return `
+                    <div class="p-4 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-2" onclick="openEditModal(${o.id})">
+                        <div class="flex justify-between items-start">
+                            <div class="font-bold text-[#2067b0]">${o.customer_name}</div>
+                            <span class="px-2 py-0.5 rounded-sm uppercase text-[9px] font-bold ${statusColors}">${o.status || 'Новый'}</span>
+                        </div>
+                        <div class="text-[11px] font-mono text-[#a0a5aa]">Заказ #${o.order_number || o.id}</div>
+                        <div class="text-sm font-extrabold text-[#535c69] mt-1">${Number(o.total_price || 0).toLocaleString()} ₽</div>
+                    </div>
+                `}).join('');
             }
-            document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
+            
+            document.getElementById('dayModal').classList.remove('hidden');
+            checkBodyScroll();
         }
-        function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
+
+        function closeDayModal() {
+            document.getElementById('dayModal').classList.add('hidden');
+            checkBodyScroll();
+        }
+
     </script>
 </body>
 </html>
