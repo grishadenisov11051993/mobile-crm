@@ -78,10 +78,10 @@
         .bx-tag { display: inline-block; background-color: #e6e9ec; color: #535c69; border-radius: 2px; padding: 2px 6px; font-size: 10px; text-transform: lowercase; font-weight: 600; white-space: nowrap; }
 
         /* Стили для файлового менеджера */
-        .file-item { display: flex; flex-col; align-items: center; justify-content: center; text-align: center; padding: 16px; border: 1px solid #e6e9ec; border-radius: 4px; background: #fff; cursor: pointer; transition: 0.2s; }
+        .file-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; border: 1px solid #e6e9ec; border-radius: 4px; background: #fff; cursor: pointer; transition: 0.2s; }
         .file-item:hover { border-color: #3bc8f5; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transform: translateY(-2px); }
         .file-icon { font-size: 40px; margin-bottom: 8px; }
-        .file-name { font-size: 12px; font-weight: 600; color: #535c69; word-break: break-word; line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+        .file-name { font-size: 12px; font-weight: 600; color: #535c69; word-break: break-word; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
         .folder-icon { color: #ffca28; }
     </style>
 </head>
@@ -169,7 +169,7 @@
                     <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa]">
                         <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
                         <div id="currentFileLink" class="mb-3 text-sm"></div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#ffffff] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:bg-[#e6e9ec] transition">
+                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#ffffff] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
                     </div>
                 </div>
             </div>
@@ -246,8 +246,8 @@
 
                 <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 overflow-x-auto no-scrollbar py-2 sm:py-0">
                     <button onclick="createFolder()" class="bx-btn-default text-[#535c69]">📁 Новая папка</button>
-                    <input type="file" id="crmFileInput" class="hidden" onchange="uploadCrmFile(event)">
-                    <button id="uploadCrmFileBtn" onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success text-[#535c69] hidden">📤 Загрузить файл</button>
+                    <input type="file" id="crmFileInput" class="hidden" multiple onchange="uploadCrmFile(event)">
+                    <button id="uploadCrmFileBtn" onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success text-[#535c69] hidden">📤 Загрузить файлы</button>
                 </div>
             </header>
 
@@ -485,7 +485,7 @@
         let currentDate = new Date(); 
         let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все';
-        let currentFolderId = null; // Для файлового менеджера
+        let currentFolderId = null; 
 
         // --- ГОЛОСОВОЙ ВВОД ---
         let isRecording = false;
@@ -653,35 +653,53 @@
 
         async function uploadCrmFile(event) {
             if(currentFolderId === null) return showToast("Зайдите в папку для загрузки", true);
-            const file = event.target.files[0];
-            if(!file) return;
+            const files = event.target.files;
+            if(!files || files.length === 0) return;
             
             const btn = document.getElementById('uploadCrmFileBtn');
-            btn.innerText = "Загрузка..."; btn.disabled = true;
+            btn.innerText = `Загрузка (0/${files.length})...`; btn.disabled = true;
             
+            let successCount = 0;
+            let errorCount = 0;
+
             try {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `crm_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-                const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    btn.innerText = `Загрузка (${i+1}/${files.length})...`;
+                    try {
+                        const fileExt = file.name.split('.').pop();
+                        const fileName = `crm_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                        const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
+                        
+                        if (uploadError) throw uploadError;
+                        
+                        const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName);
+                        
+                        const { error: dbError } = await _supabase.from('crm_files').insert([{ 
+                            name: file.name, 
+                            is_folder: false, 
+                            folder_id: currentFolderId, 
+                            file_url: publicUrlData.publicUrl 
+                        }]);
+                        
+                        if(dbError) throw dbError;
+                        successCount++;
+                    } catch (fileErr) {
+                        console.error("Ошибка при загрузке файла:", file.name, fileErr);
+                        errorCount++;
+                    }
+                }
                 
-                if (uploadError) throw uploadError;
-                
-                const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName);
-                
-                const { error: dbError } = await _supabase.from('crm_files').insert([{ 
-                    name: file.name, 
-                    is_folder: false, 
-                    folder_id: currentFolderId, 
-                    file_url: publicUrlData.publicUrl 
-                }]);
-                
-                if(dbError) throw dbError;
-                showToast("Файл загружен!", false);
+                if (errorCount > 0) {
+                    showToast(`Успешно: ${successCount}. С ошибкой: ${errorCount}`, true);
+                } else {
+                    showToast(`Успешно загружено файлов: ${successCount}`, false);
+                }
                 loadFiles();
             } catch(e) {
-                showToast("Ошибка загрузки", true);
+                showToast("Общая ошибка при загрузке файлов", true);
             } finally {
-                btn.innerText = "📤 Загрузить файл"; btn.disabled = false;
+                btn.innerText = "📤 Загрузить файлы"; btn.disabled = false;
                 event.target.value = ''; // Сброс инпута
             }
         }
