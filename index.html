@@ -36,10 +36,15 @@
         .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
         .view-btn-active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
         
-        /* Кнопки связи мини */
         .comm-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 16px; transition: all 0.2s; background: #f1f5f9; border: 1px solid #e2e8f0; text-decoration: none;}
         .comm-btn:hover { transform: translateY(-2px); background: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
+        
+        /* Стили для Drag-and-Drop */
+        .cursor-grab { cursor: grab; }
+        .cursor-grab:active { cursor: grabbing; }
+        .drag-over { background-color: #e2e8f0 !important; border-color: #3b82f6 !important; border-style: dashed !important; }
+        .dragging { opacity: 0.5; transform: scale(0.95); }
     </style>
 </head>
 <body class="text-slate-800 transition-all duration-300">
@@ -49,20 +54,20 @@
     <div id="dayModal" class="fixed inset-0 bg-slate-900/60 hidden z-[155] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeDayModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Отгрузки</h3>
-                <button onclick="closeDayModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
+                <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto tracking-tight">Отгрузки</h3>
+                <button onclick="closeDayModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none absolute right-4 sm:right-5">&times;</button>
             </div>
-            <div id="dayOrdersList" class="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1 bg-slate-50"></div>
+            <div id="dayOrdersList" class="p-4 sm:p-5 overflow-y-auto overscroll-contain space-y-3 flex-1 bg-slate-50"></div>
         </div>
     </div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/60 hidden z-[160] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeEditModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Карточка заказа</h3>
-                <button onclick="closeEditModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
+                <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <h3 class="font-bold text-slate-800 text-base sm:text-lg mx-auto tracking-tight">Карточка заказа</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none absolute right-4 sm:right-5">&times;</button>
             </div>
             <div class="p-4 sm:p-6 overflow-y-auto overscroll-contain space-y-5 flex-1 bg-white">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -106,11 +111,13 @@
     </div>
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
+        
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
+
         <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800 shadow-2xl">
-            <div class="p-6 text-xl font-extrabold flex justify-between items-center text-white">
+            <div class="p-6 text-xl font-extrabold flex justify-between items-center tracking-tight text-white">
                 <span>Хорошие <span class="text-blue-500">полы</span></span>
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 text-3xl">&times;</button>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-white text-3xl leading-none">&times;</button>
             </div>
             <nav class="flex-1 px-4 py-2 space-y-1.5 overflow-y-auto">
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 ml-3 mt-4">Рабочая область</p>
@@ -122,6 +129,7 @@
         </aside>
 
         <main class="flex-1 md:ml-64 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
+            
             <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-4 w-full">
                 <div class="flex items-center justify-between w-full lg:w-auto">
                     <div class="flex items-center gap-3">
@@ -130,12 +138,14 @@
                     </div>
                     <button onclick="toggleForm()" class="lg:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
                 </div>
+                
                 <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-center sm:justify-end">
                     <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner mr-2">
                         <button onclick="setView('kanban')" id="v-kanban" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Доска</button>
                         <button onclick="setView('list')" id="v-list" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Список</button>
                         <button onclick="setView('table')" id="v-table" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Таблица</button>
                     </div>
+
                     <input id="searchInput" oninput="renderData()" type="text" placeholder="🔍 Поиск..." class="input-modern flex-1 sm:flex-none sm:w-48 py-2 shadow-sm">
                     <button onclick="toggleForm()" class="hidden lg:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
                 </div>
@@ -162,21 +172,46 @@
                         <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Оплата пост.</label><select id="cSupplierStatus" class="input-modern w-full"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                         <div class="lg:col-span-1"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="input-modern w-full text-slate-600"></div>
                         <div class="sm:col-span-2 lg:col-span-3"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Комментарий</label><input id="cComments" type="text" class="input-modern w-full"></div>
-                        <div class="sm:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <div class="sm:col-span-2 lg:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Файл</label>
                             <input id="cFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:bg-white file:text-blue-700 file:border file:border-blue-200 file:rounded-lg cursor-pointer hover:file:bg-blue-50 transition">
                         </div>
                     </div>
                     <div class="flex gap-3">
                         <button onclick="saveOrder()" id="saveBtn" class="btn-primary px-6 py-2.5 rounded-xl font-semibold">Сохранить</button>
-                        <button onclick="toggleForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition">← Назад</button>
+                        <button onclick="toggleForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition">Отмена</button>
                     </div>
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-3 gap-6 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-slate-500 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span>Новые</h3><span id="cnt-new" class="bg-white border text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-new" class="space-y-4"></div></div>
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-blue-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span>В работе</h3><span id="cnt-work" class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-work" class="space-y-4"></div></div>
-                    <div class="shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full"><div class="flex justify-between items-center mb-4 px-1"><h3 class="text-xs font-extrabold text-emerald-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Успешно</h3><span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span></div><div id="col-done" class="space-y-4"></div></div>
+                    
+                    <div class="kanban-column shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full transition-all" 
+                         ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')">
+                        <div class="flex justify-between items-center mb-4 px-1 pointer-events-none">
+                            <h3 class="text-xs font-extrabold text-slate-500 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span>Новые</h3>
+                            <span id="cnt-new" class="bg-white border text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-new" class="space-y-4 flex-1 min-h-[50px] pointer-events-none"></div>
+                    </div>
+
+                    <div class="kanban-column shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full transition-all"
+                         ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')">
+                        <div class="flex justify-between items-center mb-4 px-1 pointer-events-none">
+                            <h3 class="text-xs font-extrabold text-blue-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span>В работе</h3>
+                            <span id="cnt-work" class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-work" class="space-y-4 flex-1 min-h-[50px] pointer-events-none"></div>
+                    </div>
+
+                    <div class="kanban-column shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full transition-all"
+                         ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')">
+                        <div class="flex justify-between items-center mb-4 px-1 pointer-events-none">
+                            <h3 class="text-xs font-extrabold text-emerald-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Успешно</h3>
+                            <span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                        </div>
+                        <div id="col-done" class="space-y-4 flex-1 min-h-[50px] pointer-events-none"></div>
+                    </div>
+
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-3"><div id="list-items-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
@@ -250,6 +285,36 @@
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
+
+        // --- ЛОГИКА DRAG AND DROP ---
+        function dragStart(e, id) {
+            e.dataTransfer.setData('text/plain', id);
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.kanban-column').forEach(col => col.classList.remove('drag-over'));
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function dropCard(e, newStatus) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            const orderId = e.dataTransfer.getData('text/plain');
+            if(orderId) {
+                changeStatus(orderId, newStatus);
+            }
+        }
+        // ----------------------------
 
         function applyPhoneMask(phoneStr) {
             let val = String(phoneStr).replace(/\D/g, ''); 
@@ -329,6 +394,7 @@
             if (error) return showToast("Ошибка загрузки", true);
             allOrders = data; 
             renderData();
+            checkTodaysShipments();
         }
 
         function formatDate(dateString) {
@@ -380,38 +446,37 @@
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border-red-200";
 
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
-                // Добавлен Telegram!
-                const comms = cleanPhone ? `<div class="flex gap-1.5 ml-2"><a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn" title="WhatsApp">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn" title="Telegram">✈️</a></div>` : '';
+                const comms = cleanPhone ? `<div class="flex gap-2 ml-2 pointer-events-auto"><a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn" title="WhatsApp">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn" title="Telegram">✈️</a></div>` : '';
                 const displayNum = item.order_number || `#${item.id}`;
-                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px] uppercase">📎 Файл</a>` : '';
+                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px] uppercase pointer-events-auto">📎 Файл</a>` : '';
 
                 let bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
                 let balHtml = item.prepayment ? `<div class="text-[10px] font-medium ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
 
-                // КАНБАН КАРТОЧКА
+                // КАНБАН КАРТОЧКА (С добавленным Draggable)
                 const card = `
-                <div class="bx-card p-4 flex flex-col gap-3">
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center flex-1 min-w-0 pr-2">
+                <div class="bx-card p-4 flex flex-col gap-3 cursor-grab" draggable="true" ondragstart="dragStart(event, ${item.id})" ondragend="dragEnd(event)">
+                    <div class="flex justify-between items-start pointer-events-none">
+                        <div class="flex items-center flex-1 min-w-0 pr-2 pointer-events-auto">
                             <h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors truncate text-sm">${item.customer_name}</h4>
                             ${comms}
                         </div>
-                        <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded shrink-0">${displayNum}</span>
+                        <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded shrink-0 pointer-events-none">${displayNum}</span>
                     </div>
-                    <div><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
-                    <div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1">
+                    <div class="pointer-events-none"><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
+                    <div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1 pointer-events-none">
                         <div class="flex justify-between"><span>Счет: ${item.supplier_invoice || '—'}</span><span class="px-1.5 rounded font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div>🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t mt-1">
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 pointer-events-auto">
                             ${fileLink}
                         </div>
-                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg transition-colors">${btnTxt}</button>
+                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg transition-colors pointer-events-auto">${btnTxt}</button>
                     </div>
                 </div>`;
 
-                // СПИСОК
+                // СПИСОК (КОМПАКТНЫЙ)
                 const list = `
                 <div class="bx-card p-4 flex items-center justify-between gap-4 cursor-pointer" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0">
@@ -460,6 +525,23 @@
             document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
         }
 
+        function checkTodaysShipments() {
+            if (sessionStorage.getItem('notified_today') === 'true') return;
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            
+            const todaysOrders = allOrders.filter(o => o.shipment_date === dateStr);
+            if (todaysOrders.length > 0) {
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("Хорошие полы", { body: `⚠️ Внимание: на сегодня запланировано отгрузок: ${todaysOrders.length}` });
+                }
+                sessionStorage.setItem('notified_today', 'true');
+            }
+        }
+
         function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
         
         function setFilter(st) { 
@@ -482,7 +564,6 @@
         function closeEditModal() { 
             document.getElementById('editModal').classList.add('hidden'); 
             currentEditId = null; 
-            // Не убираем overflow-hidden если открыто окно дня!
             if (document.getElementById('dayModal').classList.contains('hidden')) {
                 checkBodyScroll(); 
             }
