@@ -78,11 +78,18 @@
         .bx-tag { display: inline-block; background-color: #e6e9ec; color: #535c69; border-radius: 2px; padding: 2px 6px; font-size: 10px; text-transform: lowercase; font-weight: 600; white-space: nowrap; }
 
         /* Стили для файлового менеджера */
-        .file-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; border: 1px solid #e6e9ec; border-radius: 4px; background: #fff; cursor: pointer; transition: 0.2s; }
+        .file-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; border: 1px solid #e6e9ec; border-radius: 4px; background: #fff; transition: 0.2s; height: 120px; cursor: pointer; }
         .file-item:hover { border-color: #3bc8f5; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transform: translateY(-2px); }
-        .file-icon { font-size: 40px; margin-bottom: 8px; }
-        .file-name { font-size: 12px; font-weight: 600; color: #535c69; word-break: break-word; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+        .file-icon { font-size: 40px; margin-bottom: 8px; pointer-events: none; }
+        .file-name { font-size: 11px; font-weight: 600; color: #535c69; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
         .folder-icon { color: #ffca28; }
+        
+        /* Кнопки действий на файлах */
+        .file-action-btn { position: absolute; top: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border: 1px solid #e6e9ec; border-radius: 2px; font-size: 13px; cursor: pointer; transition: 0.2s; color: #535c69; z-index: 10; }
+        .file-action-btn:hover { background: #e6e9ec; }
+        .btn-share { right: 6px; }
+        .btn-delete { left: 6px; color: #f05b57; }
+        .btn-delete:hover { background: #fae2e2; border-color: #f5b8b8; color: #d0021b; }
     </style>
 </head>
 <body class="transition-all duration-300">
@@ -612,6 +619,7 @@
                 folders.forEach(f => {
                     grid.innerHTML += `
                     <div class="file-item" onclick="openFolder(${f.id}, '${f.name.replace(/'/g, "\\'")}')">
+                        <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, null, true)" class="file-action-btn btn-delete" title="Удалить папку">🗑</button>
                         <div class="file-icon folder-icon">📁</div>
                         <div class="file-name" title="${f.name}">${f.name}</div>
                     </div>`;
@@ -627,10 +635,12 @@
 
                 files.forEach(f => {
                     grid.innerHTML += `
-                    <a href="${f.file_url}" target="_blank" class="file-item text-decoration-none">
+                    <div class="file-item" onclick="window.open('${f.file_url}', '_blank')">
+                        <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, '${f.file_url}', false)" class="file-action-btn btn-delete" title="Удалить файл">🗑</button>
+                        <button onclick="event.stopPropagation(); shareSpecificFile('${f.file_url}', '${f.name.replace(/'/g, "\\'")}')" class="file-action-btn btn-share" title="Поделиться">📤</button>
                         <div class="file-icon text-[#a0a5aa]">📄</div>
                         <div class="file-name" title="${f.name}">${f.name}</div>
-                    </a>`;
+                    </div>`;
                 });
             }
         }
@@ -648,7 +658,7 @@
                 if(error) throw error;
                 showToast("Папка создана", false);
                 loadFiles();
-            } catch(e) { showToast("Ошибка. Создана ли таблица crm_files?", true); }
+            } catch(e) { showToast("Ошибка создания папки", true); }
         }
 
         async function uploadCrmFile(event) {
@@ -702,6 +712,36 @@
                 btn.innerText = "📤 Загрузить файлы"; btn.disabled = false;
                 event.target.value = ''; // Сброс инпута
             }
+        }
+
+        function shareSpecificFile(url, name) {
+            if (navigator.share) {
+                navigator.share({
+                    title: name,
+                    text: `Смотреть файл: ${name}`,
+                    url: url
+                }).catch(err => console.log('Ошибка шаринга', err));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast("Ссылка на файл скопирована", false);
+                }).catch(err => { showToast("Ошибка копирования", true); });
+            }
+        }
+
+        async function deleteCrmFile(id, fileUrl, isFolder) {
+            if(!confirm(isFolder ? "Удалить эту папку (файлы внутри останутся без папки)?" : "Удалить файл?")) return;
+            try {
+                if (!isFolder && fileUrl) {
+                    const fileName = fileUrl.split('/').pop();
+                    if(fileName) await _supabase.storage.from('order-files').remove([fileName]);
+                }
+                await _supabase.from('crm_files').delete().eq('id', id);
+                if (isFolder) {
+                    await _supabase.from('crm_files').delete().eq('folder_id', id);
+                }
+                showToast("Успешно удалено", false);
+                loadFiles();
+            } catch(e) { showToast("Ошибка удаления", true); }
         }
         // =====================================================
 
