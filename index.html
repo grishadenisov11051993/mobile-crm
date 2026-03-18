@@ -30,9 +30,12 @@
 
         .bx-header { background: rgba(18, 30, 54, 0.95) !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; backdrop-filter: blur(5px); }
         .bx-sidebar { background-color: rgba(22, 34, 58, 0.98) !important; border-right: 1px solid rgba(255,255,255,0.05) !important; }
+        
+        /* Стили бокового меню */
         .bx-sidebar-item { color: #a9b5c7 !important; transition: 0.2s; font-size: 14px; text-decoration: none; padding: 10px 20px; display: block; border-left: 3px solid transparent; }
         .bx-sidebar-item:hover { background-color: rgba(255,255,255,0.05) !important; color: #fff !important; }
         .bx-sidebar-item.active { background-color: rgba(255,255,255,0.1) !important; color: #fff !important; border-left-color: #2fc6f6; }
+        .sidebar-category { padding: 15px 20px 5px 20px; font-size: 10px; color: #6a7b96; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
 
         .bx-btn-success { background-color: #bbed21 !important; color: #535c69 !important; font-weight: 700; font-size: 13px; border-radius: 2px; padding: 0 20px; height: 36px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; text-transform: uppercase; }
         .bx-btn-success:hover { background-color: #9dcf00 !important; }
@@ -187,7 +190,7 @@
 
     <div id="authScreen" class="fixed inset-0 bg-[#0b1528] z-[150] flex flex-col items-center justify-center p-4" style="background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop') center/cover fixed;">
         <div class="modal-content p-8 sm:p-10 rounded-sm shadow-2xl w-full max-w-sm text-center">
-            <h2 class="text-2xl font-bold text-[#535c69] mb-6 tracking-wide">Битрикс24 CRM</h2>
+            <h2 class="text-2xl font-bold text-[#535c69] mb-6 tracking-wide">CRM Хорошие Полы</h2>
             <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="bx-input text-center text-xl tracking-[0.5em] mb-6 h-[50px]">
             <button onclick="checkPin()" class="bx-btn-success w-full h-[40px] text-sm">Войти</button>
         </div>
@@ -198,26 +201,27 @@
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-[90] hidden md:hidden"></div>
 
         <aside id="sidebar" class="bx-sidebar fixed inset-y-0 left-0 w-[240px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col">
-            <div class="p-4 text-xl font-semibold flex justify-between items-center text-white border-b border-white/10">
-                <span onclick="switchSection('dashboard', document.getElementById('nav-dashboard'))" class="cursor-pointer hover:text-[#2fc6f6] transition-colors flex items-center gap-2">
-                    <div class="text-[#2fc6f6] text-2xl">☁️</div> Битрикс24
+            <div class="p-4 text-xl font-bold flex justify-between items-center text-white border-b border-white/10">
+                <span onclick="switchSection('dashboard', document.getElementById('nav-dashboard'))" class="cursor-pointer hover:opacity-80 transition-opacity">
+                    Хорошие <span style="color: #2fc6f6;">полы</span>
                 </span>
                 <button onclick="toggleSidebar()" class="md:hidden text-white/50 text-2xl bg-transparent border-none cursor-pointer">&times;</button>
             </div>
             
-            <nav class="flex-1 py-4 space-y-1 overflow-y-auto">
-                <div class="px-5 text-[10px] text-white/40 uppercase font-bold mb-2 tracking-wider">Рабочий стол</div>
+            <nav class="flex-1 py-2 space-y-1 overflow-y-auto">
+                <div class="sidebar-category">Рабочий стол</div>
                 <a href="#" id="nav-dashboard" onclick="switchSection('dashboard', this)" class="bx-sidebar-item active">Дашборд</a>
                 <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item">Сделки</a>
-                <a href="#" onclick="switchSection('tasks', this)" class="bx-sidebar-item">Задачи и Проекты</a>
-                <a href="#" onclick="switchSection('files', this)" class="bx-sidebar-item">Общий диск (Файлы)</a>
+                <a href="#" onclick="switchSection('tasks', this)" class="bx-sidebar-item">Задачи</a>
+                <a href="#" onclick="switchSection('files', this)" class="bx-sidebar-item">Файлы</a>
                 <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item">Календарь</a>
-                <a href="#" onclick="switchSection('archive', this)" class="bx-sidebar-item">Архив сделок</a>
-                <div class="px-5 text-[10px] text-white/40 uppercase font-bold mt-6 mb-2 tracking-wider">Отчеты</div>
-                <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item">CRM Аналитика</a>
+                <a href="#" onclick="switchSection('archive', this)" class="bx-sidebar-item">Архив</a>
+                
+                <div class="sidebar-category mt-4">Отчеты</div>
+                <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item">Аналитика</a>
             </nav>
             <div class="p-4 border-t border-white/10">
-                <button onclick="lockCrm()" class="w-full px-3 py-2 text-white/60 hover:text-white text-left font-semibold text-sm transition-colors cursor-pointer bg-transparent border-none">Выйти</button>
+                <button onclick="lockCrm()" class="w-full px-3 py-2 text-[#a9b5c7] hover:text-white text-left font-semibold text-sm transition-colors cursor-pointer bg-transparent border-none">Выйти</button>
             </div>
         </aside>
 
@@ -233,7 +237,7 @@
                 
                 <div id="dealsToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-between sm:justify-end gap-2 sm:gap-4 pb-3 sm:pb-0">
                     <div class="hidden sm:flex items-center">
-                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск (сделка, клиент)..." class="search-input w-64">
+                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск сделок..." class="search-input w-64">
                     </div>
                     <button onclick="exportToCSV()" class="hidden sm:inline-flex bx-btn-default">⬇ Excel</button>
                     <button id="addDealBtn" onclick="toggleForm()" class="bx-btn-success">+ Создать</button>
@@ -254,7 +258,7 @@
             </header>
 
             <div id="section-dashboard" class="p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <h2 class="text-2xl font-bold text-white mb-6">Добро пожаловать 👋 <span class="text-sm font-normal opacity-70 ml-2" id="dash-date"></span></h2>
+                <h2 class="text-2xl font-bold text-white mb-6">Дашборд <span class="text-sm font-normal opacity-70 ml-2" id="dash-date"></span></h2>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <div class="white-container">
@@ -296,30 +300,6 @@
                         <div class="text-[11px] font-bold text-[#a0a5aa] uppercase">Открытых задач</div>
                         <div class="text-3xl font-bold text-[#535c69] mt-1" id="dash-active-tasks">0</div>
                     </div>
-                </div>
-            </div>
-
-            <div id="section-files" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="white-container min-h-[500px]">
-                    <div class="flex items-center gap-2 mb-6 pb-4 border-b border-[#e6e9ec] text-sm">
-                        <span onclick="openFolder(null)" class="cursor-pointer text-[#2067b0] hover:underline font-bold text-lg">📁 Общий диск</span>
-                        <span id="currentFolderBreadcrumb" class="text-[#a0a5aa] font-bold text-lg hidden"> / </span>
-                    </div>
-                    <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4"></div>
-                </div>
-            </div>
-
-            <div id="section-tasks" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[800px]">
-                <div class="flex border-b border-white/20 mb-4">
-                    <div onclick="setTaskView('active')" id="t-active" class="bx-tab active">Текущие</div>
-                    <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab">Архив</div>
-                </div>
-                <div class="white-container min-h-[500px] flex flex-col">
-                    <div class="flex gap-2 mb-5 pb-5 border-b border-[#e6e9ec] sm:hidden">
-                        <input id="newTaskInputBody" type="text" placeholder="Быстрая задача..." class="bx-input flex-1" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
-                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 px-4">ОК</button>
-                    </div>
-                    <div id="tasks-list-content" class="space-y-2 flex-1 overflow-y-auto"></div>
                 </div>
             </div>
 
@@ -368,7 +348,6 @@
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-0 pb-4 snap-x snap-mandatory w-full">
-                    
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full">
                         <div class="b24-stage stage-new">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">Новые</div>
@@ -377,7 +356,6 @@
                         </div>
                         <div id="col-new" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div>
                     </div>
-
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full">
                         <div class="b24-stage stage-work">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">В работе</div>
@@ -386,7 +364,6 @@
                         </div>
                         <div id="col-work" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div>
                     </div>
-
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full">
                         <div class="b24-stage stage-stock">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">На складе</div>
@@ -395,7 +372,6 @@
                         </div>
                         <div id="col-stock" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div>
                     </div>
-
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full border-none">
                         <div class="b24-stage stage-done">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">Завершены</div>
@@ -404,7 +380,6 @@
                         </div>
                         <div id="col-done" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div>
                     </div>
-
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-2"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-2"></div></div>
@@ -432,6 +407,44 @@
                 </div>
             </div>
 
+            <div id="section-tasks" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[800px]">
+                <div class="flex border-b border-white/20 mb-4">
+                    <div onclick="setTaskView('active')" id="t-active" class="bx-tab active">Текущие</div>
+                    <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab">Архив</div>
+                </div>
+                <div class="white-container min-h-[500px] flex flex-col">
+                    <div class="flex gap-2 mb-5 pb-5 border-b border-[#e6e9ec] sm:hidden">
+                        <input id="newTaskInputBody" type="text" placeholder="Быстрая задача..." class="bx-input flex-1" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 px-4">ОК</button>
+                    </div>
+                    <div id="tasks-list-content" class="space-y-2 flex-1 overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <div id="section-files" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="white-container min-h-[500px]">
+                    <div class="flex items-center gap-2 mb-6 pb-4 border-b border-[#e6e9ec] text-sm">
+                        <span onclick="openFolder(null)" class="cursor-pointer text-[#2067b0] hover:underline font-bold text-lg">📁 Общий диск</span>
+                        <span id="currentFolderBreadcrumb" class="text-[#a0a5aa] font-bold text-lg hidden"> / </span>
+                    </div>
+                    <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4"></div>
+                </div>
+            </div>
+
+            <div id="section-calendar" class="hidden p-4 sm:p-6 mx-auto max-w-[1400px]">
+                <div class="white-container">
+                    <div class="flex justify-between items-center mb-6">
+                        <button onclick="changeMonth(-1)" class="bx-btn-default !text-[#535c69] !border-[#c6cdd3] h-8 px-4 text-xs">◀</button>
+                        <h2 id="calendarMonthLabel" class="text-xl font-bold text-[#535c69] uppercase"></h2>
+                        <button onclick="changeMonth(1)" class="bx-btn-default !text-[#535c69] !border-[#c6cdd3] h-8 px-4 text-xs">▶</button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[#a0a5aa] uppercase mb-2">
+                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-[#f05b57]">Сб</div><div class="text-[#f05b57]">Вс</div>
+                    </div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1 md:gap-2"></div>
+                </div>
+            </div>
+
             <div id="section-archive" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="white-container !p-0 overflow-hidden w-full">
                     <div class="overflow-x-auto no-scrollbar w-full">
@@ -450,20 +463,6 @@
                         </table>
                     </div>
                     <div id="archiveTotalSum" class="bg-[#e6f4d3] px-4 py-3 text-right text-[#5c8a00] font-bold text-sm border-t border-[#c2e28a]"></div>
-                </div>
-            </div>
-
-            <div id="section-calendar" class="hidden p-4 sm:p-6 mx-auto max-w-[1400px]">
-                <div class="white-container">
-                    <div class="flex justify-between items-center mb-6">
-                        <button onclick="changeMonth(-1)" class="bx-btn-default !text-[#535c69] !border-[#c6cdd3] h-8 px-4 text-xs">◀</button>
-                        <h2 id="calendarMonthLabel" class="text-xl font-bold text-[#535c69] uppercase"></h2>
-                        <button onclick="changeMonth(1)" class="bx-btn-default !text-[#535c69] !border-[#c6cdd3] h-8 px-4 text-xs">▶</button>
-                    </div>
-                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[#a0a5aa] uppercase mb-2">
-                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-[#f05b57]">Сб</div><div class="text-[#f05b57]">Вс</div>
-                    </div>
-                    <div id="calendarGrid" class="grid grid-cols-7 gap-1 md:gap-2"></div>
                 </div>
             </div>
             
@@ -604,8 +603,13 @@
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
 
         function switchSection(sectionId, btnElement) {
-            ['dashboard', 'deals', 'calendar', 'analytics', 'archive', 'tasks', 'files'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
-            document.getElementById('section-' + sectionId).classList.remove('hidden');
+            ['dashboard', 'deals', 'calendar', 'analytics', 'archive', 'tasks', 'files'].forEach(id => {
+                let el = document.getElementById('section-' + id);
+                if(el) el.classList.add('hidden');
+            });
+            
+            let currentSection = document.getElementById('section-' + sectionId);
+            if(currentSection) currentSection.classList.remove('hidden');
             
             const titles = { 'dashboard': 'Дашборд', 'deals': 'Сделки', 'calendar': 'Календарь', 'analytics': 'CRM Аналитика', 'archive': 'Архив сделок', 'tasks': 'Задачи', 'files': 'Общий диск' };
             document.getElementById('headerTitle').innerText = titles[sectionId];
@@ -965,15 +969,7 @@
 
             ['kanban', 'list', 'table'].forEach(m => {
                 const el = document.getElementById('v-' + m);
-                if(el) {
-                    if (activeView === m) {
-                        el.classList.add('active');
-                        el.classList.remove('!text-white/60');
-                    } else {
-                        el.classList.remove('active');
-                        el.classList.add('!text-white/60');
-                    }
-                }
+                if(el) el.className = activeView === m ? 'bx-tab active' : 'bx-tab';
             });
 
             const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'На складе': 'col-stock', 'Завершен': 'col-done' };
@@ -1137,6 +1133,7 @@
             if(document.getElementById('cnt-stock-sum')) document.getElementById('cnt-stock-sum').innerText = sums['На складе'].toLocaleString() + ' ₽';
             if(document.getElementById('cnt-done-count')) document.getElementById('cnt-done-count').innerText = counts['Завершен'] + ' сделок';
             if(document.getElementById('cnt-done-sum')) document.getElementById('cnt-done-sum').innerText = sums['Завершен'].toLocaleString() + ' ₽';
+
             if(document.getElementById('totalSum')) document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
             if(document.getElementById('archiveTotalSum')) document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
         }
@@ -1171,6 +1168,82 @@
             if(document.getElementById('stat-sup-unpaid')) document.getElementById('stat-sup-unpaid').innerText = supUnpaid; 
             if(document.getElementById('stat-sup-prepay')) document.getElementById('stat-sup-prepay').innerText = supPrepay;
             if(document.getElementById('stat-sup-paid')) document.getElementById('stat-sup-paid').innerText = supPaid;
+        }
+
+        function checkTodaysShipments() {
+            if (sessionStorage.getItem('notified_today') === 'true') return;
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            const todaysOrders = allOrders.filter(o => o.shipment_date === dateStr);
+            if (todaysOrders.length > 0) {
+                try {
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification("Хорошие полы CRM", { body: `⚠️ Отгрузок на сегодня: ${todaysOrders.length}` });
+                    }
+                } catch(e) {}
+                sessionStorage.setItem('notified_today', 'true');
+            }
+        }
+
+        function toggleForm() { 
+            let fs = document.getElementById('formSection');
+            if(fs) {
+                fs.classList.toggle('hidden'); 
+                if(!fs.classList.contains('hidden')) fs.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }
+        }
+        
+        function setFilter(st) { 
+            currentSupplierFilter = st; 
+            ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'].forEach(tab => {
+                const btn = document.getElementById('filter-' + tab);
+                if (btn) btn.className = tab === st ? 'bx-btn-default !bg-white/20 !border-white/40 !text-white' : 'bx-btn-default !bg-transparent hover:!bg-white/10';
+            });
+            renderData(); 
+        }
+
+        function showToast(m, e) { const t = document.getElementById('toast'); t.innerText = m; t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-sm shadow-md z-[200] text-sm font-semibold transition-all ${e ? 'bg-[#f05b57]' : 'bg-[#535c69]'} text-white block`; setTimeout(() => t.classList.add('hidden'), 3000); }
+        async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
+        
+        function closeEditModal() { 
+            document.getElementById('editModal').classList.add('hidden'); currentEditId = null; 
+            if (document.getElementById('dayModal').classList.contains('hidden')) checkBodyScroll(); 
+        }
+
+        function openEditModal(id) {
+            const o = allOrders.find(x => x.id === id); if(!o) return; currentEditId = id;
+            document.getElementById('editOrderNum').value = o.order_number || '';
+            document.getElementById('editName').value = o.customer_name || '';
+            document.getElementById('editPrice').value = o.total_price || '';
+            document.getElementById('editPrepayment').value = o.prepayment || '';
+            document.getElementById('editPhone').value = applyPhoneMask(o.phone || '');
+            document.getElementById('editTags').value = o.tags || '';
+            document.getElementById('editInvoice').value = o.supplier_invoice || '';
+            document.getElementById('editSupplierStatus').value = o.supplier_status || 'Не оплачен';
+            document.getElementById('editShipDate').value = o.shipment_date || '';
+            document.getElementById('editAddress').value = o.delivery_address || '';
+            document.getElementById('editComments').value = o.comments || '';
+            document.getElementById('editStatus').value = o.status || 'Новый';
+            
+            const linkDiv = document.getElementById('currentFileLink');
+            if (o.file_url) {
+                linkDiv.innerHTML = `<div class="flex items-center gap-3 mb-2"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-[#2067b0] hover:underline bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">📎 Открыть документ</a><button type="button" onclick="deleteAttachedFile(${o.id}, '${o.file_url}')" class="text-[11px] font-bold text-[#f05b57] bg-transparent border-none cursor-pointer hover:underline p-0">Удалить</button></div>`;
+            } else { linkDiv.innerHTML = '<span class="text-[#a0a5aa] text-xs">Файл не загружен</span>'; }
+            
+            document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
+        }
+
+        async function deleteAttachedFile(orderId, fileUrl) {
+            if(!confirm("Удалить файл?")) return;
+            try {
+                const fileName = fileUrl.split('/').pop();
+                if (fileName) await _supabase.storage.from('order-files').remove([fileName]);
+                await _supabase.from('orders').update({ file_url: null }).eq('id', orderId);
+                document.getElementById('currentFileLink').innerHTML = '<span class="text-[#a0a5aa] text-xs">Файл удален</span>';
+                document.getElementById('editFile').value = '';
+                const order = allOrders.find(o => o.id === orderId); if (order) order.file_url = null;
+                renderData(); showToast("Файл удален", false);
+            } catch (err) { showToast("Ошибка удаления", true); }
         }
 
         async function saveEdit() {
@@ -1239,6 +1312,63 @@
                 document.getElementById('cSupplierStatus').value = 'Не оплачен'; loadData();
             } catch(e) { showToast("Ошибка создания", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
+
+        function changeMonth(direction) { currentDate.setMonth(currentDate.getMonth() + direction); renderCalendar(); }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear(); const month = currentDate.getMonth();
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            if(document.getElementById('calendarMonthLabel')) document.getElementById('calendarMonthLabel').innerText = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const grid = document.getElementById('calendarGrid'); 
+            if(!grid) return;
+            grid.innerHTML = '';
+            let offset = firstDay === 0 ? 6 : firstDay - 1; 
+            for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="p-2 sm:p-4 rounded-sm border border-transparent"></div>`;
+
+            const today = new Date();
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
+                let badge = ''; if(dayOrders.length > 0) badge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} дел</div>`;
+                const isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
+                grid.innerHTML += `<div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-3 rounded-sm border ${isToday ? 'border-[#3bc8f5] bg-[#f0f8fb]' : 'border-[#e6e9ec] bg-white'} hover:border-[#c6cdd3] cursor-pointer transition-all min-h-[70px] sm:min-h-[90px] flex flex-col items-center sm:items-start"><span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm">${i}</span>${badge}</div>`;
+            }
+        }
+
+        function openDayModal(dateStr) {
+            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
+            const list = document.getElementById('dayOrdersList');
+            document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dateStr)}`;
+            
+            if(dayOrders.length === 0) {
+                list.innerHTML = `<div class="text-center text-[#a0a5aa] py-8 text-sm font-medium">На этот день отгрузок не запланировано</div>`;
+            } else {
+                list.innerHTML = dayOrders.map(o => {
+                    const statusColors = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'На складе' ? 'bg-[#fff2cc] text-[#9c7800]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]'));
+                    return `
+                    <div class="p-4 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-2" onclick="openEditModal(${o.id})">
+                        <div class="flex justify-between items-start">
+                            <div class="font-bold text-[#2067b0]">${o.customer_name}</div>
+                            <span class="px-2 py-0.5 rounded-sm uppercase text-[9px] font-bold ${statusColors}">${o.status || 'Новый'}</span>
+                        </div>
+                        <div class="text-[11px] font-mono text-[#a0a5aa]">Заказ #${o.order_number || o.id}</div>
+                        <div class="text-sm font-extrabold text-[#535c69] mt-1">${Number(o.total_price || 0).toLocaleString()} ₽</div>
+                    </div>
+                `}).join('');
+            }
+            
+            document.getElementById('dayModal').classList.remove('hidden');
+            checkBodyScroll();
+        }
+
+        function closeDayModal() {
+            document.getElementById('dayModal').classList.add('hidden');
+            checkBodyScroll();
+        }
+
     </script>
 </body>
 </html>
