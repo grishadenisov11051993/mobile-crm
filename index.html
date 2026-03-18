@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light only">
-    <title>Хорошие полы - CRM (Bitrix24 Style)</title>
+    <title>Хорошие полы - CRM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* BITRIX24 STYLE THEME */
         :root { color-scheme: light !important; }
         
         html, body { 
@@ -23,7 +22,6 @@
         }
         
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -31,7 +29,6 @@
         .bx-header { background: rgba(18, 30, 54, 0.95) !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; backdrop-filter: blur(5px); }
         .bx-sidebar { background-color: rgba(22, 34, 58, 0.98) !important; border-right: 1px solid rgba(255,255,255,0.05) !important; }
         
-        /* Стили бокового меню */
         .bx-sidebar-item { color: #a9b5c7 !important; transition: 0.2s; font-size: 14px; text-decoration: none; padding: 10px 20px; display: block; border-left: 3px solid transparent; }
         .bx-sidebar-item:hover { background-color: rgba(255,255,255,0.05) !important; color: #fff !important; }
         .bx-sidebar-item.active { background-color: rgba(255,255,255,0.1) !important; color: #fff !important; border-left-color: #2fc6f6; }
@@ -47,7 +44,6 @@
         .bx-tab:hover { color: #fff !important; }
         .bx-tab.active { color: #fff !important; border-bottom-color: #2fc6f6 !important; }
 
-        /* КАНБАН */
         .b24-stage { clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%); padding: 12px 25px 12px 15px; color: #fff; position: relative; margin-bottom: 10px; }
         .stage-new { background-color: #2fc6f6; }
         .stage-work { background-color: #00b4e5; }
@@ -82,7 +78,6 @@
 
         .white-container { background: #fff !important; border-radius: 4px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: #535c69; }
 
-        /* Файловый менеджер */
         .file-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; border: 1px solid #e6e9ec; border-radius: 4px; background: #fff; transition: 0.2s; height: 120px; cursor: pointer; }
         .file-item:hover { border-color: #3bc8f5; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transform: translateY(-2px); }
         .file-icon { font-size: 40px; margin-bottom: 8px; pointer-events: none; }
@@ -188,7 +183,7 @@
         </div>
     </div>
 
-    <div id="authScreen" class="fixed inset-0 bg-[#0b1528] z-[150] flex flex-col items-center justify-center p-4" style="background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop') center/cover fixed;">
+    <div id="authScreen" class="fixed inset-0 bg-[#0b1528] z-[150] flex flex-col items-center justify-center p-4">
         <div class="modal-content p-8 sm:p-10 rounded-sm shadow-2xl w-full max-w-sm text-center">
             <h2 class="text-2xl font-bold text-[#535c69] mb-6 tracking-wide">CRM Хорошие Полы</h2>
             <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="bx-input text-center text-xl tracking-[0.5em] mb-6 h-[50px]">
@@ -348,6 +343,7 @@
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-0 pb-4 snap-x snap-mandatory w-full">
+                    
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full">
                         <div class="b24-stage stage-new">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">Новые</div>
@@ -356,6 +352,7 @@
                         </div>
                         <div id="col-new" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div>
                     </div>
+
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full">
                         <div class="b24-stage stage-work">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">В работе</div>
@@ -364,6 +361,7 @@
                         </div>
                         <div id="col-work" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div>
                     </div>
+
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full">
                         <div class="b24-stage stage-stock">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">На складе</div>
@@ -372,6 +370,7 @@
                         </div>
                         <div id="col-stock" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div>
                     </div>
+
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto flex flex-col h-full border-none">
                         <div class="b24-stage stage-done">
                             <div class="text-[11px] uppercase font-bold tracking-wider opacity-90">Завершены</div>
@@ -380,6 +379,7 @@
                         </div>
                         <div id="col-done" class="space-y-2 flex-1 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div>
                     </div>
+
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-2"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-2"></div></div>
@@ -942,7 +942,7 @@
                 allOrders = data || []; 
                 renderData(); renderAnalytics(); checkTodaysShipments();
                 if(activeView === 'dashboard' || !document.getElementById('section-dashboard').classList.contains('hidden')) renderDashboard(); 
-            } catch (err) { showToast("Ошибка: Проверьте таблицы в БД", true); }
+            } catch (err) { showToast("Ошибка загрузки", true); }
         }
 
         function getTagsHtml(tagsString) {
