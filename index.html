@@ -15,7 +15,6 @@
         ::-webkit-scrollbar-thumb { background: #c6cdd3; border-radius: 3px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Битрикс Цвета и Элементы */
         .bx-header { background: #ffffff; border-bottom: 1px solid #e6e9ec; }
         .bx-sidebar { background-color: #1e2530; }
         .bx-sidebar-item { color: #a0a5aa; border-radius: 2px; transition: 0.2s; font-size: 14px; text-decoration: none; }
@@ -63,22 +62,24 @@
 
     <div id="dayModal" class="fixed inset-0 bg-slate-900/40 hidden z-[155] flex items-center justify-center p-3 sm:p-4 transition-all">
         <div class="bg-white rounded-sm shadow-lg w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-4 border-b border-[#e6e9ec] flex justify-center items-center bg-[#f8f9fa] shrink-0 relative">
-                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0">Планы на день</h3>
-                <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none absolute right-4 bg-transparent border-none cursor-pointer transition-colors">&times;</button>
+            <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0 relative">
+                <button onclick="closeDayModal()" class="text-[#3bc8f5] bg-transparent border-none font-bold text-sm cursor-pointer hover:underline">← Назад</button>
+                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0">Отгрузки на день</h3>
+                <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none bg-transparent border-none cursor-pointer transition-colors">&times;</button>
             </div>
             <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
             <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex justify-end shrink-0">
-                <button onclick="closeDayModal()" class="bx-btn-default w-full sm:w-auto">Закрыть</button>
+                <button onclick="closeDayModal()" class="bx-btn-default w-full sm:w-auto text-center">Закрыть окно</button>
             </div>
         </div>
     </div>
 
     <div id="editModal" class="fixed inset-0 bg-slate-900/40 hidden z-[160] flex items-center justify-center p-3 sm:p-4 transition-all">
         <div class="bg-white rounded-sm shadow-lg w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
-            <div class="p-4 border-b border-[#e6e9ec] flex justify-center items-center bg-[#f8f9fa] shrink-0 relative">
+            <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0 relative">
+                <button onclick="closeEditModal()" class="text-[#3bc8f5] bg-transparent border-none font-bold text-sm cursor-pointer hover:underline">← Назад</button>
                 <h3 class="font-bold text-[#535c69] text-base m-0">Карточка сделки</h3>
-                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none absolute right-4 bg-transparent border-none cursor-pointer transition-colors">&times;</button>
+                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none bg-transparent border-none cursor-pointer transition-colors">&times;</button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-5 flex-1 bg-white text-sm">
                 
@@ -109,10 +110,14 @@
                 </div>
 
                 <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#fffdf2]">
-                    <h4 class="font-bold text-[#9c7800] uppercase text-[11px] mb-3">Логистика</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <h4 class="font-bold text-[#9c7800] uppercase text-[11px] mb-3">Логистика и Монтаж</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-3">
                         <div><label class="block text-[11px] font-semibold text-[#535c69] mb-1">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input border-[#3bc8f5]"></div>
                         <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Адрес доставки</label><input id="editAddress" type="text" class="bx-input" placeholder="Город, улица..."></div>
+                    </div>
+                    <div class="pt-3 border-t border-[#ffe066]">
+                        <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Нужен ли монтаж?</label>
+                        <select id="editInstall" class="bx-input w-full sm:w-1/3"><option value="Нет">Нет</option><option value="Да">Да (Нужен)</option></select>
                     </div>
                 </div>
 
@@ -126,7 +131,7 @@
                     <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa]">
                         <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
                         <div id="currentFileLink" class="mb-3 text-sm"></div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#f8f9fa] file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
+                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-white file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
                     </div>
                 </div>
             </div>
@@ -160,7 +165,7 @@
                 <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">💼 Сделки</a>
                 <a href="#" onclick="switchSection('tasks', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">✅ Задачи</a>
                 <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📅 Календарь</a>
-                <a href="#" onclick="switchSection('archive', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">🗄️ Архив отгруженных</a>
+                <a href="#" onclick="switchSection('archive', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">🗄️ Архив</a>
                 <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📊 Аналитика</a>
             </nav>
             <div class="p-4 border-t border-[#283240]">
@@ -186,7 +191,7 @@
                         <div onclick="setView('table')" id="v-table" class="bx-tab mr-0 sm:mr-4">Таблица</div>
                     </div>
                     <div class="flex gap-2 items-center pb-2 sm:pb-0 shrink-0">
-                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Фильтр + поиск" class="bx-input w-32 sm:w-48">
+                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="bx-input w-32 sm:w-48">
                         <button onclick="exportToCSV()" class="hidden sm:flex bx-btn-default text-[#2067b0] border-[#2067b0]" title="Скачать базу">⬇ Excel</button>
                         <button id="addDealBtn" onclick="toggleForm()" class="hidden sm:flex bx-btn-success text-white" style="color: white !important;">+ Создать</button>
                     </div>
@@ -195,10 +200,10 @@
                 <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto h-[60px] sm:h-auto justify-between sm:justify-end gap-4 overflow-x-auto no-scrollbar">
                     <div class="flex shrink-0">
                         <div onclick="setTaskView('active')" id="t-active" class="bx-tab active">Текущие</div>
-                        <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab">Архив выполненных</div>
+                        <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab">Архив</div>
                     </div>
                     <div class="flex gap-2 items-center pb-2 sm:pb-0 shrink-0">
-                        <input id="newTaskInput" type="text" placeholder="Написать задачу..." class="bx-input w-40 sm:w-64" onkeypress="if(event.key==='Enter') addTask()">
+                        <input id="newTaskInput" type="text" placeholder="Новая задача..." class="bx-input w-40 sm:w-64" onkeypress="if(event.key==='Enter') addTask()">
                         <button onclick="addTask()" class="bx-btn-success text-white" style="color: white !important;">Добавить</button>
                     </div>
                 </div>
@@ -232,8 +237,9 @@
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                         
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
-                        <div class="sm:col-span-3"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Адрес доставки</label><input id="cAddress" type="text" placeholder="Город, улица, дом..." class="bx-input"></div>
-                        
+                        <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Адрес доставки</label><input id="cAddress" type="text" placeholder="Город, улица, дом..." class="bx-input"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Нужен монтаж?</label><select id="cInstall" class="bx-input"><option value="Нет">Нет</option><option value="Да">Да (Нужен)</option></select></div>
+
                         <div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
                         
                         <div class="lg:col-span-4 p-3 border border-[#e6e9ec] bg-[#f8f9fa] rounded-sm">
@@ -395,7 +401,7 @@
         let activeView = localStorage.getItem('crm_view_mode') || 'kanban'; 
         let allOrders = [];
         let allTasks = [];
-        let taskView = 'active'; // 'active' или 'archive'
+        let taskView = 'active'; 
         let currentEditId = null;
         let currentDate = new Date(); 
         let analyticsDate = new Date(); 
@@ -406,7 +412,6 @@
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
 
-        // --- ЛОГИКА DRAG AND DROP ---
         function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
         function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
         function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
@@ -441,16 +446,14 @@
             document.getElementById('mainCrm').classList.remove('hidden');
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); }
-            loadData(); 
-            loadTasks();
+            loadData(); loadTasks();
         }
 
         function lockCrm() {
             sessionStorage.removeItem('crm_auth'); document.getElementById('pinInput').value = '';
             document.getElementById('mainCrm').classList.add('opacity-0');
             setTimeout(() => { document.getElementById('mainCrm').classList.add('hidden'); document.getElementById('authScreen').classList.remove('hidden'); }, 300);
-            allOrders = [];
-            allTasks = [];
+            allOrders = []; allTasks = [];
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
@@ -458,10 +461,10 @@
         function switchSection(sectionId, btnElement) {
             ['deals', 'calendar', 'analytics', 'archive', 'tasks'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
             document.getElementById('section-' + sectionId).classList.remove('hidden');
+            
             const titles = { 'deals': 'Сделки', 'calendar': 'Календарь отгрузок', 'analytics': 'Аналитика', 'archive': 'Архив отгруженных', 'tasks': 'Задачи' };
             document.getElementById('headerTitle').innerText = titles[sectionId];
             
-            // Управление Тулбарами
             document.getElementById('dealsToolbar').classList.add('hidden');
             document.getElementById('tasksToolbar').classList.add('hidden');
             document.getElementById('mobileAddBtn').classList.add('hidden');
@@ -481,10 +484,16 @@
             if(window.innerWidth < 768) toggleSidebar();
         }
 
-        // --- ЛОГИКА ЗАДАЧ (TO-DO) ---
+        // --- ЛОГИКА ЗАДАЧ ---
         async function loadTasks() {
-            const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
-            if (!error) { allTasks = data; renderTasks(); }
+            try {
+                const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                allTasks = data || []; 
+                renderTasks();
+            } catch (err) {
+                console.error("Ошибка загрузки задач. Убедитесь, что таблица tasks создана.");
+            }
         }
 
         function setTaskView(view) {
@@ -518,7 +527,7 @@
                     <div class="flex items-center gap-3 cursor-pointer flex-1 mb-2 sm:mb-0" onclick="toggleTask(${t.id}, ${!isCheck})">
                         ${checkCircle}
                         <div>
-                            <div class="${textStyle} text-[14px]">${t.title}</div>
+                            <div class="${textStyle} text-[14px] break-words">${t.title}</div>
                             <div class="text-[10px] text-[#a0a5aa] mt-0.5">Создано: ${date}</div>
                         </div>
                     </div>
@@ -536,11 +545,15 @@
             if(!title) return showToast("Введите текст задачи", true);
             
             input.disabled = true;
-            const { error } = await _supabase.from('tasks').insert([{ title: title }]);
-            input.disabled = false;
-            
-            if(error) { showToast("Ошибка БД", true); } 
-            else { input.value = ''; loadTasks(); showToast("Задача добавлена", false); }
+            try {
+                const { error } = await _supabase.from('tasks').insert([{ title: title }]);
+                if(error) throw error;
+                input.value = ''; loadTasks(); showToast("Задача добавлена", false);
+            } catch (err) {
+                showToast("Сначала создайте таблицу tasks в БД", true);
+            } finally {
+                input.disabled = false;
+            }
         }
 
         async function toggleTask(id, is_completed) {
@@ -554,16 +567,15 @@
             loadTasks();
         }
 
-
         // --- ЭКСПОРТ В EXCEL ---
         function exportToCSV() {
             if(allOrders.length === 0) return showToast("Нет данных для экспорта", true);
-            let csv = "ID сделки;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет поставщика;Оплата поставщику;Дата отгрузки;Адрес доставки;Комментарий\n";
+            let csv = "ID сделки;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет поставщика;Оплата поставщику;Дата отгрузки;Адрес доставки;Нужен монтаж;Комментарий\n";
             
             allOrders.forEach(o => {
                 let comments = (o.comments || '').replace(/;/g, ',').replace(/\n/g, ' ');
                 let address = (o.delivery_address || '').replace(/;/g, ',').replace(/\n/g, ' ');
-                let row = [ o.id, o.order_number||'', o.customer_name||'', o.phone||'', o.total_price||0, o.prepayment||0, o.status||'Новый', o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDateStr(o.shipment_date), address, comments ];
+                let row = [ o.id, o.order_number||'', o.customer_name||'', o.phone||'', o.total_price||0, o.prepayment||0, o.status||'Новый', o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDateStr(o.shipment_date), address, o.need_installation||'Нет', comments ];
                 csv += row.join(';') + "\n";
             });
             const blob = new Blob(["\ufeff", csv], {type: 'text/csv;charset=utf-8;'});
@@ -598,6 +610,21 @@
             }
         }
 
+        async function loadData() {
+            try {
+                const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                allOrders = data || []; 
+                renderData(); renderAnalytics(); checkTodaysShipments();
+            } catch (err) {
+                console.error("Ошибка загрузки заказов", err);
+            }
+        }
+
+        function formatDate(dateString) {
+            if(!dateString) return '—';
+            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
         function formatDateStr(dateString) {
             if(!dateString) return '';
             const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -696,6 +723,9 @@
                         <div class="text-right pointer-events-none"><span class="text-[10px] font-semibold text-[#a0a5aa] block">#${displayNum}</span><span class="text-[9px] text-[#a0a5aa] block">${createDate}</span></div>
                     </div>
                     <div class="pointer-events-none"><div class="font-bold text-[15px] text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
+                    <div class="pointer-events-none">
+                        ${item.need_installation === 'Да' ? `<div class="text-[10px] font-bold text-[#9c7800] bg-[#fff2cc] px-1.5 py-0.5 rounded-sm mt-1 inline-block">🛠️ Нужен монтаж</div>` : ''}
+                    </div>
                     <div class="bg-[#f8f9fa] border border-[#e6e9ec] p-2 rounded-sm text-[11px] text-[#80868e] space-y-1 pointer-events-none mt-1">
                         <div class="flex justify-between items-center"><span>Счет: <b>${item.supplier_invoice || '—'}</b></span><span class="px-1.5 rounded-sm font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div class="flex items-center gap-1"><span>🚚 Отгрузка:</span> <b class="text-[#535c69]">${formatDate(item.shipment_date)}</b></div>
@@ -740,6 +770,7 @@
                             ${commsHtml}
                         </div>
                         ${addressHtml}
+                        ${item.need_installation === 'Да' ? `<div class="text-[10px] text-[#9c7800] mt-1">🛠️ Нужен монтаж</div>` : ''}
                         ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 line-clamp-2">💬 ${item.comments}</div>` : ''}
                     </td>
                     <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
@@ -841,6 +872,7 @@
             document.getElementById('editAddress').value = o.delivery_address || '';
             document.getElementById('editComments').value = o.comments || '';
             document.getElementById('editStatus').value = o.status || 'Новый';
+            document.getElementById('editInstall').value = o.need_installation || 'Нет';
             
             const linkDiv = document.getElementById('currentFileLink');
             if (o.file_url) {
@@ -876,6 +908,7 @@
                 supplier_status: document.getElementById('editSupplierStatus').value, 
                 shipment_date: document.getElementById('editShipDate').value || null, 
                 delivery_address: document.getElementById('editAddress').value,
+                need_installation: document.getElementById('editInstall').value,
                 comments: document.getElementById('editComments').value, 
                 status: document.getElementById('editStatus').value 
             };
@@ -905,6 +938,7 @@
                 supplier_status: document.getElementById('cSupplierStatus').value, 
                 shipment_date: document.getElementById('cShipDate').value || null, 
                 delivery_address: document.getElementById('cAddress').value,
+                need_installation: document.getElementById('cInstall').value,
                 comments: document.getElementById('cComments').value, 
                 status: 'Новый' 
             };
@@ -918,7 +952,7 @@
                 }
                 await _supabase.from('orders').insert([newOrder]); toggleForm(); showToast("Создано", false); 
                 ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile', 'cAddress'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('cSupplierStatus').value = 'Не оплачен'; loadData();
+                document.getElementById('cSupplierStatus').value = 'Не оплачен'; document.getElementById('cInstall').value = 'Нет'; loadData();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
@@ -939,7 +973,7 @@
             for (let i = 1; i <= daysInMonth; i++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
-                let badge = ''; if(dayOrders.length > 0) badge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} дел</div>`;
+                let badge = ''; if(dayOrders.length > 0) badge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} отгрузок</div>`;
                 const isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
                 grid.innerHTML += `<div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-3 rounded-sm border ${isToday ? 'border-[#3bc8f5] bg-[#f0f8fb]' : 'border-[#e6e9ec] bg-white'} hover:border-[#c6cdd3] cursor-pointer transition-all min-h-[70px] sm:min-h-[90px] flex flex-col items-center sm:items-start"><span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm">${i}</span>${badge}</div>`;
             }
