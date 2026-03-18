@@ -174,31 +174,34 @@
 
         <main class="flex-1 md:ml-60 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
             
-            <header class="bx-header sticky top-0 z-40 px-4 sm:px-6 h-[60px] flex items-center justify-between w-full">
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <button onclick="toggleSidebar()" class="md:hidden text-[#80868e] text-2xl bg-transparent border-none cursor-pointer">☰</button>
-                    <h1 id="headerTitle" class="text-lg font-semibold text-[#535c69] m-0">Сделки</h1>
+            <header class="bx-header sticky top-0 z-40 px-4 sm:px-6 h-auto sm:h-[60px] flex flex-col sm:flex-row items-center justify-between w-full">
+                <div class="flex items-center justify-between w-full sm:w-auto h-[60px] sm:h-auto border-b sm:border-0 border-[#e6e9ec]">
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleSidebar()" class="md:hidden text-[#80868e] text-2xl bg-transparent border-none cursor-pointer">☰</button>
+                        <h1 id="headerTitle" class="text-lg font-semibold text-[#535c69] m-0">Сделки</h1>
+                    </div>
+                    <button id="mobileAddBtn" onclick="toggleForm()" class="sm:hidden bx-btn-success w-8 h-8 p-0 text-white rounded-sm">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="flex items-center justify-end flex-1 gap-4 overflow-x-auto no-scrollbar ml-4">
+                <div id="dealsToolbar" class="flex flex-wrap items-center w-full sm:w-auto justify-between sm:justify-end gap-2 sm:gap-4 overflow-x-auto no-scrollbar py-2 sm:py-0">
                     <div id="viewToggles" class="flex shrink-0">
                         <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active">Канбан</div>
                         <div onclick="setView('list')" id="v-list" class="bx-tab">Список</div>
                         <div onclick="setView('table')" id="v-table" class="bx-tab mr-0 sm:mr-4">Таблица</div>
                     </div>
-                    <div class="flex gap-2 items-center shrink-0">
-                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="bx-input w-28 sm:w-48 hidden sm:block">
-                        <button onclick="exportToCSV()" class="hidden sm:flex bx-btn-default text-[#2067b0] border-[#2067b0]" title="Скачать базу">⬇ Excel</button>
+                    <div class="hidden sm:flex gap-2 items-center shrink-0">
+                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="bx-input w-48">
+                        <button onclick="exportToCSV()" class="bx-btn-default text-[#2067b0] border-[#2067b0]" title="Скачать базу">⬇ Excel</button>
                         <button id="addDealBtn" onclick="toggleForm()" class="bx-btn-success text-white" style="color: white !important;">+ Создать</button>
                     </div>
                 </div>
 
-                <div id="tasksToolbar" class="hidden flex items-center justify-end flex-1 gap-4 overflow-x-auto no-scrollbar ml-4">
-                    <div class="flex gap-2 items-center shrink-0 relative">
-                        <input id="newTaskInputHead" type="text" placeholder="Новая задача..." class="bx-input w-40 sm:w-64 pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
+                <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-4 overflow-x-auto no-scrollbar py-2 sm:py-0">
+                    <div class="hidden sm:flex gap-2 items-center shrink-0 relative">
+                        <input id="newTaskInputHead" type="text" placeholder="Новая задача..." class="bx-input w-64 pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
                         <button onclick="startDictation('newTaskInputHead', this)" class="mic-btn absolute right-1" title="Голосовой ввод">🎤</button>
+                        <button onclick="addTask('newTaskInputHead')" class="bx-btn-success text-white" style="color: white !important;">Добавить</button>
                     </div>
-                    <button onclick="addTask('newTaskInputHead')" class="bx-btn-success text-white" style="color: white !important;">Добавить</button>
                 </div>
             </header>
 
@@ -211,7 +214,7 @@
                 <div class="bg-white border border-[#e6e9ec] rounded-sm p-4 sm:p-6 shadow-sm min-h-[400px] flex flex-col">
                     <div class="flex gap-2 mb-5 pb-5 border-b border-[#e6e9ec] sm:hidden">
                         <div class="relative flex-1">
-                            <input id="newTaskInputBody" type="text" placeholder="Напишите задачу..." class="bx-input w-full pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                            <input id="newTaskInputBody" type="text" placeholder="Диктуйте..." class="bx-input w-full pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
                             <button onclick="startDictation('newTaskInputBody', this)" class="mic-btn absolute right-1 top-[2px]" title="Голосовой ввод">🎤</button>
                         </div>
                         <button onclick="addTask('newTaskInputBody')" class="bx-btn-success text-white shrink-0 px-4" style="color: white !important;">Добавить</button>
@@ -392,8 +395,8 @@
 
     <script>
         // === ВСТАВЬ СВОИ КЛЮЧИ SUPABASE СЮДА !!! ===
-        const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
+        const SUPABASE_URL = 'ВСТАВЬ_СЮДА_URL';
+        const SUPABASE_KEY = 'ВСТАВЬ_СЮДА_KEY';
         // ===========================================
         
         // === ТВОЙ ПАРОЛЬ ===
@@ -424,7 +427,7 @@
 
         function startDictation(inputId, btnElement) {
             if (!recognition) {
-                showToast('Голосовой ввод не поддерживается вашим браузером (используйте Chrome/Safari)', true);
+                showToast('Голосовой ввод не поддерживается вашим браузером', true);
                 return;
             }
             if (isRecording) {
@@ -444,12 +447,12 @@
             };
             recognition.onerror = function(event) {
                 console.error(event.error);
-                if(event.error !== 'no-speech') showToast('Ошибка микрофона: разрешите доступ в браузере', true);
+                if(event.error !== 'no-speech') showToast('Ошибка микрофона: разрешите доступ', true);
             };
             recognition.onend = function() {
                 isRecording = false;
                 btnElement.classList.remove('mic-recording');
-                input.placeholder = "Напишите задачу...";
+                input.placeholder = "Новая задача...";
             };
             recognition.start();
         }
@@ -540,7 +543,7 @@
                 allTasks = data || []; 
                 renderTasks();
             } catch (err) {
-                console.error("Таблица задач еще не создана или ошибка БД.");
+                console.error("Ошибка загрузки задач:", err);
             }
         }
 
@@ -599,7 +602,7 @@
                 if(error) throw error;
                 input.value = ''; loadTasks(); showToast("Задача добавлена", false);
             } catch (err) {
-                showToast("Сначала выполните SQL скрипт для задач в БД", true);
+                showToast("Ошибка сохранения", true);
             } finally {
                 input.disabled = false;
             }
