@@ -11,8 +11,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <script>
+        window.onerror = function(msg) {
+            alert("⚠️ Техническая ошибка кода!\n\nСкорее всего, вы случайно удалили кавычку ' ' или знак ; когда вставляли ключи Supabase.\n\nПроверьте строки с ключами в самом низу кода!");
+            return false;
+        };
+    </script>
+
     <style>
-        /* АНТИ-ТЕМНАЯ ТЕМА ХАК (Защита от Yandex и MIUI) */
         :root { color-scheme: light !important; }
         html, body { background-color: #f0f4f8 !important; color: #535c69 !important; font-family: 'Open Sans', sans-serif; }
         .bg-white { background-color: #ffffff !important; }
@@ -67,6 +73,8 @@
         .mic-recording { background: #fae2e2 !important; color: #d0021b !important; animation: pulse 1.5s infinite; }
 
         .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
+        
+        .bx-tag { display: inline-block; background-color: #e6e9ec; color: #535c69; border-radius: 2px; padding: 2px 6px; font-size: 10px; text-transform: lowercase; font-weight: 600; white-space: nowrap; }
     </style>
 </head>
 <body class="transition-all duration-300">
@@ -89,7 +97,7 @@
             </div>
             <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
             <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex justify-center shrink-0">
-                <button onclick="closeDayModal()" class="bx-btn-default w-full text-center text-[#535c69] font-bold">Закрыть окно</button>
+                <button onclick="closeDayModal()" class="bx-btn-default w-full sm:w-auto text-center">Закрыть окно</button>
             </div>
         </div>
     </div>
@@ -109,6 +117,7 @@
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">№ Заказа</label><input id="editOrderNum" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Имя клиента</label><input id="editName" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
+                        <div class="sm:col-span-3"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Теги (через запятую: бренд, источник...)</label><input id="editTags" type="text" placeholder="например: авито, tarkett, акция" class="bx-input text-[#2067b0]"></div>
                     </div>
                 </div>
 
@@ -140,21 +149,26 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Стадия сделки</label>
-                        <select id="editStatus" class="bx-input"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select>
+                        <select id="editStatus" class="bx-input">
+                            <option value="Новый">Новые</option>
+                            <option value="В работе">В работе</option>
+                            <option value="На складе">На складе</option>
+                            <option value="Завершен">Сделка успешна</option>
+                        </select>
                         <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase mt-3">Комментарий</label>
                         <textarea id="editComments" rows="3" class="bx-input resize-none"></textarea>
                     </div>
                     <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa]">
                         <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
                         <div id="currentFileLink" class="mb-3 text-sm"></div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-white file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
+                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#ffffff] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
                     </div>
                 </div>
             </div>
             <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
                 <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
                 <button onclick="shareOrder(currentEditId)" class="w-full sm:w-auto bx-btn-default text-[#2067b0] border-[#c6cdd3] hover:border-[#2067b0]">📤 Поделиться</button>
-                <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success text-white" style="color: white !important;">Сохранить</button>
+                <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success text-[#535c69]">Сохранить</button>
             </div>
         </div>
     </div>
@@ -207,9 +221,9 @@
                         <div onclick="setView('table')" id="v-table" class="bx-tab mr-0 sm:mr-4">Таблица</div>
                     </div>
                     <div class="hidden sm:flex gap-2 items-center shrink-0">
-                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="bx-input w-48">
+                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск (имя, номер, тег)..." class="bx-input w-56">
                         <button onclick="exportToCSV()" class="bx-btn-default text-[#2067b0] border-[#2067b0]" title="Скачать базу">⬇ Excel</button>
-                        <button id="addDealBtn" onclick="toggleForm()" class="bx-btn-success text-white" style="color: white !important;">+ Создать</button>
+                        <button id="addDealBtn" onclick="toggleForm()" class="bx-btn-success text-[#535c69]">+ Создать</button>
                     </div>
                 </div>
 
@@ -217,7 +231,7 @@
                     <div class="hidden sm:flex gap-2 items-center shrink-0 relative">
                         <input id="newTaskInputHead" type="text" placeholder="Новая задача..." class="bx-input w-64 pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
                         <button onclick="startDictation('newTaskInputHead', this)" class="mic-btn absolute right-1" title="Голосовой ввод">🎤</button>
-                        <button onclick="addTask('newTaskInputHead')" class="bx-btn-success text-white" style="color: white !important;">Добавить</button>
+                        <button onclick="addTask('newTaskInputHead')" class="bx-btn-success text-[#535c69]">Добавить</button>
                     </div>
                 </div>
             </header>
@@ -233,7 +247,7 @@
                             <input id="newTaskInputBody" type="text" placeholder="Диктуйте..." class="bx-input w-full pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
                             <button onclick="startDictation('newTaskInputBody', this)" class="mic-btn absolute right-1 top-[2px]" title="Голосовой ввод">🎤</button>
                         </div>
-                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success text-white shrink-0 px-4" style="color: white !important;">ОК</button>
+                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success text-[#535c69] shrink-0 px-4">ОК</button>
                     </div>
                     <div id="tasks-list-content" class="space-y-3 flex-1 overflow-y-auto"></div>
                 </div>
@@ -254,6 +268,7 @@
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">№ Заказа</label><input id="cOrderNum" type="text" placeholder="Свой номер" class="bx-input"></div>
                         <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" placeholder="+7 (999)..." class="bx-input font-mono"></div>
+                        <div class="sm:col-span-4 lg:col-span-4"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Теги (через запятую)</label><input id="cTags" type="text" placeholder="например: авито, tarkett, акция" class="bx-input text-[#2067b0]"></div>
                         
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
                         <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
@@ -271,13 +286,13 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success text-white" style="color: white !important;">Сохранить</button>
+                        <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success text-[#535c69]">Сохранить</button>
                         <button onclick="toggleForm()" class="bx-btn-default">Отменить</button>
                     </div>
                 </div>
 
-                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-3 gap-4 pb-4 snap-x snap-mandatory no-scrollbar w-full">
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')">
+                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-4 pb-4 snap-x snap-mandatory no-scrollbar w-full">
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative bg-[#eef2f4]" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')">
                         <div class="kanban-header-line bg-[#39a8ef]"></div>
                         <div class="flex justify-between items-center mb-3 mt-1 pointer-events-none">
                             <h3 class="text-xs font-bold text-[#535c69] uppercase">Новые</h3>
@@ -285,7 +300,7 @@
                         </div>
                         <div id="col-new" class="space-y-2.5 flex-1 min-h-[50px] pointer-events-none"></div>
                     </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')">
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative bg-[#eef2f4]" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')">
                         <div class="kanban-header-line bg-[#2fc6f6]"></div>
                         <div class="flex justify-between items-center mb-3 mt-1 pointer-events-none">
                             <h3 class="text-xs font-bold text-[#535c69] uppercase">В работе</h3>
@@ -293,7 +308,15 @@
                         </div>
                         <div id="col-work" class="space-y-2.5 flex-1 min-h-[50px] pointer-events-none"></div>
                     </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')">
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative bg-[#eef2f4]" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')">
+                        <div class="kanban-header-line bg-[#ff9900]"></div>
+                        <div class="flex justify-between items-center mb-3 mt-1 pointer-events-none">
+                            <h3 class="text-xs font-bold text-[#535c69] uppercase">На складе</h3>
+                            <span id="cnt-stock" class="text-[10px] font-bold text-[#a0a5aa]">0</span>
+                        </div>
+                        <div id="col-stock" class="space-y-2.5 flex-1 min-h-[50px] pointer-events-none"></div>
+                    </div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative bg-[#eef2f4]" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')">
                         <div class="kanban-header-line bg-[#9dcf00]"></div>
                         <div class="flex justify-between items-center mb-3 mt-1 pointer-events-none">
                             <h3 class="text-xs font-bold text-[#535c69] uppercase">Сделка успешна</h3>
@@ -417,7 +440,6 @@
         };
     </script>
     <script>
-        // Проверка на фатальную ошибку конфигурации
         if (!window.CRM_CONFIG) {
             document.getElementById('criticalError').classList.remove('hidden');
             throw new Error("CRM CONFIG IS BROKEN");
@@ -435,7 +457,7 @@
         let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все';
 
-        // --- ГОЛОСОВОЙ ВВОД (Web Speech API) ---
+        // --- ГОЛОСОВОЙ ВВОД ---
         let isRecording = false;
         let recognition = null;
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -447,37 +469,15 @@
         }
 
         function startDictation(inputId, btnElement) {
-            if (!recognition) {
-                showToast('Голосовой ввод не поддерживается вашим браузером', true);
-                return;
-            }
-            if (isRecording) {
-                recognition.stop();
-                return;
-            }
+            if (!recognition) { showToast('Голосовой ввод не поддерживается', true); return; }
+            if (isRecording) { recognition.stop(); return; }
             const input = document.getElementById(inputId);
-            
-            recognition.onstart = function() {
-                isRecording = true;
-                btnElement.classList.add('mic-recording');
-                input.placeholder = "Слушаю вас...";
-            };
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                input.value = input.value ? input.value + ' ' + transcript : transcript;
-            };
-            recognition.onerror = function(event) {
-                console.error(event.error);
-                if(event.error !== 'no-speech') showToast('Ошибка микрофона: разрешите доступ', true);
-            };
-            recognition.onend = function() {
-                isRecording = false;
-                btnElement.classList.remove('mic-recording');
-                input.placeholder = "Новая задача...";
-            };
+            recognition.onstart = function() { isRecording = true; btnElement.classList.add('mic-recording'); input.placeholder = "Слушаю вас..."; };
+            recognition.onresult = function(event) { const transcript = event.results[0][0].transcript; input.value = input.value ? input.value + ' ' + transcript : transcript; };
+            recognition.onerror = function(event) { if(event.error !== 'no-speech') showToast('Ошибка микрофона', true); };
+            recognition.onend = function() { isRecording = false; btnElement.classList.remove('mic-recording'); input.placeholder = "Новая задача..."; };
             recognition.start();
         }
-        // ---------------------------------------
 
         function checkBodyScroll() {
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
@@ -517,13 +517,8 @@
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainCrm').classList.remove('hidden');
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
-            try {
-                if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { 
-                    Notification.requestPermission(); 
-                }
-            } catch(e) { console.log(e); }
-            loadData(); 
-            loadTasks();
+            try { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); } } catch(e) {}
+            loadData(); loadTasks();
         }
 
         function lockCrm() {
@@ -551,9 +546,7 @@
                 document.getElementById('viewToggles').classList.toggle('hidden', sectionId === 'archive');
                 document.getElementById('addDealBtn').classList.toggle('hidden', sectionId === 'archive');
                 if(sectionId !== 'archive') document.getElementById('mobileAddBtn').classList.remove('hidden');
-            } else if (sectionId === 'tasks') {
-                document.getElementById('tasksToolbar').classList.remove('hidden');
-            }
+            } else if (sectionId === 'tasks') { document.getElementById('tasksToolbar').classList.remove('hidden'); }
             
             document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
@@ -566,11 +559,8 @@
             try {
                 const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
-                allTasks = data || []; 
-                renderTasks();
-            } catch (err) {
-                console.log("Таблица задач еще не создана.");
-            }
+                allTasks = data || []; renderTasks();
+            } catch (err) { console.log("Таблица задач еще не создана."); }
         }
 
         function setTaskView(view) {
@@ -581,122 +571,71 @@
         }
 
         function renderTasks() {
-            const container = document.getElementById('tasks-list-content');
-            container.innerHTML = '';
+            const container = document.getElementById('tasks-list-content'); container.innerHTML = '';
             const filtered = allTasks.filter(t => taskView === 'active' ? !t.is_completed : t.is_completed);
             
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center text-[#a0a5aa] py-10 font-bold">${taskView === 'active' ? 'Все задачи выполнены! 🎉' : 'Архив пуст'}</div>`;
-                return;
+                container.innerHTML = `<div class="text-center text-[#a0a5aa] py-10 font-bold">${taskView === 'active' ? 'Все задачи выполнены! 🎉' : 'Архив пуст'}</div>`; return;
             }
 
             filtered.forEach(t => {
                 const isCheck = t.is_completed;
-                const checkCircle = isCheck 
-                    ? `<div class="w-5 h-5 bg-[#bbed21] rounded-sm flex items-center justify-center text-[#535c69] font-bold text-xs">✓</div>` 
-                    : `<div class="w-5 h-5 border-2 border-[#c6cdd3] rounded-sm flex items-center justify-center hover:border-[#3bc8f5] transition-colors"></div>`;
-                
+                const checkCircle = isCheck ? `<div class="w-5 h-5 bg-[#bbed21] rounded-sm flex items-center justify-center text-[#535c69] font-bold text-xs">✓</div>` : `<div class="w-5 h-5 border-2 border-[#c6cdd3] rounded-sm flex items-center justify-center hover:border-[#3bc8f5] transition-colors"></div>`;
                 const textStyle = isCheck ? 'line-through text-[#a0a5aa]' : 'text-[#535c69] font-semibold';
                 const date = formatDateStr(t.created_at);
 
                 container.innerHTML += `
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-[#e6e9ec] rounded-sm hover:border-[#c6cdd3] transition-colors bg-[#ffffff]">
-                    <div class="flex items-center gap-3 cursor-pointer flex-1 mb-2 sm:mb-0" onclick="toggleTask(${t.id}, ${!isCheck})">
-                        ${checkCircle}
-                        <div>
-                            <div class="${textStyle} text-[14px] break-words">${t.title}</div>
-                            <div class="text-[10px] text-[#a0a5aa] mt-0.5">Создано: ${date}</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-end gap-4 shrink-0">
-                        <button onclick="toggleTask(${t.id}, ${!isCheck})" class="bx-btn-default h-8 px-3 text-[11px]">${isCheck ? 'Вернуть' : 'Выполнено'}</button>
-                        <button onclick="deleteTask(${t.id})" class="text-[#a0a5aa] hover:text-[#f05b57] text-xl leading-none bg-transparent border-none cursor-pointer transition-colors" title="Удалить навсегда">&times;</button>
-                    </div>
+                    <div class="flex items-center gap-3 cursor-pointer flex-1 mb-2 sm:mb-0" onclick="toggleTask(${t.id}, ${!isCheck})">${checkCircle}<div><div class="${textStyle} text-[14px] break-words">${t.title}</div><div class="text-[10px] text-[#a0a5aa] mt-0.5">Создано: ${date}</div></div></div>
+                    <div class="flex items-center justify-end gap-4 shrink-0"><button onclick="toggleTask(${t.id}, ${!isCheck})" class="bx-btn-default h-8 px-3 text-[11px]">${isCheck ? 'Вернуть' : 'Выполнено'}</button><button onclick="deleteTask(${t.id})" class="text-[#a0a5aa] hover:text-[#f05b57] text-xl leading-none bg-transparent border-none cursor-pointer transition-colors" title="Удалить навсегда">&times;</button></div>
                 </div>`;
             });
         }
 
         async function addTask(inputId) {
-            const input = document.getElementById(inputId);
-            if(!input) return;
-            const title = input.value.trim();
-            if(!title) return showToast("Введите текст задачи", true);
-            
+            const input = document.getElementById(inputId); if(!input) return;
+            const title = input.value.trim(); if(!title) return showToast("Введите текст задачи", true);
             input.disabled = true;
             try {
                 const { error } = await _supabase.from('tasks').insert([{ title: title }]);
                 if(error) throw error;
                 input.value = ''; loadTasks(); showToast("Задача добавлена", false);
-            } catch (err) {
-                showToast("Сначала выполните SQL скрипт для задач в БД", true);
-            } finally {
-                input.disabled = false;
-            }
+            } catch (err) { showToast("Ошибка БД", true); } finally { input.disabled = false; }
         }
 
-        async function toggleTask(id, is_completed) {
-            await _supabase.from('tasks').update({ is_completed }).eq('id', id);
-            loadTasks();
-        }
+        async function toggleTask(id, is_completed) { await _supabase.from('tasks').update({ is_completed }).eq('id', id); loadTasks(); }
+        async function deleteTask(id) { if(!confirm("Удалить задачу навсегда?")) return; await _supabase.from('tasks').delete().eq('id', id); loadTasks(); }
 
-        async function deleteTask(id) {
-            if(!confirm("Удалить задачу навсегда?")) return;
-            await _supabase.from('tasks').delete().eq('id', id);
-            loadTasks();
-        }
-
-        // --- ЭКСПОРТ В EXCEL ---
         function exportToCSV() {
             if(allOrders.length === 0) return showToast("Нет данных для экспорта", true);
-            let csv = "ID сделки;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет поставщика;Оплата поставщику;Дата отгрузки;Адрес доставки;Комментарий\n";
-            
+            let csv = "ID сделки;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет поставщика;Оплата поставщику;Дата отгрузки;Адрес доставки;Теги;Комментарий\n";
             allOrders.forEach(o => {
                 let comments = (o.comments || '').replace(/;/g, ',').replace(/\n/g, ' ');
                 let address = (o.delivery_address || '').replace(/;/g, ',').replace(/\n/g, ' ');
-                let row = [ o.id, o.order_number||'', o.customer_name||'', o.phone||'', o.total_price||0, o.prepayment||0, o.status||'Новый', o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDateStr(o.shipment_date), address, comments ];
+                let tags = (o.tags || '').replace(/;/g, ',');
+                let row = [ o.id, o.order_number||'', o.customer_name||'', o.phone||'', o.total_price||0, o.prepayment||0, o.status||'Новый', o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDateStr(o.shipment_date), address, tags, comments ];
                 csv += row.join(';') + "\n";
             });
             const blob = new Blob(["\ufeff", csv], {type: 'text/csv;charset=utf-8;'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; 
-            a.download = `Baza_CRM_${new Date().toLocaleDateString('ru-RU')}.csv`;
-            a.click();
+            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Baza_CRM_${new Date().toLocaleDateString('ru-RU')}.csv`; a.click();
         }
 
-        // --- ПОДЕЛИТЬСЯ ДАННЫМИ ---
         function shareOrder(id) {
-            const order = allOrders.find(o => o.id === id);
-            if (!order) return;
-
+            const order = allOrders.find(o => o.id === id); if (!order) return;
             const remain = (Number(order.total_price) || 0) - (Number(order.prepayment) || 0);
             const remainText = remain > 0 ? `${remain.toLocaleString()} ₽` : '0 ₽ (Оплачено)';
-            const address = order.delivery_address || 'Не указан';
-            const phone = order.phone || 'Не указан';
-            const file = order.file_url ? order.file_url : 'Нет файла';
-
+            const address = order.delivery_address || 'Не указан'; const phone = order.phone || 'Не указан'; const file = order.file_url ? order.file_url : 'Нет файла';
             const shareText = `Заказ: ${order.customer_name}\nТелефон: ${phone}\nАдрес: ${address}\nДоплата: ${remainText}\nФайл: ${file}`;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: `Сделка: ${order.customer_name}`,
-                    text: shareText
-                }).catch(err => console.log('Ошибка шаринга', err));
-            } else {
-                navigator.clipboard.writeText(shareText).then(() => {
-                    showToast("Данные скопированы в буфер", false);
-                }).catch(err => { showToast("Ошибка копирования", true); });
-            }
+            if (navigator.share) { navigator.share({ title: `Сделка: ${order.customer_name}`, text: shareText }).catch(err => console.log('Ошибка шаринга', err)); } 
+            else { navigator.clipboard.writeText(shareText).then(() => { showToast("Данные скопированы в буфер", false); }).catch(err => { showToast("Ошибка копирования", true); }); }
         }
 
         async function loadData() {
             try {
                 const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
-                allOrders = data || []; 
-                renderData(); renderAnalytics(); checkTodaysShipments();
-            } catch (err) {
-                showToast("Ошибка загрузки заказов", true);
-            }
+                allOrders = data || []; renderData(); renderAnalytics(); checkTodaysShipments();
+            } catch (err) { showToast("Сначала выполните SQL скрипт для тегов", true); }
         }
 
         function formatDate(dateString) {
@@ -708,10 +647,17 @@
             const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
+        function getTagsHtml(tagsString) {
+            if(!tagsString) return '';
+            const arr = tagsString.split(',').map(t => t.trim()).filter(t => t);
+            if(arr.length === 0) return '';
+            return `<div class="mt-2 flex flex-wrap gap-1 pointer-events-none">` + arr.map(t => `<span class="bx-tag">#${t}</span>`).join('') + `</div>`;
+        }
+
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allOrders.filter(o => {
-                const ms = (o.customer_name || '').toLowerCase().includes(search) || (o.phone || '').includes(search) || (o.order_number || '').toLowerCase().includes(search);
+                const ms = (o.customer_name || '').toLowerCase().includes(search) || (o.phone || '').includes(search) || (o.order_number || '').toLowerCase().includes(search) || (o.tags || '').toLowerCase().includes(search);
                 const tag = currentSupplierFilter === 'Все' || (o.supplier_status || 'Не оплачен') === currentSupplierFilter;
                 return ms && tag;
             });
@@ -725,8 +671,8 @@
                 el.className = activeView === m ? 'bx-tab active' : 'bx-tab';
             });
 
-            const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
-            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 }; 
+            const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'На складе': 'col-stock', 'Завершен': 'col-done' };
+            const counts = { 'Новый': 0, 'В работе': 0, 'На складе': 0, 'Завершен': 0 }; 
             let total = 0; let archiveTotal = 0;
 
             Object.values(containers).forEach(id => document.getElementById(id).innerHTML = '');
@@ -744,10 +690,13 @@
 
                 if (status === 'В работе') { 
                     badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#dff3fa] text-[#1198c6]">В работе</span>`;
-                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-[#9dcf00] hover:text-[#7bd500]"; prevSt = "Новый";
+                    btnTxt = "На склад"; nextSt = "На складе"; btnClass = "text-[#ff9900] hover:text-[#e68a00]"; prevSt = "Новый";
+                } else if (status === 'На складе') {
+                    badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#fff2cc] text-[#9c7800]">На складе</span>`;
+                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-[#9dcf00] hover:text-[#7bd500]"; prevSt = "В работе";
                 } else if (status === 'Завершен') {
                     badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#e6f4d3] text-[#5c8a00]">Завершен</span>`;
-                    btnClass = "hidden"; prevSt = "В работе";
+                    btnClass = "hidden"; prevSt = "На складе";
                 }
 
                 let supColor = "bg-[#f8f9fa] text-[#535c69] border border-[#c6cdd3]";
@@ -756,12 +705,9 @@
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-[#fae2e2] text-[#d0021b] border border-[#f5b8b8]";
 
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
-                
                 let commsHtml = `<div class="flex flex-wrap gap-1 ml-2 pointer-events-auto">`;
                 if (cleanPhone) {
-                    commsHtml += `<a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a>
-                                  <a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn text-[#25D366]" title="WhatsApp">💬</a>
-                                  <a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn text-[#0088cc]" title="Telegram">✈️</a>`;
+                    commsHtml += `<a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn text-[#25D366]" title="WhatsApp">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn text-[#0088cc]" title="Telegram">✈️</a>`;
                 }
                 commsHtml += `<button type="button" onclick="event.stopPropagation(); shareOrder(${item.id})" class="comm-btn text-[#535c69]" title="Поделиться">📤</button></div>`;
 
@@ -774,6 +720,7 @@
                 const createDate = formatDate(item.created_at);
                 const addressHtml = item.delivery_address ? `<div class="text-[10px] text-[#535c69] mt-1 truncate">📍 ${item.delivery_address}</div>` : '';
                 const commentHtml = item.comments ? `<div class="mt-2 text-[11px] text-[#535c69] bg-[#fff9d6] p-2 rounded-sm border border-[#ffe066] border-l-2 border-l-[#ffc107]">💬 ${item.comments}</div>` : '';
+                const tagsHtml = getTagsHtml(item.tags);
 
                 // АРХИВ
                 if (status === 'Завершен') {
@@ -781,7 +728,7 @@
                     const archiveRow = `
                     <tr class="hover:bg-[#f8f9fa] transition-colors group border-b border-[#e6e9ec]">
                         <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}<div class="text-[9px] mt-1">${createDate}</div></td>
-                        <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>${commsHtml}</div>${addressHtml}</td>
+                        <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>${commsHtml}</div>${tagsHtml}${addressHtml}</td>
                         <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div></td>
                         <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
                         <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
@@ -801,6 +748,7 @@
                         <div class="text-right pointer-events-none"><span class="text-[10px] font-semibold text-[#a0a5aa] block">#${displayNum}</span><span class="text-[9px] text-[#a0a5aa] block">${createDate}</span></div>
                     </div>
                     <div class="pointer-events-none"><div class="font-bold text-[15px] text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
+                    ${tagsHtml}
                     <div class="bg-[#f8f9fa] border border-[#e6e9ec] p-2 rounded-sm text-[11px] text-[#80868e] space-y-1 pointer-events-none mt-1">
                         <div class="flex justify-between items-center"><span>Счет: <b>${item.supplier_invoice || '—'}</b></span><span class="px-1.5 rounded-sm font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div class="flex items-center gap-1"><span>🚚 Отгрузка:</span> <b class="text-[#535c69]">${formatDate(item.shipment_date)}</b></div>
@@ -824,6 +772,7 @@
                             ${commsHtml}
                         </div>
                         <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
+                        ${tagsHtml}
                         ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate">💬 ${item.comments}</div>` : ''}
                     </div>
                     <div class="text-right ml-3">
@@ -844,8 +793,8 @@
                             <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
                             ${commsHtml}
                         </div>
+                        ${tagsHtml}
                         ${addressHtml}
-                        ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 line-clamp-2">💬 ${item.comments}</div>` : ''}
                     </td>
                     <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
                     <td class="px-4 py-3">${badge}</td>
@@ -867,6 +816,7 @@
 
             document.getElementById('cnt-new').innerText = counts['Новый'];
             document.getElementById('cnt-work').innerText = counts['В работе'];
+            document.getElementById('cnt-stock').innerText = counts['На складе'];
             document.getElementById('cnt-done').innerText = counts['Завершен'];
             document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
             document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
@@ -940,6 +890,7 @@
             document.getElementById('editPrice').value = o.total_price || '';
             document.getElementById('editPrepayment').value = o.prepayment || '';
             document.getElementById('editPhone').value = applyPhoneMask(o.phone || '');
+            document.getElementById('editTags').value = o.tags || '';
             document.getElementById('editInvoice').value = o.supplier_invoice || '';
             document.getElementById('editSupplierStatus').value = o.supplier_status || 'Не оплачен';
             document.getElementById('editShipDate').value = o.shipment_date || '';
@@ -977,6 +928,7 @@
                 total_price: document.getElementById('editPrice').value || null, 
                 prepayment: document.getElementById('editPrepayment').value || null, 
                 phone: document.getElementById('editPhone').value, 
+                tags: document.getElementById('editTags').value,
                 supplier_invoice: document.getElementById('editInvoice').value, 
                 supplier_status: document.getElementById('editSupplierStatus').value, 
                 shipment_date: document.getElementById('editShipDate').value || null, 
@@ -1007,6 +959,7 @@
                 total_price: document.getElementById('cPrice').value || null, 
                 prepayment: document.getElementById('cPrepayment').value || null, 
                 phone: document.getElementById('cPhone').value, 
+                tags: document.getElementById('cTags').value,
                 supplier_invoice: document.getElementById('cInvoice').value, 
                 supplier_status: document.getElementById('cSupplierStatus').value, 
                 shipment_date: document.getElementById('cShipDate').value || null, 
@@ -1025,7 +978,7 @@
                 const { error } = await _supabase.from('orders').insert([newOrder]);
                 if(error) throw error;
                 toggleForm(); showToast("Создано", false); 
-                ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile', 'cAddress'].forEach(id => document.getElementById(id).value = '');
+                ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cTags', 'cInvoice', 'cShipDate', 'cComments', 'cFile', 'cAddress'].forEach(id => document.getElementById(id).value = '');
                 document.getElementById('cSupplierStatus').value = 'Не оплачен'; loadData();
             } catch(e) { showToast("Ошибка создания", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
@@ -1062,7 +1015,7 @@
                 list.innerHTML = `<div class="text-center text-[#a0a5aa] py-8 text-sm font-medium">На этот день отгрузок не запланировано</div>`;
             } else {
                 list.innerHTML = dayOrders.map(o => {
-                    const statusColors = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]');
+                    const statusColors = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'На складе' ? 'bg-[#fff2cc] text-[#9c7800]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]'));
                     return `
                     <div class="p-4 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-2" onclick="openEditModal(${o.id})">
                         <div class="flex justify-between items-start">
