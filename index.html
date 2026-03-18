@@ -23,7 +23,7 @@
         :root { color-scheme: light !important; }
         html, body { background-color: #f0f4f8 !important; color: #535c69 !important; font-family: 'Open Sans', sans-serif; }
         .bg-white { background-color: #ffffff !important; }
-        .bx-card, .bx-header, .bx-sidebar, #formSection, .kanban-col, #section-tasks .bg-white {
+        .bx-card, .bx-header, .bx-sidebar, #formSection, .kanban-col, #section-tasks .bg-white, #section-files .bg-white {
             background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)) !important;
         }
 
@@ -76,6 +76,13 @@
         .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
         
         .bx-tag { display: inline-block; background-color: #e6e9ec; color: #535c69; border-radius: 2px; padding: 2px 6px; font-size: 10px; text-transform: lowercase; font-weight: 600; white-space: nowrap; }
+
+        /* Стили для файлового менеджера */
+        .file-item { display: flex; flex-col; align-items: center; justify-content: center; text-align: center; padding: 16px; border: 1px solid #e6e9ec; border-radius: 4px; background: #fff; cursor: pointer; transition: 0.2s; }
+        .file-item:hover { border-color: #3bc8f5; box-shadow: 0 4px 8px rgba(0,0,0,0.05); transform: translateY(-2px); }
+        .file-icon { font-size: 40px; margin-bottom: 8px; }
+        .file-name { font-size: 12px; font-weight: 600; color: #535c69; word-break: break-word; line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+        .folder-icon { color: #ffca28; }
     </style>
 </head>
 <body class="transition-all duration-300">
@@ -195,6 +202,7 @@
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">💼 Сделки</a>
                 <a href="#" onclick="switchSection('tasks', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">✅ Задачи</a>
+                <a href="#" onclick="switchSection('files', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📁 Файлы</a>
                 <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📅 Календарь</a>
                 <a href="#" onclick="switchSection('archive', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">🗄️ Архив</a>
                 <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">📊 Аналитика</a>
@@ -235,7 +243,26 @@
                         <button onclick="addTask('newTaskInputHead')" class="bx-btn-success text-[#535c69]">Добавить</button>
                     </div>
                 </div>
+
+                <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 overflow-x-auto no-scrollbar py-2 sm:py-0">
+                    <button onclick="createFolder()" class="bx-btn-default text-[#535c69]">📁 Новая папка</button>
+                    <input type="file" id="crmFileInput" class="hidden" onchange="uploadCrmFile(event)">
+                    <button id="uploadCrmFileBtn" onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success text-[#535c69] hidden">📤 Загрузить файл</button>
+                </div>
             </header>
+
+            <div id="section-files" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="bg-white border border-[#e6e9ec] rounded-sm p-4 sm:p-6 shadow-sm min-h-[400px] flex flex-col">
+                    
+                    <div class="flex items-center gap-2 mb-6 pb-4 border-b border-[#e6e9ec] text-sm">
+                        <span onclick="openFolder(null)" class="cursor-pointer text-[#2067b0] hover:underline font-bold text-lg">📁 Все файлы</span>
+                        <span id="currentFolderBreadcrumb" class="text-[#a0a5aa] font-bold text-lg hidden"> / </span>
+                    </div>
+                    
+                    <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                        </div>
+                </div>
+            </div>
 
             <div id="section-tasks" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[800px]">
                 <div class="flex border-b border-[#e6e9ec] mb-4">
@@ -452,11 +479,13 @@
         let activeView = localStorage.getItem('crm_view_mode') || 'kanban'; 
         let allOrders = [];
         let allTasks = [];
+        let allFiles = [];
         let taskView = 'active'; 
         let currentEditId = null;
         let currentDate = new Date(); 
         let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все';
+        let currentFolderId = null; // Для файлового менеджера
 
         // --- ГОЛОСОВОЙ ВВОД ---
         let isRecording = false;
@@ -519,27 +548,28 @@
             document.getElementById('mainCrm').classList.remove('hidden');
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
             try { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); } } catch(e) {}
-            loadData(); loadTasks();
+            loadData(); loadTasks(); loadFiles();
         }
 
         function lockCrm() {
             sessionStorage.removeItem('crm_auth'); document.getElementById('pinInput').value = '';
             document.getElementById('mainCrm').classList.add('opacity-0');
             setTimeout(() => { document.getElementById('mainCrm').classList.add('hidden'); document.getElementById('authScreen').classList.remove('hidden'); }, 300);
-            allOrders = []; allTasks = [];
+            allOrders = []; allTasks = []; allFiles = [];
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
 
         function switchSection(sectionId, btnElement) {
-            ['deals', 'calendar', 'analytics', 'archive', 'tasks'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
+            ['deals', 'calendar', 'analytics', 'archive', 'tasks', 'files'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
             document.getElementById('section-' + sectionId).classList.remove('hidden');
             
-            const titles = { 'deals': 'Сделки', 'calendar': 'Календарь отгрузок', 'analytics': 'Аналитика', 'archive': 'Архив отгруженных', 'tasks': 'Задачи' };
+            const titles = { 'deals': 'Сделки', 'calendar': 'Календарь отгрузок', 'analytics': 'Аналитика', 'archive': 'Архив отгруженных', 'tasks': 'Задачи', 'files': 'Файловое хранилище' };
             document.getElementById('headerTitle').innerText = titles[sectionId];
             
             document.getElementById('dealsToolbar').classList.add('hidden');
             document.getElementById('tasksToolbar').classList.add('hidden');
+            document.getElementById('filesToolbar').classList.add('hidden');
             document.getElementById('mobileAddBtn').classList.add('hidden');
 
             if (sectionId === 'deals' || sectionId === 'archive') {
@@ -548,12 +578,115 @@
                 document.getElementById('addDealBtn').classList.toggle('hidden', sectionId === 'archive');
                 if(sectionId !== 'archive') document.getElementById('mobileAddBtn').classList.remove('hidden');
             } else if (sectionId === 'tasks') { document.getElementById('tasksToolbar').classList.remove('hidden'); }
+            else if (sectionId === 'files') { document.getElementById('filesToolbar').classList.remove('hidden'); }
             
             document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
             if(sectionId === 'analytics') renderAnalytics();
             if(window.innerWidth < 768) toggleSidebar();
         }
+
+        // ================= ФАЙЛОВЫЙ МЕНЕДЖЕР =================
+        async function loadFiles() {
+            try {
+                const { data, error } = await _supabase.from('crm_files').select('*').order('is_folder', { ascending: false }).order('created_at', { ascending: false });
+                if (error) throw error;
+                allFiles = data || []; renderFiles();
+            } catch (err) { console.log("Таблица crm_files еще не создана."); }
+        }
+
+        function renderFiles() {
+            const grid = document.getElementById('crm-files-grid');
+            grid.innerHTML = '';
+            
+            const breadcrumb = document.getElementById('currentFolderBreadcrumb');
+            const uploadBtn = document.getElementById('uploadCrmFileBtn');
+
+            if (currentFolderId === null) {
+                breadcrumb.classList.add('hidden');
+                uploadBtn.classList.add('hidden');
+                
+                const folders = allFiles.filter(f => f.is_folder);
+                if(folders.length === 0) grid.innerHTML = `<div class="col-span-full text-center text-[#a0a5aa] py-10">Нет папок. Создайте первую!</div>`;
+                
+                folders.forEach(f => {
+                    grid.innerHTML += `
+                    <div class="file-item" onclick="openFolder(${f.id}, '${f.name.replace(/'/g, "\\'")}')">
+                        <div class="file-icon folder-icon">📁</div>
+                        <div class="file-name" title="${f.name}">${f.name}</div>
+                    </div>`;
+                });
+            } else {
+                const folder = allFiles.find(f => f.id === currentFolderId);
+                breadcrumb.classList.remove('hidden');
+                breadcrumb.innerHTML = ` / <span class="text-[#535c69] font-bold">${folder ? folder.name : ''}</span>`;
+                uploadBtn.classList.remove('hidden');
+
+                const files = allFiles.filter(f => !f.is_folder && f.folder_id === currentFolderId);
+                if(files.length === 0) grid.innerHTML = `<div class="col-span-full text-center text-[#a0a5aa] py-10">В этой папке пока нет файлов.</div>`;
+
+                files.forEach(f => {
+                    grid.innerHTML += `
+                    <a href="${f.file_url}" target="_blank" class="file-item text-decoration-none">
+                        <div class="file-icon text-[#a0a5aa]">📄</div>
+                        <div class="file-name" title="${f.name}">${f.name}</div>
+                    </a>`;
+                });
+            }
+        }
+
+        function openFolder(id, name) {
+            currentFolderId = id;
+            renderFiles();
+        }
+
+        async function createFolder() {
+            const name = prompt("Введите название новой папки:");
+            if (!name || !name.trim()) return;
+            try {
+                const { error } = await _supabase.from('crm_files').insert([{ name: name.trim(), is_folder: true }]);
+                if(error) throw error;
+                showToast("Папка создана", false);
+                loadFiles();
+            } catch(e) { showToast("Ошибка. Создана ли таблица crm_files?", true); }
+        }
+
+        async function uploadCrmFile(event) {
+            if(currentFolderId === null) return showToast("Зайдите в папку для загрузки", true);
+            const file = event.target.files[0];
+            if(!file) return;
+            
+            const btn = document.getElementById('uploadCrmFileBtn');
+            btn.innerText = "Загрузка..."; btn.disabled = true;
+            
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `crm_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
+                
+                if (uploadError) throw uploadError;
+                
+                const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName);
+                
+                const { error: dbError } = await _supabase.from('crm_files').insert([{ 
+                    name: file.name, 
+                    is_folder: false, 
+                    folder_id: currentFolderId, 
+                    file_url: publicUrlData.publicUrl 
+                }]);
+                
+                if(dbError) throw dbError;
+                showToast("Файл загружен!", false);
+                loadFiles();
+            } catch(e) {
+                showToast("Ошибка загрузки", true);
+            } finally {
+                btn.innerText = "📤 Загрузить файл"; btn.disabled = false;
+                event.target.value = ''; // Сброс инпута
+            }
+        }
+        // =====================================================
+
 
         // --- ЛОГИКА ЗАДАЧ ---
         async function loadTasks() {
@@ -777,7 +910,7 @@
                             <div class="font-bold text-[13px] text-[#2067b0] truncate hover:underline">${item.customer_name}</div>
                             ${commsHtml}
                         </div>
-                        ${item.phone ? `<div class="text-[11px] text-[#535c69] mb-1 font-mono">${item.phone}</div>` : ''}
+                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-[#535c69] mb-1 font-mono inline-block text-decoration-none">${item.phone}</a>` : ''}
                         <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
                         ${tagsHtml}
                         ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate">💬 ${item.comments}</div>` : ''}
@@ -800,7 +933,7 @@
                             <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
                             ${commsHtml}
                         </div>
-                        ${item.phone ? `<div class="text-[11px] text-[#535c69] mt-1 font-mono">${item.phone}</div>` : ''}
+                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-[#535c69] mt-1 font-mono inline-block text-decoration-none">${item.phone}</a>` : ''}
                         ${tagsHtml}
                         ${addressHtml}
                     </td>
