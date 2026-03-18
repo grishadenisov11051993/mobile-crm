@@ -6,258 +6,275 @@
     <title>Хорошие полы - CRM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; } 
+        body { font-family: 'Open Sans', sans-serif; background-color: #f0f4f8; color: #535c69; } 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #c6cdd3; border-radius: 3px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        .glass-header { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8); 
-        }
-
-        .bx-card { 
-            background: #ffffff; border: 1px solid #e2e8f0; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s ease; border-radius: 14px; 
-        }
-        .bx-card:hover { transform: translateY(-2px); box-shadow: 0 12px 20px -3px rgba(0,0,0,0.05); border-color: #cbd5e1; }
-
-        .input-modern { 
-            background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; 
-            padding: 10px 14px; font-size: 0.875rem; outline: none; transition: all 0.2s; color: #1e293b;
-        }
-        .input-modern:focus { background-color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-
-        .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
-        .view-btn-active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        /* Битрикс Цвета и Элементы */
+        .bx-header { background: #ffffff; border-bottom: 1px solid #e6e9ec; }
+        .bx-sidebar { background-color: #1e2530; }
+        .bx-sidebar-item { color: #a0a5aa; border-radius: 2px; transition: 0.2s; font-size: 14px; }
+        .bx-sidebar-item:hover, .bx-sidebar-item.active { background-color: #283240; color: #ffffff; }
         
-        .comm-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 16px; transition: all 0.2s; background: #f1f5f9; border: 1px solid #e2e8f0; text-decoration: none;}
-        .comm-btn:hover { transform: translateY(-2px); background: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
+        .bx-input { background-color: #ffffff; border: 1px solid #c6cdd3; border-radius: 2px; padding: 0 11px; height: 38px; font-size: 14px; outline: none; transition: 0.2s; color: #535c69; width: 100%; }
+        .bx-input:focus { border-color: #3bc8f5; }
+        textarea.bx-input { height: auto; padding: 8px 11px; }
         
-        /* Стили для Drag-and-Drop */
-        .cursor-grab { cursor: grab; }
+        .bx-btn-success { background-color: #bbed21; color: #535c69; text-transform: uppercase; font-weight: 700; font-size: 12px; border-radius: 2px; padding: 0 20px; height: 38px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .bx-btn-success:hover { background-color: #a5c91b; }
+        
+        .bx-btn-primary { background-color: #3bc8f5; color: #ffffff; text-transform: uppercase; font-weight: 700; font-size: 12px; border-radius: 2px; padding: 0 16px; height: 32px; transition: 0.2s; border: none; }
+        .bx-btn-primary:hover { background-color: #26a8d0; }
+        
+        .bx-btn-default { background-color: #ffffff; border: 1px solid #c6cdd3; color: #535c69; border-radius: 2px; font-weight: 600; font-size: 13px; padding: 0 16px; height: 38px; transition: 0.2s; }
+        .bx-btn-default:hover { border-color: #a0a5aa; background-color: #f8f9fa; }
+
+        .bx-tab { text-transform: uppercase; font-size: 12px; font-weight: 700; color: #80868e; border-bottom: 2px solid transparent; padding: 18px 0 16px 0; margin-right: 24px; transition: 0.2s; cursor: pointer; display: inline-block; }
+        .bx-tab:hover { color: #535c69; }
+        .bx-tab.active { color: #535c69; border-bottom-color: #3bc8f5; }
+
+        .bx-card { background: #ffffff; border: 1px solid #e6e9ec; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: box-shadow 0.2s, border-color 0.2s; cursor: grab; position: relative; }
+        .bx-card:hover { border-color: #c6cdd3; box-shadow: 0 3px 6px rgba(0,0,0,0.08); }
+        .bx-card-title { color: #2067b0; transition: 0.2s; }
+        .bx-card-title:hover { color: #105294; text-decoration: underline; }
+
+        .kanban-col { background-color: #eef2f4; border-radius: 2px; }
+        .kanban-header-line { height: 4px; width: 100%; border-radius: 2px 2px 0 0; position: absolute; top: 0; left: 0; }
+
+        .comm-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 2px; font-size: 14px; transition: 0.2s; background: #f8f9fa; border: 1px solid #c6cdd3; text-decoration: none; color: #535c69; }
+        .comm-btn:hover { background: #e6e9ec; }
+        
+        /* Drag-and-Drop */
         .cursor-grab:active { cursor: grabbing; }
-        .drag-over { background-color: #e2e8f0 !important; border-color: #3b82f6 !important; border-style: dashed !important; }
-        .dragging { opacity: 0.5; transform: scale(0.95); }
+        .drag-over { background-color: #e4e9ec !important; border: 1px dashed #a0a5aa !important; }
+        .dragging { opacity: 0.6; transform: scale(0.98); }
+
+        .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
     </style>
 </head>
-<body class="text-slate-800 transition-all duration-300">
+<body class="transition-all duration-300">
     
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl shadow-xl hidden z-[200] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm"></div>
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-sm shadow-md hidden z-[200] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm"></div>
 
-    <div id="dayModal" class="fixed inset-0 bg-slate-900/60 hidden z-[155] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto tracking-tight">Отгрузки</h3>
-                <button onclick="closeDayModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none absolute right-4 sm:right-5">&times;</button>
+    <div id="dayModal" class="fixed inset-0 bg-slate-900/40 hidden z-[155] flex items-center justify-center p-3 sm:p-4 transition-all">
+        <div class="bg-white rounded-sm shadow-lg w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
+                <h3 id="dayModalTitle" class="font-bold text-[#535c69] text-base m-0">Отгрузки</h3>
+                <button onclick="closeDayModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none">&times;</button>
             </div>
-            <div id="dayOrdersList" class="p-4 sm:p-5 overflow-y-auto overscroll-contain space-y-3 flex-1 bg-slate-50"></div>
+            <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"></div>
         </div>
     </div>
 
-    <div id="editModal" class="fixed inset-0 bg-slate-900/60 hidden z-[160] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
-            <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
-                <h3 class="font-bold text-slate-800 text-base sm:text-lg mx-auto tracking-tight">Карточка заказа</h3>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none absolute right-4 sm:right-5">&times;</button>
+    <div id="editModal" class="fixed inset-0 bg-slate-900/40 hidden z-[160] flex items-center justify-center p-3 sm:p-4 transition-all">
+        <div class="bg-white rounded-sm shadow-lg w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
+            <div class="p-4 border-b border-[#e6e9ec] flex justify-between items-center bg-[#f8f9fa] shrink-0">
+                <h3 class="font-bold text-[#535c69] text-base m-0">Редактирование сделки</h3>
+                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#535c69] text-xl leading-none">&times;</button>
             </div>
-            <div class="p-4 sm:p-6 overflow-y-auto overscroll-contain space-y-5 flex-1 bg-white">
+            <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-4 flex-1 bg-white text-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">№ Заказа</label><input id="editOrderNum" type="text" class="input-modern w-full"></div>
-                    <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Имя клиента</label><input id="editName" type="text" class="input-modern w-full"></div>
+                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">№ Заказа</label><input id="editOrderNum" type="text" class="bx-input"></div>
+                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента</label><input id="editName" type="text" class="bx-input"></div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
-                    <div><label class="block text-[11px] font-bold text-blue-600 mb-1.5 uppercase">Сумма (₽)</label><input id="editPrice" type="number" class="input-modern w-full border-blue-200"></div>
-                    <div><label class="block text-[11px] font-bold text-blue-600 mb-1.5 uppercase">Предоплата (₽)</label><input id="editPrepayment" type="number" class="input-modern w-full border-blue-200"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 bg-[#f8f9fa] border border-[#e6e9ec] rounded-sm">
+                    <div><label class="block text-[11px] font-semibold text-[#535c69] mb-1 uppercase">Сумма (₽)</label><input id="editPrice" type="number" class="bx-input"></div>
+                    <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1 uppercase">Предоплата (₽)</label><input id="editPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="input-modern w-full font-mono"></div>
-                    <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Дата отгрузки</label><input id="editShipDate" type="date" class="input-modern w-full text-slate-600"></div>
+                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input"></div>
+                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input"></div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                    <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Счет поставщика</label><input id="editInvoice" type="text" class="input-modern w-full"></div>
-                    <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Оплата поставщику</label><select id="editSupplierStatus" class="input-modern w-full"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 border border-[#e6e9ec] rounded-sm">
+                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Счет поставщика</label><input id="editInvoice" type="text" class="bx-input"></div>
+                    <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Оплата поставщику</label><select id="editSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                 </div>
-                <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Стадия</label><select id="editStatus" class="input-modern w-full"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select></div>
-                <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Комментарий</label><textarea id="editComments" rows="2" class="input-modern w-full resize-none"></textarea></div>
-                <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-                    <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Документы</label>
-                    <div id="currentFileLink" class="mb-3 text-sm text-slate-600"></div>
-                    <input id="editFile" type="file" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-3 file:bg-white file:text-blue-700 file:border file:border-blue-200 file:rounded-lg cursor-pointer hover:file:bg-blue-50 transition">
+                <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Стадия сделки</label><select id="editStatus" class="bx-input"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="Завершен">Сделка успешна</option></select></div>
+                <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий менеджеру</label><textarea id="editComments" rows="2" class="bx-input resize-none"></textarea></div>
+                <div class="p-4 border border-[#e6e9ec] rounded-sm">
+                    <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
+                    <div id="currentFileLink" class="mb-3 text-sm"></div>
+                    <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#f8f9fa] file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
                 </div>
             </div>
-            <div class="p-4 sm:p-5 border-t border-slate-100 bg-white flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 shrink-0 rounded-b-2xl">
-                <button onclick="closeEditModal()" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition-colors">← Назад</button>
-                <button onclick="saveEdit()" id="saveEditBtn" class="btn-primary w-full sm:w-auto px-6 py-3 rounded-xl font-semibold">Сохранить</button>
+            <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
+                <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
+                <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success text-white" style="color: white !important;">Сохранить</button>
             </div>
         </div>
     </div>
 
-    <div id="authScreen" class="fixed inset-0 bg-[#0f172a] z-[150] flex flex-col items-center justify-center p-4">
-        <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl w-full max-w-sm text-center">
-            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">🔒</div>
-            <h2 class="text-2xl font-extrabold text-slate-800 mb-6 tracking-tight">Хорошие полы</h2>
-            <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 transition mb-6 pin-input text-slate-800 outline-none focus:border-blue-500">
-            <button onclick="checkPin()" class="btn-primary w-full py-4 rounded-2xl text-lg font-bold">Войти</button>
+    <div id="authScreen" class="fixed inset-0 bg-[#1e2530] z-[150] flex flex-col items-center justify-center p-4">
+        <div class="bg-white p-8 sm:p-10 rounded-sm shadow-lg w-full max-w-sm text-center">
+            <div class="w-16 h-16 bg-[#eef2f4] text-[#3bc8f5] rounded-sm flex items-center justify-center mx-auto mb-6 text-3xl">🔒</div>
+            <h2 class="text-xl font-bold text-[#535c69] mb-6 uppercase tracking-wide">Хорошие полы CRM</h2>
+            <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="bx-input text-center text-xl tracking-[0.5em] mb-6 h-[50px]">
+            <button onclick="checkPin()" class="bx-btn-primary w-full h-[40px] text-sm">Авторизоваться</button>
         </div>
     </div>
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
         
-        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
+        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-[90] hidden md:hidden"></div>
 
-        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f172a] text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col border-r border-slate-800 shadow-2xl">
-            <div class="p-6 text-xl font-extrabold flex justify-between items-center tracking-tight text-white">
-                <span>Хорошие <span class="text-blue-500">полы</span></span>
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-white text-3xl leading-none">&times;</button>
+        <aside id="sidebar" class="bx-sidebar fixed inset-y-0 left-0 w-60 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-lg">
+            <div class="p-5 text-lg font-bold flex justify-between items-center text-white border-b border-[#283240]">
+                <span>Хорошие <span style="color: #3bc8f5;">полы</span></span>
+                <button onclick="toggleSidebar()" class="md:hidden text-[#a0a5aa] text-2xl">&times;</button>
             </div>
-            <nav class="flex-1 px-4 py-2 space-y-1.5 overflow-y-auto">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 ml-3 mt-4">Рабочая область</p>
-                <a href="#" onclick="switchSection('deals', this)" class="nav-btn block px-4 py-2.5 rounded-lg bg-blue-600/10 text-blue-400 font-semibold transition-all">💼 Сделки</a>
-                <a href="#" onclick="switchSection('calendar', this)" class="nav-btn block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white font-medium transition-all">📅 Календарь</a>
-                <a href="#" onclick="switchSection('analytics', this)" class="nav-btn block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white font-medium transition-all">📊 Аналитика</a>
+            <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <a href="#" onclick="switchSection('deals', this)" class="bx-sidebar-item active block px-3 py-2.5 font-semibold">CRM Сделки</a>
+                <a href="#" onclick="switchSection('calendar', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">Календарь отгрузок</a>
+                <a href="#" onclick="switchSection('analytics', this)" class="bx-sidebar-item block px-3 py-2.5 font-semibold">Аналитика</a>
             </nav>
-            <div class="p-4 border-t border-slate-800/50"><button onclick="lockCrm()" class="w-full px-4 py-3 rounded-xl hover:bg-red-500/10 text-red-400 text-left font-semibold flex items-center gap-3 transition-colors"><span>🔒</span> Заблокировать</button></div>
+            <div class="p-4 border-t border-[#283240]">
+                <button onclick="lockCrm()" class="w-full px-3 py-2 text-[#a0a5aa] hover:text-white text-left font-semibold text-sm transition-colors">🚪 Выход</button>
+            </div>
         </aside>
 
-        <main class="flex-1 md:ml-64 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
+        <main class="flex-1 md:ml-60 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
             
-            <header class="glass-header sticky top-0 z-40 px-3 sm:px-6 py-3 flex flex-col lg:flex-row items-center justify-between gap-4 w-full">
-                <div class="flex items-center justify-between w-full lg:w-auto">
+            <header class="bx-header sticky top-0 z-40 px-4 sm:px-6 h-auto sm:h-[60px] flex flex-col sm:flex-row items-center justify-between w-full">
+                <div class="flex items-center w-full sm:w-auto h-[60px] sm:h-auto border-b sm:border-0 border-[#e6e9ec] justify-between">
                     <div class="flex items-center gap-3">
-                        <button onclick="toggleSidebar()" class="md:hidden text-slate-600 text-2xl">☰</button>
-                        <h1 id="headerTitle" class="text-xl sm:text-2xl font-bold text-slate-800">Сделки</h1>
+                        <button onclick="toggleSidebar()" class="md:hidden text-[#80868e] text-2xl">☰</button>
+                        <h1 id="headerTitle" class="text-lg font-semibold text-[#535c69]">Сделки</h1>
                     </div>
-                    <button onclick="toggleForm()" class="lg:hidden btn-primary w-9 h-9 rounded-xl font-bold flex items-center justify-center text-xl">+</button>
+                    <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-8 h-8 p-0 text-white rounded-sm">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-center sm:justify-end">
-                    <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner mr-2">
-                        <button onclick="setView('kanban')" id="v-kanban" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Доска</button>
-                        <button onclick="setView('list')" id="v-list" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Список</button>
-                        <button onclick="setView('table')" id="v-table" class="px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide">Таблица</button>
+                <div id="dealsToolbar" class="flex flex-wrap items-center w-full sm:w-auto h-[60px] sm:h-auto justify-between sm:justify-end gap-4 overflow-x-auto no-scrollbar">
+                    <div class="flex shrink-0">
+                        <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active">Канбан</div>
+                        <div onclick="setView('list')" id="v-list" class="bx-tab">Список</div>
+                        <div onclick="setView('table')" id="v-table" class="bx-tab mr-0 sm:mr-4">Таблица</div>
                     </div>
-
-                    <input id="searchInput" oninput="renderData()" type="text" placeholder="🔍 Поиск..." class="input-modern flex-1 sm:flex-none sm:w-48 py-2 shadow-sm">
-                    <button onclick="toggleForm()" class="hidden lg:flex btn-primary px-5 py-2 rounded-xl text-sm font-bold items-center gap-1"><span>+</span> Сделка</button>
+                    <div class="flex gap-2 items-center pb-2 sm:pb-0 shrink-0">
+                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Фильтр + поиск" class="bx-input w-40 sm:w-60">
+                        <button onclick="toggleForm()" class="hidden sm:flex bx-btn-success text-white" style="color: white !important;">+ Создать</button>
+                    </div>
                 </div>
             </header>
 
-            <div id="section-deals" class="p-3 sm:p-6 max-w-7xl mx-auto w-full">
+            <div id="section-deals" class="p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 
-                <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
-                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-white shadow-md transition">Все сделки</button>
-                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Не оплачен</button>
-                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Предоплата</button>
-                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition">Оплачен</button>
+                <div class="flex gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar w-full snap-x">
+                    <button onclick="setFilter('Все')" id="filter-Все" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-[#535c69] text-white">Все</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]">Оплачен</button>
                 </div>
 
-                <div id="formSection" class="hidden bg-white p-5 sm:p-6 rounded-2xl border border-slate-100 shadow-md mb-8">
-                    <h2 class="text-lg font-bold mb-5 border-b border-slate-100 pb-3">Новый заказ</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-                        <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">№ Заказа</label><input id="cOrderNum" type="text" placeholder="П-104" class="input-modern w-full"></div>
-                        <div class="sm:col-span-2 lg:col-span-2"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Имя клиента</label><input id="cName" type="text" class="input-modern w-full"></div>
-                        <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" placeholder="+7(9ХХ)..." class="input-modern w-full font-mono"></div>
-                        <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="input-modern w-full"></div>
-                        <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="input-modern w-full"></div>
-                        <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Счет пост.</label><input id="cInvoice" type="text" class="input-modern w-full"></div>
-                        <div><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Оплата пост.</label><select id="cSupplierStatus" class="input-modern w-full"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
-                        <div class="lg:col-span-1"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="input-modern w-full text-slate-600"></div>
-                        <div class="sm:col-span-2 lg:col-span-3"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">Комментарий</label><input id="cComments" type="text" class="input-modern w-full"></div>
-                        <div class="sm:col-span-2 lg:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Файл</label>
-                            <input id="cFile" type="file" class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:bg-white file:text-blue-700 file:border file:border-blue-200 file:rounded-lg cursor-pointer hover:file:bg-blue-50 transition">
+                <div id="formSection" class="hidden bg-white p-5 sm:p-6 border border-[#e6e9ec] rounded-sm mb-6 shadow-sm">
+                    <h2 class="text-sm font-bold mb-4 uppercase text-[#80868e] border-b border-[#e6e9ec] pb-2">Создание сделки</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">№ Заказа</label><input id="cOrderNum" type="text" placeholder="Свой номер" class="bx-input"></div>
+                        <div class="sm:col-span-2 lg:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" placeholder="+7 (999)..." class="bx-input font-mono"></div>
+                        
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
+                        <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
+                        
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
+                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
+                        
+                        <div class="lg:col-span-1"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
+                        <div class="sm:col-span-2 lg:col-span-3"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
+                        
+                        <div class="sm:col-span-4 p-3 border border-[#e6e9ec] bg-[#f8f9fa] rounded-sm">
+                            <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл документа</label>
+                            <input id="cFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-3 file:py-1.5 file:px-3 file:bg-white file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer">
                         </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button onclick="saveOrder()" id="saveBtn" class="btn-primary px-6 py-2.5 rounded-xl font-semibold">Сохранить</button>
-                        <button onclick="toggleForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition">Отмена</button>
+                    <div class="flex gap-2">
+                        <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success text-white" style="color: white !important;">Сохранить</button>
+                        <button onclick="toggleForm()" class="bx-btn-default">Отменить</button>
                     </div>
                 </div>
 
-                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-3 gap-6 pb-6 snap-x snap-mandatory no-scrollbar w-full">
+                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-3 gap-4 pb-4 snap-x snap-mandatory no-scrollbar w-full">
                     
-                    <div class="kanban-column shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full transition-all" 
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative" 
                          ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')">
-                        <div class="flex justify-between items-center mb-4 px-1 pointer-events-none">
-                            <h3 class="text-xs font-extrabold text-slate-500 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-400"></span>Новые</h3>
-                            <span id="cnt-new" class="bg-white border text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                        <div class="kanban-header-line bg-[#39a8ef]"></div>
+                        <div class="flex justify-between items-center mb-3 mt-1 pointer-events-none">
+                            <h3 class="text-xs font-bold text-[#535c69] uppercase">Новые</h3>
+                            <span id="cnt-new" class="text-[10px] font-bold text-[#a0a5aa]">0</span>
                         </div>
-                        <div id="col-new" class="space-y-4 flex-1 min-h-[50px] pointer-events-none"></div>
+                        <div id="col-new" class="space-y-2.5 flex-1 min-h-[50px] pointer-events-none"></div>
                     </div>
 
-                    <div class="kanban-column shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full transition-all"
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative"
                          ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')">
-                        <div class="flex justify-between items-center mb-4 px-1 pointer-events-none">
-                            <h3 class="text-xs font-extrabold text-blue-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span>В работе</h3>
-                            <span id="cnt-work" class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                        <div class="kanban-header-line bg-[#2fc6f6]"></div>
+                        <div class="flex justify-between items-center mb-3 mt-1 pointer-events-none">
+                            <h3 class="text-xs font-bold text-[#535c69] uppercase">В работе</h3>
+                            <span id="cnt-work" class="text-[10px] font-bold text-[#a0a5aa]">0</span>
                         </div>
-                        <div id="col-work" class="space-y-4 flex-1 min-h-[50px] pointer-events-none"></div>
+                        <div id="col-work" class="space-y-2.5 flex-1 min-h-[50px] pointer-events-none"></div>
                     </div>
 
-                    <div class="kanban-column shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto bg-slate-100/60 p-4 rounded-2xl border border-slate-200/50 flex flex-col h-full transition-all"
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] xl:w-auto p-3 flex flex-col h-full relative"
                          ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')">
-                        <div class="flex justify-between items-center mb-4 px-1 pointer-events-none">
-                            <h3 class="text-xs font-extrabold text-emerald-600 uppercase flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Успешно</h3>
-                            <span id="cnt-done" class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">0</span>
+                        <div class="kanban-header-line bg-[#9dcf00]"></div>
+                        <div class="flex justify-between items-center mb-3 mt-1 pointer-events-none">
+                            <h3 class="text-xs font-bold text-[#535c69] uppercase">Сделка успешна</h3>
+                            <span id="cnt-done" class="text-[10px] font-bold text-[#a0a5aa]">0</span>
                         </div>
-                        <div id="col-done" class="space-y-4 flex-1 min-h-[50px] pointer-events-none"></div>
+                        <div id="col-done" class="space-y-2.5 flex-1 min-h-[50px] pointer-events-none"></div>
                     </div>
 
                 </div>
 
-                <div id="view-list-container" class="hidden space-y-3"><div id="list-items-content" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>
+                <div id="view-list-container" class="hidden space-y-2"><div id="list-items-content" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div></div>
 
                 <div id="view-table-container" class="hidden">
-                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden w-full">
+                    <div class="bg-white border border-[#e6e9ec] rounded-sm overflow-hidden w-full">
                         <div class="overflow-x-auto no-scrollbar w-full">
                             <table class="w-full text-left border-collapse min-w-[900px]">
                                 <thead>
-                                    <tr class="bg-slate-50/50 border-b border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                                        <th class="px-5 py-4 w-16 text-center">№</th>
-                                        <th class="px-5 py-4">Клиент</th>
-                                        <th class="px-5 py-4">Сумма / Остаток</th>
-                                        <th class="px-5 py-4">Стадия заказа</th>
-                                        <th class="px-5 py-4">Поставщик</th>
-                                        <th class="px-5 py-4">Отгрузка</th>
-                                        <th class="px-5 py-4 text-right">Связь / Файл</th>
+                                    <tr class="bg-[#f8f9fa] border-b border-[#e6e9ec] text-[10px] font-bold text-[#a0a5aa] uppercase">
+                                        <th class="px-4 py-3 w-16 text-center">ID</th>
+                                        <th class="px-4 py-3">Название сделки / Связь</th>
+                                        <th class="px-4 py-3">Сумма (Остаток)</th>
+                                        <th class="px-4 py-3">Стадия</th>
+                                        <th class="px-4 py-3">Счет / Поставщик</th>
+                                        <th class="px-4 py-3">Отгрузка</th>
+                                        <th class="px-4 py-3 text-right">Документ</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-items-content" class="divide-y divide-slate-100 text-sm"></tbody>
+                                <tbody id="table-items-content" class="divide-y divide-[#e6e9ec] text-[13px]"></tbody>
                             </table>
                         </div>
-                        <div id="totalSum" class="bg-slate-50/80 px-6 py-4 text-right text-slate-800 font-extrabold text-sm border-t border-slate-200"></div>
+                        <div id="totalSum" class="bg-[#f8f9fa] px-4 py-3 text-right text-[#535c69] font-bold text-sm border-t border-[#e6e9ec]"></div>
                     </div>
                 </div>
             </div>
 
             <div id="section-calendar" class="hidden p-4 sm:p-6">
-                <div class="bg-white p-5 sm:p-8 rounded-2xl border shadow-sm">
-                    <div class="flex justify-between items-center mb-8">
-                        <button onclick="changeMonth(-1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">◀</button>
-                        <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-slate-800 capitalize tracking-tight"></h2>
-                        <button onclick="changeMonth(1)" class="p-2 px-5 bg-slate-50 border rounded-xl font-bold">▶</button>
+                <div class="bg-white p-5 border border-[#e6e9ec] rounded-sm shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <button onclick="changeMonth(-1)" class="bx-btn-default h-8 px-4 text-xs font-bold">◀</button>
+                        <h2 id="calendarMonthLabel" class="text-lg font-bold text-[#535c69] uppercase"></h2>
+                        <button onclick="changeMonth(1)" class="bx-btn-default h-8 px-4 text-xs font-bold">▶</button>
                     </div>
-                    <div class="grid grid-cols-7 gap-2 text-center text-[10px] font-extrabold text-slate-400 uppercase mb-3">
-                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-400">Сб</div><div class="text-red-400">Вс</div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[#a0a5aa] uppercase mb-2">
+                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-[#f05b57]">Сб</div><div class="text-[#f05b57]">Вс</div>
                     </div>
-                    <div id="calendarGrid" class="grid grid-cols-7 gap-2 md:gap-3"></div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1 md:gap-2"></div>
                 </div>
             </div>
             
             <div id="section-analytics" class="hidden p-10">
-                <div class="bg-white p-12 rounded-3xl border text-center shadow-sm">
-                    <div class="text-6xl mb-5">📊</div>
-                    <h2 class="text-2xl font-extrabold text-slate-800 mb-2">Аналитика</h2>
-                    <p class="text-slate-500 font-medium">Раздел в разработке</p>
+                <div class="bg-white p-10 border border-[#e6e9ec] rounded-sm text-center shadow-sm">
+                    <div class="text-4xl mb-4 text-[#a0a5aa]">📊</div>
+                    <h2 class="text-lg font-bold text-[#535c69] mb-2 uppercase">Аналитика</h2>
+                    <p class="text-[13px] text-[#a0a5aa]">Раздел находится в разработке</p>
                 </div>
             </div>
         </main>
@@ -291,66 +308,46 @@
             e.dataTransfer.setData('text/plain', id);
             setTimeout(() => e.target.classList.add('dragging'), 0);
         }
-
         function dragEnd(e) {
             e.target.classList.remove('dragging');
-            document.querySelectorAll('.kanban-column').forEach(col => col.classList.remove('drag-over'));
+            document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over'));
         }
-
         function allowDrop(e) {
-            e.preventDefault();
-            e.currentTarget.classList.add('drag-over');
+            e.preventDefault(); e.currentTarget.classList.add('drag-over');
         }
-
-        function dragLeave(e) {
-            e.currentTarget.classList.remove('drag-over');
-        }
-
+        function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
         function dropCard(e, newStatus) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('drag-over');
+            e.preventDefault(); e.currentTarget.classList.remove('drag-over');
             const orderId = e.dataTransfer.getData('text/plain');
-            if(orderId) {
-                changeStatus(orderId, newStatus);
-            }
+            if(orderId) changeStatus(orderId, newStatus);
         }
-        // ----------------------------
 
+        // --- ТЕЛЕФОН ---
         function applyPhoneMask(phoneStr) {
-            let val = String(phoneStr).replace(/\D/g, ''); 
-            if (!val) return '';
-            if (val[0] === '8') val = '7' + val.substring(1);
-            if (val[0] === '9') val = '7' + val;
-            if (val[0] !== '7') val = '7' + val; 
-            let formatted = '+7';
-            if (val.length > 1) formatted += ' (' + val.substring(1, 4);
-            if (val.length >= 5) formatted += ') ' + val.substring(4, 7);
-            if (val.length >= 8) formatted += '-' + val.substring(7, 9);
-            if (val.length >= 10) formatted += '-' + val.substring(9, 11);
-            return formatted;
+            let val = String(phoneStr).replace(/\D/g, ''); if (!val) return '';
+            if (val[0] === '8') val = '7' + val.substring(1); else if (val[0] === '9') val = '7' + val; else if (val[0] !== '7') val = '7' + val; 
+            let res = '+7';
+            if (val.length > 1) res += ' (' + val.substring(1, 4);
+            if (val.length >= 5) res += ') ' + val.substring(4, 7);
+            if (val.length >= 8) res += '-' + val.substring(7, 9);
+            if (val.length >= 10) res += '-' + val.substring(9, 11);
+            return res;
         }
-
         function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
 
         function setView(mode) {
-            activeView = mode;
-            localStorage.setItem('crm_view_mode', mode);
-            renderData();
+            activeView = mode; localStorage.setItem('crm_view_mode', mode); renderData();
         }
 
+        // --- ИНИЦИАЛИЗАЦИЯ И МЕНЮ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
         });
 
         function checkPin() {
-            if (document.getElementById('pinInput').value === SECRET_PIN) { 
-                sessionStorage.setItem('crm_auth', 'true'); 
-                unlockCrm(); 
-            } else { 
-                showToast("Неверный PIN-код", true); 
-                document.getElementById('pinInput').value = ''; 
-            }
+            if (document.getElementById('pinInput').value === SECRET_PIN) { sessionStorage.setItem('crm_auth', 'true'); unlockCrm(); } 
+            else { showToast("Неверный PIN-код", true); document.getElementById('pinInput').value = ''; }
         }
 
         function unlockCrm() {
@@ -358,9 +355,7 @@
             const main = document.getElementById('mainCrm');
             main.classList.remove('hidden');
             setTimeout(() => main.classList.remove('opacity-0'), 50);
-            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-                Notification.requestPermission();
-            }
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); }
             loadData(); 
         }
 
@@ -379,36 +374,31 @@
         function switchSection(sectionId, btnElement) {
             ['deals', 'calendar', 'analytics'].forEach(id => document.getElementById('section-' + id).classList.add('hidden'));
             document.getElementById('section-' + sectionId).classList.remove('hidden');
-            const titleElement = document.getElementById('headerTitle');
-            const toolbar = document.getElementById('dealsToolbar');
-            if(sectionId === 'deals') { titleElement.innerText = "Сделки"; toolbar.classList.remove('hidden'); } 
-            else if (sectionId === 'calendar') { titleElement.innerText = "Календарь"; toolbar.classList.add('hidden'); renderCalendar(); } 
-            else if (sectionId === 'analytics') { titleElement.innerText = "Аналитика"; toolbar.classList.add('hidden'); }
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.className = 'nav-btn block px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white font-medium transition-all');
-            btnElement.className = 'nav-btn block px-4 py-2.5 rounded-lg bg-blue-600/10 text-blue-400 font-semibold transition-all';
+            document.getElementById('headerTitle').innerText = sectionId === 'deals' ? 'Сделки' : (sectionId === 'calendar' ? 'Календарь отгрузок' : 'Аналитика');
+            document.getElementById('dealsToolbar').classList.toggle('hidden', sectionId !== 'deals');
+            
+            document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
             if(window.innerWidth < 768) toggleSidebar();
         }
 
         async function loadData() {
             const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
             if (error) return showToast("Ошибка загрузки", true);
-            allOrders = data; 
-            renderData();
-            checkTodaysShipments();
+            allOrders = data; renderData(); checkTodaysShipments();
         }
 
         function formatDate(dateString) {
             if(!dateString) return '—';
-            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' });
+            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allOrders.filter(o => {
-                const matchesSearch = (o.customer_name || '').toLowerCase().includes(search) || (o.phone || '').includes(search) || (o.order_number || '').toLowerCase().includes(search);
-                const actualSupplierStatus = o.supplier_status || 'Не оплачен';
-                const matchesTag = (currentSupplierFilter === 'Все') || (actualSupplierStatus === currentSupplierFilter);
-                return matchesSearch && matchesTag;
+                const ms = (o.customer_name || '').toLowerCase().includes(search) || (o.phone || '').includes(search) || (o.order_number || '').toLowerCase().includes(search);
+                const tag = currentSupplierFilter === 'Все' || (o.supplier_status || 'Не оплачен') === currentSupplierFilter;
+                return ms && tag;
             });
             
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
@@ -416,100 +406,96 @@
             document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
 
             ['kanban', 'list', 'table'].forEach(m => {
-                document.getElementById('v-' + m).className = `px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wide ${activeView === m ? 'view-btn-active shadow-sm' : 'text-slate-400 hover:text-slate-600'}`;
+                const el = document.getElementById('v-' + m);
+                el.className = activeView === m ? 'bx-tab active' : 'bx-tab';
             });
 
             const containers = { 'Новый': 'col-new', 'В работе': 'col-work', 'Завершен': 'col-done' };
-            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 };
-            let total = 0;
-
+            const counts = { 'Новый': 0, 'В работе': 0, 'Завершен': 0 }; let total = 0;
             Object.values(containers).forEach(id => document.getElementById(id).innerHTML = '');
-            document.getElementById('list-items-content').innerHTML = '';
-            document.getElementById('table-items-content').innerHTML = '';
+            document.getElementById('list-items-content').innerHTML = ''; document.getElementById('table-items-content').innerHTML = '';
 
             filtered.forEach(item => {
                 const status = item.status || 'Новый'; counts[status]++; total += Number(item.total_price || 0);
 
-                let statusBadge = `<span class="px-2 py-0.5 rounded-md font-bold uppercase text-[9px] bg-slate-100 text-slate-600">Новый</span>`;
-                let btnTxt = "В работу", nextSt = "В работе", btnClass = "bg-blue-50 text-blue-600";
+                let badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#eef2f4] text-[#535c69]">Новый</span>`;
+                let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-[#3bc8f5] hover:text-[#26a8d0]";
                 if (status === 'В работе') { 
-                    statusBadge = `<span class="px-2 py-0.5 rounded-md font-bold uppercase text-[9px] bg-blue-100 text-blue-700">В работе</span>`;
-                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "bg-emerald-50 text-emerald-600"; 
+                    badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#dff3fa] text-[#1198c6]">В работе</span>`;
+                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-[#9dcf00] hover:text-[#7bd500]"; 
                 } else if (status === 'Завершен') {
-                    statusBadge = `<span class="px-2 py-0.5 rounded-md font-bold uppercase text-[9px] bg-emerald-100 text-emerald-700">Завершен</span>`;
+                    badge = `<span class="px-1.5 py-0.5 rounded-sm font-bold uppercase text-[9px] bg-[#e6f4d3] text-[#5c8a00]">Завершен</span>`;
                     btnClass = "hidden";
                 }
 
-                let supColor = "bg-slate-100 text-slate-600";
-                if(item.supplier_status === 'Оплачен') supColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                else if(item.supplier_status === 'Предоплата') supColor = "bg-amber-50 text-amber-700 border-amber-200";
-                else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border-red-200";
+                let supColor = "bg-[#f8f9fa] text-[#535c69] border border-[#c6cdd3]";
+                if(item.supplier_status === 'Оплачен') supColor = "bg-[#e6f4d3] text-[#5c8a00] border border-[#c2e28a]";
+                else if(item.supplier_status === 'Предоплата') supColor = "bg-[#fff2cc] text-[#9c7800] border border-[#ffe066]";
+                else if(item.supplier_status === 'Не оплачен') supColor = "bg-[#fae2e2] text-[#d0021b] border border-[#f5b8b8]";
 
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
-                const comms = cleanPhone ? `<div class="flex gap-2 ml-2 pointer-events-auto"><a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn" title="WhatsApp">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn" title="Telegram">✈️</a></div>` : '';
-                const displayNum = item.order_number || `#${item.id}`;
-                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px] uppercase pointer-events-auto">📎 Файл</a>` : '';
+                const comms = cleanPhone ? `<div class="flex gap-1 ml-2 pointer-events-auto"><a href="tel:+${cleanPhone}" class="comm-btn">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn text-[#25D366]">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn text-[#0088cc]">✈️</a></div>` : '';
+                const displayNum = item.order_number || item.id;
+                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-[#a0a5aa] hover:text-[#535c69] text-[11px] font-bold pointer-events-auto uppercase flex items-center gap-1 transition-colors">📎 Файл</a>` : '';
 
                 let bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
-                let balHtml = item.prepayment ? `<div class="text-[10px] font-medium ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
+                let balHtml = item.prepayment ? `<div class="text-[10px] font-semibold ${bal <= 0 ? 'text-[#5c8a00]' : 'text-[#f05b57]'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
 
-                // КАНБАН КАРТОЧКА (С добавленным Draggable)
+                // КАНБАН
                 const card = `
-                <div class="bx-card p-4 flex flex-col gap-3 cursor-grab" draggable="true" ondragstart="dragStart(event, ${item.id})" ondragend="dragEnd(event)">
+                <div class="bx-card p-3.5 flex flex-col gap-2 cursor-grab" draggable="true" ondragstart="dragStart(event, ${item.id})" ondragend="dragEnd(event)">
                     <div class="flex justify-between items-start pointer-events-none">
                         <div class="flex items-center flex-1 min-w-0 pr-2 pointer-events-auto">
-                            <h4 onclick="openEditModal(${item.id})" class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors truncate text-sm">${item.customer_name}</h4>
+                            <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px]">${item.customer_name}</h4>
                             ${comms}
                         </div>
-                        <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded shrink-0 pointer-events-none">${displayNum}</span>
+                        <span class="text-[10px] font-semibold text-[#a0a5aa] shrink-0 pointer-events-none">#${displayNum}</span>
                     </div>
-                    <div class="pointer-events-none"><div class="font-extrabold text-lg">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
-                    <div class="bg-slate-50 p-2.5 rounded-xl border text-[11px] text-slate-500 space-y-1 pointer-events-none">
-                        <div class="flex justify-between"><span>Счет: ${item.supplier_invoice || '—'}</span><span class="px-1.5 rounded font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
-                        <div>🚚 Отгрузка: <b>${formatDate(item.shipment_date)}</b></div>
+                    <div class="pointer-events-none"><div class="font-bold text-[15px] text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
+                    <div class="bg-[#f8f9fa] border border-[#e6e9ec] p-2 rounded-sm text-[11px] text-[#80868e] space-y-1 pointer-events-none">
+                        <div class="flex justify-between items-center"><span>Счет: <b>${item.supplier_invoice || '—'}</b></span><span class="px-1.5 rounded-sm font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
+                        <div class="flex items-center gap-1"><span>🚚 Отгрузка:</span> <b class="text-[#535c69]">${formatDate(item.shipment_date)}</b></div>
                     </div>
-                    <div class="flex justify-between items-center pt-2 border-t mt-1">
-                        <div class="flex items-center gap-2 pointer-events-auto">
-                            ${fileLink}
-                        </div>
-                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase px-3 py-1.5 rounded-lg transition-colors pointer-events-auto">${btnTxt}</button>
+                    <div class="flex justify-between items-center pt-2 border-t border-[#e6e9ec] mt-1">
+                        <div class="pointer-events-auto">${fileLink}</div>
+                        <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-[10px] font-bold uppercase pointer-events-auto transition-colors">${btnTxt} ➔</button>
                     </div>
                 </div>`;
 
-                // СПИСОК (КОМПАКТНЫЙ)
+                // СПИСОК
                 const list = `
-                <div class="bx-card p-4 flex items-center justify-between gap-4 cursor-pointer" onclick="openEditModal(${item.id})">
+                <div class="bx-card p-3 flex items-center justify-between cursor-pointer" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <div class="font-bold text-slate-800 truncate">${item.customer_name}</div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="font-bold text-[13px] text-[#2067b0] truncate hover:underline">${item.customer_name}</div>
                             ${comms}
                         </div>
-                        <div class="text-[11px] text-slate-400 mt-1">${displayNum} • ${formatDate(item.shipment_date)}</div>
+                        <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Отгрузка: ${formatDate(item.shipment_date)}</div>
                     </div>
-                    <div class="text-right">
-                        <div class="font-extrabold text-slate-800">${Number(item.total_price).toLocaleString()} ₽</div>
-                        ${statusBadge}
+                    <div class="text-right ml-3">
+                        <div class="font-bold text-[14px] text-[#535c69] mb-1">${Number(item.total_price).toLocaleString()} ₽</div>
+                        ${badge}
                     </div>
                 </div>`;
 
                 // ТАБЛИЦА
                 const table = `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${displayNum}</td>
-                    <td class="px-5 py-4">
+                <tr class="hover:bg-[#f8f9fa] transition-colors border-b border-[#e6e9ec] last:border-0 group">
+                    <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}</td>
+                    <td class="px-4 py-3">
                         <div class="flex items-center gap-2">
-                            <div class="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
+                            <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
                             ${comms}
                         </div>
                     </td>
-                    <td class="px-5 py-4"><div class="font-extrabold text-slate-800">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
-                    <td class="px-5 py-4">${statusBadge}</td>
-                    <td class="px-5 py-4"><div class="text-xs font-bold text-slate-700">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded font-bold uppercase ${supColor}">${item.supplier_status || 'Не оплачен'}</span></td>
-                    <td class="px-5 py-4 text-xs text-slate-500">${formatDate(item.shipment_date)}</td>
-                    <td class="px-5 py-4 text-right">
-                        <div class="flex justify-end items-center gap-3">
+                    <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
+                    <td class="px-4 py-3">${badge}</td>
+                    <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
+                    <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
+                    <td class="px-4 py-3 text-right">
+                        <div class="flex justify-end items-center gap-4">
                             ${fileLink}
-                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} w-8 h-8 flex items-center justify-center rounded-lg text-lg ${status === 'Завершен' ? 'hidden' : ''}">➔</button>
+                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} text-xs font-bold uppercase ${status === 'Завершен' ? 'hidden' : ''}">➔</button>
                         </div>
                     </td>
                 </tr>`;
@@ -528,15 +514,11 @@
         function checkTodaysShipments() {
             if (sessionStorage.getItem('notified_today') === 'true') return;
             const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const dateStr = `${year}-${month}-${day}`;
-            
+            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             const todaysOrders = allOrders.filter(o => o.shipment_date === dateStr);
             if (todaysOrders.length > 0) {
                 if ("Notification" in window && Notification.permission === "granted") {
-                    new Notification("Хорошие полы", { body: `⚠️ Внимание: на сегодня запланировано отгрузок: ${todaysOrders.length}` });
+                    new Notification("Хорошие полы CRM", { body: `⚠️ Отгрузок на сегодня: ${todaysOrders.length}` });
                 }
                 sessionStorage.setItem('notified_today', 'true');
             }
@@ -546,34 +528,23 @@
         
         function setFilter(st) { 
             currentSupplierFilter = st; 
-            const allFilters = ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'];
-            allFilters.forEach(tab => {
+            ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'].forEach(tab => {
                 const btn = document.getElementById('filter-' + tab);
-                if (btn) {
-                    btn.className = tab === st 
-                        ? 'filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-slate-800 text-white shadow-md transition'
-                        : 'filter-btn snap-start shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-600 shadow-sm transition';
-                }
+                if (btn) btn.className = tab === st ? 'filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-[#535c69] text-white' : 'filter-btn snap-start shrink-0 px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase bg-white border border-[#c6cdd3] text-[#535c69]';
             });
             renderData(); 
         }
 
-        function showToast(m, e) { const t = document.getElementById('toast'); t.innerText = m; t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-xl z-[200] text-sm font-bold transition-all ${e ? 'bg-red-500' : 'bg-slate-800'} text-white block`; setTimeout(() => t.classList.add('hidden'), 3000); }
+        function showToast(m, e) { const t = document.getElementById('toast'); t.innerText = m; t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-sm shadow-md z-[200] text-sm font-semibold transition-all ${e ? 'bg-[#f05b57]' : 'bg-[#535c69]'} text-white block`; setTimeout(() => t.classList.add('hidden'), 3000); }
         async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
         
         function closeEditModal() { 
-            document.getElementById('editModal').classList.add('hidden'); 
-            currentEditId = null; 
-            if (document.getElementById('dayModal').classList.contains('hidden')) {
-                checkBodyScroll(); 
-            }
+            document.getElementById('editModal').classList.add('hidden'); currentEditId = null; 
+            if (document.getElementById('dayModal').classList.contains('hidden')) checkBodyScroll(); 
         }
 
         function openEditModal(id) {
-            const o = allOrders.find(x => x.id === id); 
-            if(!o) return; 
-            currentEditId = id;
-
+            const o = allOrders.find(x => x.id === id); if(!o) return; currentEditId = id;
             document.getElementById('editOrderNum').value = o.order_number || '';
             document.getElementById('editName').value = o.customer_name || '';
             document.getElementById('editPrice').value = o.total_price || '';
@@ -587,78 +558,37 @@
             
             const linkDiv = document.getElementById('currentFileLink');
             if (o.file_url) {
-                linkDiv.innerHTML = `
-                <div class="flex items-center gap-2 mb-2">
-                    <a href="${o.file_url}" target="_blank" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs hover:bg-blue-100 transition">📎 Смотреть файл</a>
-                    <button type="button" onclick="deleteAttachedFile(${o.id}, '${o.file_url}')" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-100 transition">🗑️ Удалить</button>
-                </div>`;
-            } else {
-                linkDiv.innerHTML = '<span class="text-slate-400 text-xs font-medium">Файл не загружен</span>';
-            }
+                linkDiv.innerHTML = `<div class="flex items-center gap-3 mb-2"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-[#2067b0] hover:underline">📎 Открыть текущий документ</a><button type="button" onclick="deleteAttachedFile(${o.id}, '${o.file_url}')" class="text-[11px] font-bold text-[#f05b57] hover:underline">Удалить</button></div>`;
+            } else { linkDiv.innerHTML = '<span class="text-[#a0a5aa] text-xs">Файл не загружен</span>'; }
             
-            document.getElementById('editModal').classList.remove('hidden');
-            checkBodyScroll();
+            document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
         }
 
         async function deleteAttachedFile(orderId, fileUrl) {
-            if(!confirm("Удалить этот файл навсегда?")) return;
+            if(!confirm("Удалить файл?")) return;
             try {
                 const fileName = fileUrl.split('/').pop();
-                if (fileName) {
-                    await _supabase.storage.from('order-files').remove([fileName]);
-                }
+                if (fileName) await _supabase.storage.from('order-files').remove([fileName]);
                 await _supabase.from('orders').update({ file_url: null }).eq('id', orderId);
-                
-                const linkDiv = document.getElementById('currentFileLink');
-                linkDiv.innerHTML = '<span class="text-slate-400 text-xs font-medium">Файл успешно удален</span>';
+                document.getElementById('currentFileLink').innerHTML = '<span class="text-[#a0a5aa] text-xs">Файл удален</span>';
                 document.getElementById('editFile').value = '';
-                
-                const order = allOrders.find(o => o.id === orderId);
-                if (order) order.file_url = null;
-                renderData();
-                showToast("Файл удален", false);
-            } catch (err) {
-                showToast("Ошибка удаления файла", true);
-            }
+                const order = allOrders.find(o => o.id === orderId); if (order) order.file_url = null;
+                renderData(); showToast("Файл удален", false);
+            } catch (err) { showToast("Ошибка удаления", true); }
         }
 
         async function saveEdit() {
-            if(!currentEditId) return;
-            const btn = document.getElementById('saveEditBtn'); btn.innerText = 'Сохранение...'; btn.disabled = true;
-
-            const order = allOrders.find(x => x.id === currentEditId);
-            const fileInput = document.getElementById('editFile');
-            
-            let updates = {
-                order_number: document.getElementById('editOrderNum').value,
-                customer_name: document.getElementById('editName').value,
-                total_price: document.getElementById('editPrice').value || null,
-                prepayment: document.getElementById('editPrepayment').value || null,
-                phone: document.getElementById('editPhone').value,
-                supplier_invoice: document.getElementById('editInvoice').value,
-                supplier_status: document.getElementById('editSupplierStatus').value,
-                shipment_date: document.getElementById('editShipDate').value || null,
-                comments: document.getElementById('editComments').value,
-                status: document.getElementById('editStatus').value
-            };
-
+            if(!currentEditId) return; const btn = document.getElementById('saveEditBtn'); btn.innerText = 'Сохранение...'; btn.disabled = true;
+            const order = allOrders.find(x => x.id === currentEditId); const fileInput = document.getElementById('editFile');
+            let updates = { order_number: document.getElementById('editOrderNum').value, customer_name: document.getElementById('editName').value, total_price: document.getElementById('editPrice').value || null, prepayment: document.getElementById('editPrepayment').value || null, phone: document.getElementById('editPhone').value, supplier_invoice: document.getElementById('editInvoice').value, supplier_status: document.getElementById('editSupplierStatus').value, shipment_date: document.getElementById('editShipDate').value || null, comments: document.getElementById('editComments').value, status: document.getElementById('editStatus').value };
             try {
                 if (fileInput.files.length > 0) {
-                    if (order && order.file_url) {
-                        const oldFileName = order.file_url.split('/').pop();
-                        if (oldFileName) await _supabase.storage.from('order-files').remove([oldFileName]);
-                    }
-                    const file = fileInput.files[0];
-                    const fileExt = file.name.split('.').pop();
+                    if (order && order.file_url) { const oldFileName = order.file_url.split('/').pop(); if (oldFileName) await _supabase.storage.from('order-files').remove([oldFileName]); }
+                    const file = fileInput.files[0]; const fileExt = file.name.split('.').pop();
                     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                     const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
-                    
-                    if (!uploadError) {
-                        const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName);
-                        updates.file_url = publicUrlData.publicUrl;
-                    }
+                    if (!uploadError) { const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName); updates.file_url = publicUrlData.publicUrl; }
                 }
-
                 await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 showToast("Сохранено", false); closeEditModal(); loadData();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
@@ -667,39 +597,18 @@
         async function saveOrder() {
             const btn = document.getElementById('saveBtn'); btn.innerText = 'Создание...'; btn.disabled = true;
             const fileInput = document.getElementById('cFile');
-            
-            let newOrder = {
-                order_number: document.getElementById('cOrderNum').value,
-                customer_name: document.getElementById('cName').value,
-                total_price: document.getElementById('cPrice').value || null,
-                prepayment: document.getElementById('cPrepayment').value || null,
-                phone: document.getElementById('cPhone').value,
-                supplier_invoice: document.getElementById('cInvoice').value,
-                supplier_status: document.getElementById('cSupplierStatus').value,
-                shipment_date: document.getElementById('cShipDate').value || null,
-                comments: document.getElementById('cComments').value,
-                status: 'Новый'
-            };
-
-            if (!newOrder.customer_name) { showToast("Укажите имя клиента", true); btn.innerText = 'Сохранить'; btn.disabled = false; return; }
-
+            let newOrder = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value || null, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, comments: document.getElementById('cComments').value, status: 'Новый' };
+            if (!newOrder.customer_name) { showToast("Укажите имя", true); btn.innerText = 'Сохранить'; btn.disabled = false; return; }
             try {
                 if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    const fileExt = file.name.split('.').pop();
+                    const file = fileInput.files[0]; const fileExt = file.name.split('.').pop();
                     const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                     const { error: uploadError } = await _supabase.storage.from('order-files').upload(fileName, file);
-                    if (!uploadError) {
-                        const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName);
-                        newOrder.file_url = publicUrlData.publicUrl;
-                    }
+                    if (!uploadError) { const { data: publicUrlData } = _supabase.storage.from('order-files').getPublicUrl(fileName); newOrder.file_url = publicUrlData.publicUrl; }
                 }
-
-                await _supabase.from('orders').insert([newOrder]);
-                toggleForm(); showToast("Сделка создана", false); 
+                await _supabase.from('orders').insert([newOrder]); toggleForm(); showToast("Создано", false); 
                 ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('cSupplierStatus').value = 'Не оплачен';
-                loadData();
+                document.getElementById('cSupplierStatus').value = 'Не оплачен'; loadData();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
@@ -709,66 +618,33 @@
             const year = currentDate.getFullYear(); const month = currentDate.getMonth();
             const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
             document.getElementById('calendarMonthLabel').innerText = `${monthNames[month]} ${year}`;
-
             const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
             const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
             let offset = firstDay === 0 ? 6 : firstDay - 1; 
-
-            for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="p-2 sm:p-4 rounded-xl border border-transparent"></div>`;
-
+            for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="p-2 sm:p-4 rounded-sm"></div>`;
             const today = new Date();
-
             for (let i = 1; i <= daysInMonth; i++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
-                
-                let orderBadge = '';
-                if(dayOrders.length > 0) {
-                    orderBadge = `<div class="mt-2 text-[10px] font-bold bg-blue-100 text-blue-700 rounded-md px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} отгрузок</div>`;
-                }
-
+                let badge = ''; if(dayOrders.length > 0) badge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} дел</div>`;
                 const isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
-                const cellClasses = isToday ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-100 shadow-sm' : 'bg-white border-slate-100';
-
-                grid.innerHTML += `
-                <div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-4 rounded-xl border ${cellClasses} hover:border-blue-300 hover:shadow-md cursor-pointer transition-all min-h-[70px] sm:min-h-[100px] flex flex-col items-center sm:items-start">
-                    <span class="font-bold ${isToday ? 'text-blue-700' : 'text-slate-700'} text-sm sm:text-base">${i}</span>
-                    ${orderBadge}
-                </div>`;
+                grid.innerHTML += `<div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-3 rounded-sm border ${isToday ? 'border-[#3bc8f5] bg-[#f0f8fb]' : 'border-[#e6e9ec] bg-white'} hover:border-[#a0a5aa] cursor-pointer transition-all min-h-[70px] sm:min-h-[90px] flex flex-col items-center sm:items-start"><span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm">${i}</span>${badge}</div>`;
             }
         }
 
         function openDayModal(dateStr) {
-            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
-            const list = document.getElementById('dayOrdersList');
+            const dayOrders = allOrders.filter(o => o.shipment_date === dateStr); const list = document.getElementById('dayOrdersList');
             document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dateStr)}`;
-            
-            if(dayOrders.length === 0) {
-                list.innerHTML = `<div class="text-center text-slate-400 py-8 text-sm font-medium">На этот день отгрузок не запланировано</div>`;
+            if(dayOrders.length === 0) { list.innerHTML = `<div class="text-center text-[#a0a5aa] py-6 text-[13px] font-semibold">На этот день ничего не запланировано</div>`;
             } else {
                 list.innerHTML = dayOrders.map(o => {
-                    const statusColors = o.status === 'Завершен' ? 'bg-emerald-50 text-emerald-600' : (o.status === 'В работе' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600');
-                    return `
-                    <div class="p-4 bg-white border border-slate-100 rounded-xl shadow-sm cursor-pointer hover:border-blue-300 hover:shadow-md transition-all flex flex-col gap-2" onclick="openEditModal(${o.id})">
-                        <div class="flex justify-between items-start">
-                            <div class="font-bold text-slate-800">${o.customer_name}</div>
-                            <span class="px-2 py-0.5 rounded uppercase text-[9px] font-bold ${statusColors}">${o.status || 'Новый'}</span>
-                        </div>
-                        <div class="text-[11px] font-mono text-slate-400">Заказ ${o.order_number || ('#' + o.id)}</div>
-                        <div class="text-sm font-extrabold text-slate-800 mt-1">${Number(o.total_price || 0).toLocaleString()} ₽</div>
-                    </div>
-                `}).join('');
+                    const st = o.status === 'Завершен' ? 'bg-[#e6f4d3] text-[#5c8a00]' : (o.status === 'В работе' ? 'bg-[#dff3fa] text-[#1198c6]' : 'bg-[#eef2f4] text-[#535c69]');
+                    return `<div class="p-3 bg-white border border-[#e6e9ec] rounded-sm cursor-pointer hover:border-[#c6cdd3] transition-all flex flex-col gap-1.5" onclick="openEditModal(${o.id})"><div class="flex justify-between items-start"><div class="font-bold text-[#2067b0] text-[13px]">${o.customer_name}</div><span class="px-1.5 py-0.5 rounded-sm uppercase text-[9px] font-bold ${st}">${o.status || 'Новый'}</span></div><div class="text-[11px] font-mono text-[#a0a5aa]">Заказ #${o.order_number || o.id}</div><div class="text-[14px] font-bold text-[#535c69]">${Number(o.total_price || 0).toLocaleString()} ₽</div></div>`
+                }).join('');
             }
-            
-            document.getElementById('dayModal').classList.remove('hidden');
-            checkBodyScroll();
+            document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
         }
-
-        function closeDayModal() {
-            document.getElementById('dayModal').classList.add('hidden');
-            checkBodyScroll();
-        }
-
+        function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
     </script>
 </body>
 </html>
