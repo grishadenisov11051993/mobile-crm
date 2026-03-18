@@ -19,6 +19,7 @@
     </script>
 
     <style>
+        /* АНТИ-ТЕМНАЯ ТЕМА ХАК */
         :root { color-scheme: light !important; }
         html, body { background-color: #f0f4f8 !important; color: #535c69 !important; font-family: 'Open Sans', sans-serif; }
         .bg-white { background-color: #ffffff !important; }
@@ -161,7 +162,7 @@
                     <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#f8f9fa]">
                         <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл (Договор / Замер)</label>
                         <div id="currentFileLink" class="mb-3 text-sm"></div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#ffffff] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:file:bg-[#e6e9ec] transition">
+                        <input id="editFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-4 file:py-2 file:px-3 file:bg-[#ffffff] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer hover:bg-[#e6e9ec] transition">
                     </div>
                 </div>
             </div>
@@ -728,7 +729,9 @@
                     const archiveRow = `
                     <tr class="hover:bg-[#f8f9fa] transition-colors group border-b border-[#e6e9ec]">
                         <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}<div class="text-[9px] mt-1">${createDate}</div></td>
-                        <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>${commsHtml}</div>${tagsHtml}${addressHtml}</td>
+                        <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>${commsHtml}</div>
+                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-[#535c69] hover:text-[#2067b0] mt-1 font-mono inline-block text-decoration-none">${item.phone}</a>` : ''}
+                        ${tagsHtml}${addressHtml}</td>
                         <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div></td>
                         <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
                         <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
@@ -741,9 +744,12 @@
                 const card = `
                 <div class="bx-card p-3.5 flex flex-col gap-2 cursor-grab" draggable="true" ondragstart="dragStart(event, ${item.id})" ondragend="dragEnd(event)">
                     <div class="flex justify-between items-start pointer-events-none">
-                        <div class="flex items-center flex-1 min-w-0 pr-2 pointer-events-auto">
-                            <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px] m-0">${item.customer_name}</h4>
-                            ${commsHtml}
+                        <div class="flex flex-col flex-1 min-w-0 pr-2 pointer-events-auto">
+                            <div class="flex items-center">
+                                <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px] m-0">${item.customer_name}</h4>
+                                ${commsHtml}
+                            </div>
+                            ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-[#535c69] hover:text-[#2067b0] mt-1 font-mono inline-block w-max pointer-events-auto text-decoration-none">${item.phone}</a>` : ''}
                         </div>
                         <div class="text-right pointer-events-none"><span class="text-[10px] font-semibold text-[#a0a5aa] block">#${displayNum}</span><span class="text-[9px] text-[#a0a5aa] block">${createDate}</span></div>
                     </div>
@@ -771,6 +777,7 @@
                             <div class="font-bold text-[13px] text-[#2067b0] truncate hover:underline">${item.customer_name}</div>
                             ${commsHtml}
                         </div>
+                        ${item.phone ? `<div class="text-[11px] text-[#535c69] mb-1 font-mono">${item.phone}</div>` : ''}
                         <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
                         ${tagsHtml}
                         ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate">💬 ${item.comments}</div>` : ''}
@@ -793,6 +800,7 @@
                             <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
                             ${commsHtml}
                         </div>
+                        ${item.phone ? `<div class="text-[11px] text-[#535c69] mt-1 font-mono">${item.phone}</div>` : ''}
                         ${tagsHtml}
                         ${addressHtml}
                     </td>
