@@ -12,7 +12,6 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; } 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
@@ -37,6 +36,7 @@
         .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
         .view-btn-active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
         
+        /* Кнопки связи мини */
         .comm-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 16px; transition: all 0.2s; background: #f1f5f9; border: 1px solid #e2e8f0; text-decoration: none;}
         .comm-btn:hover { transform: translateY(-2px); background: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .pin-input { letter-spacing: 0.5em; text-align: center; font-size: 1.5rem; font-weight: bold; }
@@ -49,7 +49,7 @@
     <div id="dayModal" class="fixed inset-0 bg-slate-900/60 hidden z-[155] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeDayModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <button onclick="closeDayModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
                 <h3 id="dayModalTitle" class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Отгрузки</h3>
                 <button onclick="closeDayModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
             </div>
@@ -60,7 +60,7 @@
     <div id="editModal" class="fixed inset-0 bg-slate-900/60 hidden z-[160] flex items-center justify-center p-3 sm:p-4 backdrop-blur-md transition-all">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center relative shrink-0">
-                <button onclick="closeEditModal()" class="text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
+                <button onclick="closeEditModal()" class="text-blue-500 font-medium flex items-center gap-1 text-sm absolute left-4 sm:left-5"><span>←</span> Назад</button>
                 <h3 class="font-bold text-slate-800 text-base sm:text-lg mx-auto">Карточка заказа</h3>
                 <button onclick="closeEditModal()" class="text-slate-400 text-2xl absolute right-4 sm:right-5">&times;</button>
             </div>
@@ -90,7 +90,7 @@
                 </div>
             </div>
             <div class="p-4 sm:p-5 border-t border-slate-100 bg-white flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 shrink-0 rounded-b-2xl">
-                <button onclick="closeEditModal()" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl text-slate-600 font-semibold hover:bg-slate-100 transition-colors">Отмена</button>
+                <button onclick="closeEditModal()" class="w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition-colors">← Назад</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="btn-primary w-full sm:w-auto px-6 py-3 rounded-xl font-semibold">Сохранить</button>
             </div>
         </div>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="flex gap-3">
                         <button onclick="saveOrder()" id="saveBtn" class="btn-primary px-6 py-2.5 rounded-xl font-semibold">Сохранить</button>
-                        <button onclick="toggleForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition">Отмена</button>
+                        <button onclick="toggleForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-semibold hover:bg-slate-200 transition">← Назад</button>
                     </div>
                 </div>
 
@@ -380,13 +380,15 @@
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border-red-200";
 
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
-                const comms = cleanPhone ? `<div class="flex gap-2 ml-2"><a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn" title="WhatsApp">💬</a></div>` : '';
+                // Добавлен Telegram!
+                const comms = cleanPhone ? `<div class="flex gap-1.5 ml-2"><a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn" title="WhatsApp">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn" title="Telegram">✈️</a></div>` : '';
                 const displayNum = item.order_number || `#${item.id}`;
                 const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-500 font-bold text-[10px] uppercase">📎 Файл</a>` : '';
 
                 let bal = Number(item.total_price || 0) - Number(item.prepayment || 0);
                 let balHtml = item.prepayment ? `<div class="text-[10px] font-medium ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
 
+                // КАНБАН КАРТОЧКА
                 const card = `
                 <div class="bx-card p-4 flex flex-col gap-3">
                     <div class="flex justify-between items-start">
@@ -409,6 +411,7 @@
                     </div>
                 </div>`;
 
+                // СПИСОК
                 const list = `
                 <div class="bx-card p-4 flex items-center justify-between gap-4 cursor-pointer" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0">
@@ -424,6 +427,7 @@
                     </div>
                 </div>`;
 
+                // ТАБЛИЦА
                 const table = `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-5 py-4 font-mono text-[11px] text-slate-400 text-center">${displayNum}</td>
@@ -475,7 +479,14 @@
         function showToast(m, e) { const t = document.getElementById('toast'); t.innerText = m; t.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-xl z-[200] text-sm font-bold transition-all ${e ? 'bg-red-500' : 'bg-slate-800'} text-white block`; setTimeout(() => t.classList.add('hidden'), 3000); }
         async function changeStatus(id, st) { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); }
         
-        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); currentEditId = null; checkBodyScroll(); }
+        function closeEditModal() { 
+            document.getElementById('editModal').classList.add('hidden'); 
+            currentEditId = null; 
+            // Не убираем overflow-hidden если открыто окно дня!
+            if (document.getElementById('dayModal').classList.contains('hidden')) {
+                checkBodyScroll(); 
+            }
+        }
 
         function openEditModal(id) {
             const o = allOrders.find(x => x.id === id); 
@@ -654,7 +665,6 @@
             if(dayOrders.length === 0) {
                 list.innerHTML = `<div class="text-center text-slate-400 py-8 text-sm font-medium">На этот день отгрузок не запланировано</div>`;
             } else {
-                // ИСПРАВЛЕНИЕ: здесь убран closeDayModal(), чтобы модалка дня не закрывалась
                 list.innerHTML = dayOrders.map(o => {
                     const statusColors = o.status === 'Завершен' ? 'bg-emerald-50 text-emerald-600' : (o.status === 'В работе' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-600');
                     return `
