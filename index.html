@@ -15,7 +15,8 @@
         ::-webkit-scrollbar-thumb { background: #c6cdd3; border-radius: 3px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        .glass-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); }
+        /* Битрикс Цвета и Элементы */
+        .bx-header { background: #ffffff; border-bottom: 1px solid #e6e9ec; }
         .bx-sidebar { background-color: #1e2530; }
         .bx-sidebar-item { color: #a0a5aa; border-radius: 2px; transition: 0.2s; font-size: 14px; text-decoration: none; }
         .bx-sidebar-item:hover, .bx-sidebar-item.active { background-color: #283240; color: #ffffff; }
@@ -45,7 +46,7 @@
         .kanban-col { background-color: #eef2f4; border-radius: 2px; }
         .kanban-header-line { height: 4px; width: 100%; border-radius: 2px 2px 0 0; position: absolute; top: 0; left: 0; }
 
-        .comm-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 2px; font-size: 14px; transition: 0.2s; background: #f8f9fa; border: 1px solid #c6cdd3; text-decoration: none; color: #535c69; }
+        .comm-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 2px; font-size: 14px; transition: 0.2s; background: #f8f9fa; border: 1px solid #c6cdd3; text-decoration: none; color: #535c69; cursor: pointer;}
         .comm-btn:hover { background: #e6e9ec; }
         
         .cursor-grab { cursor: grab; }
@@ -107,14 +108,10 @@
                 </div>
 
                 <div class="p-4 border border-[#e6e9ec] rounded-sm bg-[#fffdf2]">
-                    <h4 class="font-bold text-[#9c7800] uppercase text-[11px] mb-3">Логистика и Монтаж</h4>
+                    <h4 class="font-bold text-[#9c7800] uppercase text-[11px] mb-3">Логистика</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div><label class="block text-[11px] font-semibold text-[#535c69] mb-1">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input border-[#3bc8f5]"></div>
                         <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Адрес доставки</label><input id="editAddress" type="text" class="bx-input" placeholder="Город, улица..."></div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-[#ffe066]">
-                        <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1">Нужен ли монтаж?</label>
-                        <select id="editInstall" class="bx-input w-full sm:w-1/3"><option value="Нет">Нет</option><option value="Да">Да (Нужен)</option></select>
                     </div>
                 </div>
 
@@ -134,6 +131,7 @@
             </div>
             <div class="p-4 border-t border-[#e6e9ec] bg-[#f8f9fa] flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
                 <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
+                <button onclick="shareOrder(currentEditId)" class="w-full sm:w-auto bx-btn-default text-[#2067b0] border-[#c6cdd3] hover:border-[#2067b0]">📤 Поделиться</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success text-white" style="color: white !important;">Сохранить</button>
             </div>
         </div>
@@ -149,7 +147,9 @@
     </div>
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
+        
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-[90] hidden md:hidden"></div>
+
         <aside id="sidebar" class="bx-sidebar fixed inset-y-0 left-0 w-60 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-lg">
             <div class="p-5 text-lg font-bold flex justify-between items-center text-white border-b border-[#283240]">
                 <span>Хорошие <span style="color: #3bc8f5;">полы</span></span>
@@ -167,6 +167,7 @@
         </aside>
 
         <main class="flex-1 md:ml-60 flex flex-col min-w-0 h-screen overflow-y-auto w-full">
+            
             <header class="bx-header sticky top-0 z-40 px-4 sm:px-6 h-auto sm:h-[60px] flex flex-col sm:flex-row items-center justify-between w-full">
                 <div class="flex items-center w-full sm:w-auto h-[60px] sm:h-auto border-b sm:border-0 border-[#e6e9ec] justify-between">
                     <div class="flex items-center gap-3">
@@ -203,21 +204,20 @@
                     <h2 class="text-sm font-bold mb-4 uppercase text-[#80868e] border-b border-[#e6e9ec] pb-2">Создание сделки</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">№ Заказа</label><input id="cOrderNum" type="text" placeholder="Свой номер" class="bx-input"></div>
-                        <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
+                        <div class="sm:col-span-2 lg:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" placeholder="+7 (999)..." class="bx-input font-mono"></div>
                         
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
                         <div><label class="block text-[11px] font-bold text-[#3bc8f5] mb-1 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-[#3bc8f5]"></div>
+                        
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
                         <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                         
-                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
+                        <div class="lg:col-span-1"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
                         <div class="sm:col-span-2"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Адрес доставки</label><input id="cAddress" type="text" placeholder="Город, улица, дом..." class="bx-input"></div>
-                        <div><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Нужен монтаж?</label><select id="cInstall" class="bx-input"><option value="Нет">Нет</option><option value="Да">Да (Нужен)</option></select></div>
+                        <div class="sm:col-span-4 lg:col-span-4"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
                         
-                        <div class="lg:col-span-4"><label class="block text-[11px] font-semibold text-[#a0a5aa] mb-1 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
-                        
-                        <div class="lg:col-span-4 p-3 border border-[#e6e9ec] bg-[#f8f9fa] rounded-sm">
+                        <div class="sm:col-span-4 p-3 border border-[#e6e9ec] bg-[#f8f9fa] rounded-sm">
                             <label class="block text-[11px] font-semibold text-[#a0a5aa] mb-2 uppercase">Файл документа</label>
                             <input id="cFile" type="file" class="block w-full text-xs text-[#535c69] file:mr-3 file:py-1.5 file:px-3 file:bg-white file:text-[#535c69] file:border file:border-[#c6cdd3] file:rounded-sm cursor-pointer">
                         </div>
@@ -262,7 +262,7 @@
                         <div class="overflow-x-auto no-scrollbar w-full">
                             <table class="w-full text-left border-collapse min-w-[1000px]">
                                 <thead>
-                                    <tr class="bg-[#f8f9fa] border-b border-[#e6e9ec] text-[10px] font-bold text-[#a0a5aa] uppercase">
+                                    <tr class="bg-[#f8f9fa] border-b border-[#e6e9ec] text-[10px] sm:text-[11px] font-bold text-[#a0a5aa] uppercase tracking-wider">
                                         <th class="px-4 py-3 w-20 text-center">№ / Дата</th>
                                         <th class="px-4 py-3">Название сделки / Связь</th>
                                         <th class="px-4 py-3">Сумма (Остаток)</th>
@@ -322,7 +322,6 @@
                         <h2 id="analyticsMonthLabel" class="text-lg font-bold text-[#535c69] uppercase m-0"></h2>
                         <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-8 px-4 text-xs font-bold">▶</button>
                     </div>
-
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <div class="p-4 bg-[#f8f9fa] border border-[#e6e9ec] rounded-sm border-l-4 border-l-[#535c69]">
                             <div class="text-[11px] text-[#a0a5aa] font-bold uppercase mb-1">Создано сделок</div>
@@ -342,7 +341,6 @@
                             <div class="text-2xl font-bold text-[#f05b57]" id="stat-debt-sum">0 ₽</div>
                         </div>
                     </div>
-
                     <h3 class="text-sm font-bold text-[#535c69] uppercase border-b border-[#e6e9ec] pb-2 mb-4">Счета поставщикам (за этот месяц)</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div class="p-4 border border-[#f5b8b8] bg-[#fae2e2] rounded-sm text-center">
@@ -387,7 +385,6 @@
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
 
-        // --- ЛОГИКА DRAG AND DROP ---
         function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
         function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
         function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
@@ -452,20 +449,15 @@
             if(window.innerWidth < 768) toggleSidebar();
         }
 
-        // ЭКСПОРТ В EXCEL (CSV)
+        // --- ЭКСПОРТ В EXCEL ---
         function exportToCSV() {
             if(allOrders.length === 0) return showToast("Нет данных для экспорта", true);
-            let csv = "ID сделки;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет поставщика;Оплата поставщику;Дата отгрузки;Адрес доставки;Нужен монтаж;Комментарий\n";
+            let csv = "ID сделки;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет поставщика;Оплата поставщику;Дата отгрузки;Адрес доставки;Комментарий\n";
             
             allOrders.forEach(o => {
                 let comments = (o.comments || '').replace(/;/g, ',').replace(/\n/g, ' ');
                 let address = (o.delivery_address || '').replace(/;/g, ',').replace(/\n/g, ' ');
-                let row = [
-                    o.id, o.order_number||'', o.customer_name||'', o.phone||'', 
-                    o.total_price||0, o.prepayment||0, o.status||'Новый', 
-                    o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDateStr(o.shipment_date),
-                    address, o.need_installation||'Нет', comments
-                ];
+                let row = [ o.id, o.order_number||'', o.customer_name||'', o.phone||'', o.total_price||0, o.prepayment||0, o.status||'Новый', o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDateStr(o.shipment_date), address, comments ];
                 csv += row.join(';') + "\n";
             });
             const blob = new Blob(["\ufeff", csv], {type: 'text/csv;charset=utf-8;'});
@@ -473,6 +465,31 @@
             const a = document.createElement('a'); a.href = url; 
             a.download = `Baza_CRM_${new Date().toLocaleDateString('ru-RU')}.csv`;
             a.click();
+        }
+
+        // --- ПОДЕЛИТЬСЯ ДАННЫМИ ---
+        function shareOrder(id) {
+            const order = allOrders.find(o => o.id === id);
+            if (!order) return;
+
+            const remain = (Number(order.total_price) || 0) - (Number(order.prepayment) || 0);
+            const remainText = remain > 0 ? `${remain.toLocaleString()} ₽` : '0 ₽ (Оплачено)';
+            const address = order.delivery_address || 'Не указан';
+            const phone = order.phone || 'Не указан';
+            const file = order.file_url ? order.file_url : 'Нет файла';
+
+            const shareText = `Заказ: ${order.customer_name}\nТелефон: ${phone}\nАдрес: ${address}\nДоплата: ${remainText}\nФайл: ${file}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: `Сделка: ${order.customer_name}`,
+                    text: shareText
+                }).catch(err => console.log('Ошибка шаринга', err));
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast("Данные скопированы в буфер", false);
+                }).catch(err => { showToast("Ошибка копирования", true); });
+            }
         }
 
         async function loadData() {
@@ -538,7 +555,16 @@
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-[#fae2e2] text-[#d0021b] border border-[#f5b8b8]";
 
                 const cleanPhone = item.phone ? item.phone.replace(/\D/g, '') : '';
-                const comms = cleanPhone ? `<div class="flex gap-1 ml-2 pointer-events-auto"><a href="tel:+${cleanPhone}" class="comm-btn">📞</a><a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn text-[#25D366]">💬</a><a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn text-[#0088cc]">✈️</a></div>` : '';
+                
+                // Добавлена кнопка "Поделиться" (иконка 📤) во все карточки
+                let commsHtml = `<div class="flex flex-wrap gap-1 ml-2 pointer-events-auto">`;
+                if (cleanPhone) {
+                    commsHtml += `<a href="tel:+${cleanPhone}" class="comm-btn" title="Звонок">📞</a>
+                                  <a href="https://wa.me/${cleanPhone}" target="_blank" class="comm-btn text-[#25D366]" title="WhatsApp">💬</a>
+                                  <a href="https://t.me/+${cleanPhone}" target="_blank" class="comm-btn text-[#0088cc]" title="Telegram">✈️</a>`;
+                }
+                commsHtml += `<button type="button" onclick="event.stopPropagation(); shareOrder(${item.id})" class="comm-btn text-[#535c69]" title="Поделиться">📤</button></div>`;
+
                 const displayNum = item.order_number || item.id;
                 const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-[#a0a5aa] hover:text-[#535c69] text-[11px] font-bold pointer-events-auto uppercase flex items-center gap-1 transition-colors text-decoration-none">📎 Файл</a>` : '';
 
@@ -549,13 +575,13 @@
                 const addressHtml = item.delivery_address ? `<div class="text-[10px] text-[#535c69] mt-1 truncate">📍 ${item.delivery_address}</div>` : '';
                 const commentHtml = item.comments ? `<div class="mt-2 text-[11px] text-[#535c69] bg-[#fff9d6] p-2 rounded-sm border border-[#ffe066] border-l-2 border-l-[#ffc107]">💬 ${item.comments}</div>` : '';
 
-                // Отрисовка для АРХИВА
+                // АРХИВ
                 if (status === 'Завершен') {
                     archiveTotal += Number(item.total_price || 0);
                     const archiveRow = `
                     <tr class="hover:bg-[#f8f9fa] transition-colors group border-b border-[#e6e9ec]">
                         <td class="px-4 py-3 font-mono text-[11px] text-[#a0a5aa] text-center">${displayNum}<div class="text-[9px] mt-1">${createDate}</div></td>
-                        <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>${comms}</div>${addressHtml}</td>
+                        <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>${commsHtml}</div>${addressHtml}</td>
                         <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div></td>
                         <td class="px-4 py-3"><div class="text-xs font-semibold text-[#535c69]">${item.supplier_invoice || '—'}</div><span class="text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase ${supColor} inline-block mt-0.5">${item.supplier_status || 'Не оплачен'}</span></td>
                         <td class="px-4 py-3 text-xs text-[#535c69]">${formatDate(item.shipment_date)}</td>
@@ -570,14 +596,11 @@
                     <div class="flex justify-between items-start pointer-events-none">
                         <div class="flex items-center flex-1 min-w-0 pr-2 pointer-events-auto">
                             <h4 onclick="openEditModal(${item.id})" class="font-bold bx-card-title cursor-pointer truncate text-[13px] m-0">${item.customer_name}</h4>
-                            ${comms}
+                            ${commsHtml}
                         </div>
                         <div class="text-right pointer-events-none"><span class="text-[10px] font-semibold text-[#a0a5aa] block">#${displayNum}</span><span class="text-[9px] text-[#a0a5aa] block">${createDate}</span></div>
                     </div>
                     <div class="pointer-events-none"><div class="font-bold text-[15px] text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</div>
-                    <div class="pointer-events-none">
-                        ${item.need_installation === 'Да' ? `<div class="text-[10px] font-bold text-[#9c7800] bg-[#fff2cc] px-1.5 py-0.5 rounded-sm mt-1 inline-block">🛠️ Нужен монтаж</div>` : ''}
-                    </div>
                     <div class="bg-[#f8f9fa] border border-[#e6e9ec] p-2 rounded-sm text-[11px] text-[#80868e] space-y-1 pointer-events-none mt-1">
                         <div class="flex justify-between items-center"><span>Счет: <b>${item.supplier_invoice || '—'}</b></span><span class="px-1.5 rounded-sm font-bold uppercase text-[8px] ${supColor}">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div class="flex items-center gap-1"><span>🚚 Отгрузка:</span> <b class="text-[#535c69]">${formatDate(item.shipment_date)}</b></div>
@@ -598,7 +621,7 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
                             <div class="font-bold text-[13px] text-[#2067b0] truncate hover:underline">${item.customer_name}</div>
-                            ${comms}
+                            ${commsHtml}
                         </div>
                         <div class="text-[11px] text-[#a0a5aa]">#${displayNum} • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
                         ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 truncate">💬 ${item.comments}</div>` : ''}
@@ -619,10 +642,9 @@
                     <td class="px-4 py-3">
                         <div class="flex items-center gap-2">
                             <div class="font-bold text-[#2067b0] cursor-pointer group-hover:text-[#105294] transition-colors" onclick="openEditModal(${item.id})">${item.customer_name}</div>
-                            ${comms}
+                            ${commsHtml}
                         </div>
                         ${addressHtml}
-                        ${item.need_installation === 'Да' ? `<div class="text-[10px] text-[#9c7800] mt-1">🛠️ Нужен монтаж</div>` : ''}
                         ${item.comments ? `<div class="text-[11px] text-[#80868e] mt-1 line-clamp-2">💬 ${item.comments}</div>` : ''}
                     </td>
                     <td class="px-4 py-3"><div class="font-bold text-[#535c69]">${Number(item.total_price).toLocaleString()} ₽</div>${balHtml}</td>
@@ -650,7 +672,6 @@
             document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
         }
 
-        // --- АНАЛИТИКА ---
         function changeAnalyticsMonth(direction) { analyticsDate.setMonth(analyticsDate.getMonth() + direction); renderAnalytics(); }
         function renderAnalytics() {
             const year = analyticsDate.getFullYear(); const month = analyticsDate.getMonth();
@@ -723,7 +744,6 @@
             document.getElementById('editSupplierStatus').value = o.supplier_status || 'Не оплачен';
             document.getElementById('editShipDate').value = o.shipment_date || '';
             document.getElementById('editAddress').value = o.delivery_address || '';
-            document.getElementById('editInstall').value = o.need_installation || 'Нет';
             document.getElementById('editComments').value = o.comments || '';
             document.getElementById('editStatus').value = o.status || 'Новый';
             
@@ -761,7 +781,6 @@
                 supplier_status: document.getElementById('editSupplierStatus').value, 
                 shipment_date: document.getElementById('editShipDate').value || null, 
                 delivery_address: document.getElementById('editAddress').value,
-                need_installation: document.getElementById('editInstall').value,
                 comments: document.getElementById('editComments').value, 
                 status: document.getElementById('editStatus').value 
             };
@@ -791,7 +810,6 @@
                 supplier_status: document.getElementById('cSupplierStatus').value, 
                 shipment_date: document.getElementById('cShipDate').value || null, 
                 delivery_address: document.getElementById('cAddress').value,
-                need_installation: document.getElementById('cInstall').value,
                 comments: document.getElementById('cComments').value, 
                 status: 'Новый' 
             };
@@ -805,7 +823,7 @@
                 }
                 await _supabase.from('orders').insert([newOrder]); toggleForm(); showToast("Создано", false); 
                 ['cOrderNum', 'cName', 'cPrice', 'cPrepayment', 'cPhone', 'cInvoice', 'cShipDate', 'cComments', 'cFile', 'cAddress'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('cSupplierStatus').value = 'Не оплачен'; document.getElementById('cInstall').value = 'Нет'; loadData();
+                document.getElementById('cSupplierStatus').value = 'Не оплачен'; loadData();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
@@ -828,7 +846,7 @@
                 const dayOrders = allOrders.filter(o => o.shipment_date === dateStr);
                 let badge = ''; if(dayOrders.length > 0) badge = `<div class="mt-2 text-[10px] font-bold bg-[#dff3fa] text-[#1198c6] rounded-sm px-2 py-1 inline-block w-full sm:w-auto text-center truncate">${dayOrders.length} дел</div>`;
                 const isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear());
-                grid.innerHTML += `<div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-3 rounded-sm border ${isToday ? 'border-[#3bc8f5] bg-[#f0f8fb]' : 'border-[#e6e9ec] bg-white'} hover:border-[#a0a5aa] cursor-pointer transition-all min-h-[70px] sm:min-h-[90px] flex flex-col items-center sm:items-start"><span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm">${i}</span>${badge}</div>`;
+                grid.innerHTML += `<div onclick="openDayModal('${dateStr}')" class="p-2 sm:p-3 rounded-sm border ${isToday ? 'border-[#3bc8f5] bg-[#f0f8fb]' : 'border-[#e6e9ec] bg-white'} hover:border-[#c6cdd3] cursor-pointer transition-all min-h-[70px] sm:min-h-[90px] flex flex-col items-center sm:items-start"><span class="font-bold ${isToday ? 'text-[#3bc8f5]' : 'text-[#535c69]'} text-sm">${i}</span>${badge}</div>`;
             }
         }
 
