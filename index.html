@@ -53,6 +53,10 @@
         .cursor-grab:active { cursor: grabbing; }
         .drag-over { background-color: #e4e9ec !important; border: 1px dashed #a0a5aa !important; }
         .dragging { opacity: 0.6; transform: scale(0.98); }
+        
+        .mic-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; }
+        .mic-btn:hover { background: #eef2f4; }
+        .mic-recording { background: #fae2e2; color: #d0021b; animation: pulse 1.5s infinite; }
     </style>
 </head>
 <body class="transition-all duration-300">
@@ -78,7 +82,7 @@
             <div class="p-4 border-b border-[#e6e9ec] flex justify-center items-center bg-[#f8f9fa] shrink-0 relative">
                 <button onclick="closeEditModal()" class="text-[#3bc8f5] bg-transparent border-none font-bold text-sm cursor-pointer hover:underline absolute left-4">← Назад</button>
                 <h3 class="font-bold text-[#535c69] text-base m-0 text-center w-full">Карточка сделки</h3>
-                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none absolute right-4 bg-transparent border-none cursor-pointer transition-colors">&times;</button>
+                <button onclick="closeEditModal()" class="text-[#a0a5aa] hover:text-[#f05b57] text-2xl leading-none absolute right-4 sm:right-5 bg-transparent border-none cursor-pointer transition-colors">&times;</button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-5 flex-1 bg-white text-sm">
                 
@@ -188,6 +192,14 @@
                         <button id="addDealBtn" onclick="toggleForm()" class="bx-btn-success text-white" style="color: white !important;">+ Создать</button>
                     </div>
                 </div>
+
+                <div id="tasksToolbar" class="hidden flex items-center justify-end flex-1 gap-4 overflow-x-auto no-scrollbar ml-4">
+                    <div class="flex gap-2 items-center shrink-0 relative">
+                        <input id="newTaskInputHead" type="text" placeholder="Новая задача..." class="bx-input w-40 sm:w-64 pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
+                        <button onclick="startDictation('newTaskInputHead', this)" class="mic-btn absolute right-1" title="Голосовой ввод">🎤</button>
+                    </div>
+                    <button onclick="addTask('newTaskInputHead')" class="bx-btn-success text-white" style="color: white !important;">Добавить</button>
+                </div>
             </header>
 
             <div id="section-tasks" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[800px]">
@@ -197,9 +209,12 @@
                 </div>
 
                 <div class="bg-white border border-[#e6e9ec] rounded-sm p-4 sm:p-6 shadow-sm min-h-[400px] flex flex-col">
-                    <div class="flex gap-2 mb-5 pb-5 border-b border-[#e6e9ec]">
-                        <input id="newTaskInput" type="text" placeholder="Напишите задачу..." class="bx-input flex-1" onkeypress="if(event.key==='Enter') addTask()">
-                        <button onclick="addTask()" class="bx-btn-success text-white shrink-0 px-4 sm:px-6" style="color: white !important;">Добавить</button>
+                    <div class="flex gap-2 mb-5 pb-5 border-b border-[#e6e9ec] sm:hidden">
+                        <div class="relative flex-1">
+                            <input id="newTaskInputBody" type="text" placeholder="Напишите задачу..." class="bx-input w-full pr-10" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                            <button onclick="startDictation('newTaskInputBody', this)" class="mic-btn absolute right-1 top-[2px]" title="Голосовой ввод">🎤</button>
+                        </div>
+                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success text-white shrink-0 px-4" style="color: white !important;">Добавить</button>
                     </div>
                     <div id="tasks-list-content" class="space-y-3 flex-1 overflow-y-auto"></div>
                 </div>
@@ -396,6 +411,50 @@
         let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все';
 
+        // --- ГОЛОСОВОЙ ВВОД (Web Speech API) ---
+        let isRecording = false;
+        let recognition = null;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ru-RU';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+        }
+
+        function startDictation(inputId, btnElement) {
+            if (!recognition) {
+                showToast('Голосовой ввод не поддерживается вашим браузером (используйте Chrome/Safari)', true);
+                return;
+            }
+            if (isRecording) {
+                recognition.stop();
+                return;
+            }
+            const input = document.getElementById(inputId);
+            
+            recognition.onstart = function() {
+                isRecording = true;
+                btnElement.classList.add('mic-recording');
+                input.placeholder = "Слушаю вас...";
+            };
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                input.value = input.value ? input.value + ' ' + transcript : transcript;
+            };
+            recognition.onerror = function(event) {
+                console.error(event.error);
+                if(event.error !== 'no-speech') showToast('Ошибка микрофона: разрешите доступ в браузере', true);
+            };
+            recognition.onend = function() {
+                isRecording = false;
+                btnElement.classList.remove('mic-recording');
+                input.placeholder = "Напишите задачу...";
+            };
+            recognition.start();
+        }
+        // ---------------------------------------
+
         function checkBodyScroll() {
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
@@ -455,11 +514,16 @@
             document.getElementById('headerTitle').innerText = titles[sectionId];
             
             document.getElementById('dealsToolbar').classList.add('hidden');
-            
+            document.getElementById('tasksToolbar').classList.add('hidden');
+            document.getElementById('mobileAddBtn').classList.add('hidden');
+
             if (sectionId === 'deals' || sectionId === 'archive') {
                 document.getElementById('dealsToolbar').classList.remove('hidden');
                 document.getElementById('viewToggles').classList.toggle('hidden', sectionId === 'archive');
                 document.getElementById('addDealBtn').classList.toggle('hidden', sectionId === 'archive');
+                if(sectionId !== 'archive') document.getElementById('mobileAddBtn').classList.remove('hidden');
+            } else if (sectionId === 'tasks') {
+                document.getElementById('tasksToolbar').classList.remove('hidden');
             }
             
             document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
@@ -476,7 +540,7 @@
                 allTasks = data || []; 
                 renderTasks();
             } catch (err) {
-                console.error("Таблица задач еще не создана.");
+                console.error("Таблица задач еще не создана или ошибка БД.");
             }
         }
 
@@ -523,8 +587,9 @@
             });
         }
 
-        async function addTask() {
-            const input = document.getElementById('newTaskInput');
+        async function addTask(inputId) {
+            const input = document.getElementById(inputId);
+            if(!input) return;
             const title = input.value.trim();
             if(!title) return showToast("Введите текст задачи", true);
             
@@ -534,7 +599,7 @@
                 if(error) throw error;
                 input.value = ''; loadTasks(); showToast("Задача добавлена", false);
             } catch (err) {
-                showToast("Выполните SQL запрос для задач в БД", true);
+                showToast("Сначала выполните SQL скрипт для задач в БД", true);
             } finally {
                 input.disabled = false;
             }
