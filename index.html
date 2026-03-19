@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* Базовые настройки для работы с темной темой мобильных браузеров */
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
         
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
@@ -20,25 +19,15 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* ИСПРАВЛЕННОЕ МЕНЮ (САЙДБАР) */
         .bx-sidebar-item { 
-            color: #6b7280; 
-            border-radius: 12px; 
-            transition: all 0.2s ease; 
-            font-size: 15px; 
-            font-weight: 600; 
-            text-decoration: none; 
-            margin: 6px 12px; 
-            padding: 12px 16px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; /* Четкий отступ между иконкой и текстом */
+            color: #6b7280; border-radius: 12px; transition: all 0.2s ease; font-size: 15px; 
+            font-weight: 600; text-decoration: none; margin: 6px 12px; padding: 12px 16px; 
+            display: flex; align-items: center; gap: 12px; 
         }
         .bx-sidebar-item:hover { background-color: rgba(59, 130, 246, 0.05); color: #1f2937; }
         .bx-sidebar-item.active { background-color: rgba(59, 130, 246, 0.1); color: #2563eb; font-weight: 700; }
-        .bx-sidebar-icon { font-size: 18px; width: 24px; text-align: center; } /* Фиксированная ширина иконки */
+        .bx-sidebar-icon { font-size: 18px; width: 24px; text-align: center; } 
 
-        /* UI Элементы */
         .bx-input { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: inherit; }
         .bx-input:focus { border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
         textarea.bx-input { height: auto; padding: 12px 16px; }
@@ -170,15 +159,15 @@
             </div>
             
             <nav class="flex-1 py-4 space-y-1.5 overflow-y-auto">
-                <div class="sidebar-category mt-2">Рабочий стол</div>
-                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">🏠</span> Главная</a>
+                <div class="px-6 text-[10px] text-gray-400 uppercase font-bold mb-2 tracking-wider mt-2">Рабочий стол</div>
+                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard', this)" class="bx-sidebar-item active"><span class="bx-sidebar-icon">🏠</span> Главная</a>
                 <a href="#" id="nav-deals" onclick="switchSection('deals', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">💼</span> Сделки</a>
                 <a href="#" id="nav-tasks" onclick="switchSection('tasks', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">✅</span> Задачи</a>
                 <a href="#" id="nav-files" onclick="switchSection('files', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📁</span> Общий диск</a>
                 <a href="#" id="nav-calendar" onclick="switchSection('calendar', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📅</span> Календарь</a>
                 <a href="#" id="nav-archive" onclick="switchSection('archive', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">🗄️</span> Архив</a>
                 
-                <div class="sidebar-category mt-6">Отчеты</div>
+                <div class="px-6 text-[10px] text-gray-400 uppercase font-bold mt-6 mb-2 tracking-wider">Отчеты</div>
                 <a href="#" id="nav-analytics" onclick="switchSection('analytics', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
             </nav>
             <div class="p-5 border-t border-gray-100">
@@ -188,7 +177,7 @@
 
         <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
             
-            <header class="sticky top-0 z-40 px-6 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/80 backdrop-blur-md border-b border-gray-200/50">
+            <header class="sticky top-0 z-40 px-6 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/90 backdrop-blur-md border-b border-gray-200/50">
                 <div class="flex items-center justify-between w-full sm:w-auto h-[70px] sm:h-auto">
                     <div class="flex items-center gap-4 text-gray-800">
                         <button onclick="toggleSidebar()" class="md:hidden text-gray-600 text-2xl bg-white shadow-sm w-10 h-10 rounded-full flex items-center justify-center border border-gray-200">☰</button>
@@ -213,6 +202,7 @@
                 <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0">
                     <div class="hidden sm:flex gap-2 items-center relative bg-white rounded-full shadow-sm p-1 pr-2 border border-gray-200">
                         <input id="newTaskInputHead" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none pl-4 pr-10 h-[38px] w-64 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
+                        <button onclick="startDictation('newTaskInputHead', this)" class="mic-btn absolute right-1 top-[1px]">🎤</button>
                     </div>
                     <button onclick="addTask('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex rounded-full">Добавить</button>
                 </div>
@@ -230,14 +220,13 @@
                         <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Доброе утро 👋</h2>
                         <p class="text-gray-500 font-medium mt-1" id="dash-date">Сегодня: ...</p>
                     </div>
-                    <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm shadow-lg shadow-blue-500/30">+ Создать сделку</button>
+                    <button onclick="switchSection('deals', document.getElementById('nav-deals')); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm shadow-lg shadow-blue-500/30">+ Создать сделку</button>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <div class="bg-white border border-gray-100 rounded-[24px] p-6 shadow-sm flex flex-col">
                         <div class="flex justify-between items-center mb-5">
                             <h3 class="font-extrabold text-gray-800 text-sm uppercase tracking-wide">🚚 Отгрузки сегодня</h3>
-                            <button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer hover:underline p-0">Календарь →</button>
                         </div>
                         <div id="dash-todays-shipments" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
                     </div>
@@ -245,7 +234,6 @@
                     <div class="bg-white border border-gray-100 rounded-[24px] p-6 shadow-sm flex flex-col">
                         <div class="flex justify-between items-center mb-5">
                             <h3 class="font-extrabold text-gray-800 text-sm uppercase tracking-wide">🔜 Ближайшие</h3>
-                            <button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer hover:underline p-0">Календарь →</button>
                         </div>
                         <div id="dash-upcoming-shipments" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
                     </div>
@@ -253,10 +241,10 @@
                     <div class="bg-white border border-gray-100 rounded-[24px] p-6 shadow-sm flex flex-col">
                         <div class="flex justify-between items-center mb-5">
                             <h3 class="font-extrabold text-gray-800 text-sm uppercase tracking-wide">✅ Задачи</h3>
-                            <button onclick="switchSection('tasks')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer hover:underline p-0">Все задачи →</button>
                         </div>
                         <div class="flex gap-2 mb-5 relative bg-gray-50 rounded-xl p-1 border border-gray-200 focus-within:border-blue-400 focus-within:bg-white transition-colors">
-                            <input id="dashTaskInput" type="text" placeholder="Добавить..." class="bg-transparent border-none outline-none w-full pl-3 pr-2 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('dashTaskInput')">
+                            <input id="dashTaskInput" type="text" placeholder="Ввести задачу..." class="bg-transparent border-none outline-none w-full pl-3 pr-10 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('dashTaskInput')">
+                            <button onclick="startDictation('dashTaskInput', this)" class="mic-btn absolute right-1 top-[1px]" title="Голосовой ввод">🎤</button>
                         </div>
                         <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
@@ -317,7 +305,6 @@
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-4 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-purple-700 uppercase tracking-wide m-0">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-500">0</span></div>
@@ -325,7 +312,6 @@
                         </div>
                         <div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div>
                     </div>
-
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-blue-700 uppercase tracking-wide m-0">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-500">0</span></div>
@@ -333,7 +319,6 @@
                         </div>
                         <div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div>
                     </div>
-
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-orange-700 uppercase tracking-wide m-0">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-500">0</span></div>
@@ -341,7 +326,6 @@
                         </div>
                         <div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div>
                     </div>
-
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full border-none">
                         <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-emerald-700 uppercase tracking-wide m-0">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-500">0</span></div>
@@ -349,7 +333,6 @@
                         </div>
                         <div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div>
                     </div>
-
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-4"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></div>
@@ -366,7 +349,7 @@
                                         <th class="px-5 py-4">Стадия</th>
                                         <th class="px-5 py-4">Поставщик</th>
                                         <th class="px-5 py-4">Отгрузка</th>
-                                        <th class="px-5 py-4 text-right">Действия</th>
+                                        <th class="px-5 py-4 text-right">Файл</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-items-content" class="divide-y divide-gray-100 text-[13px] bg-white"></tbody>
@@ -395,7 +378,8 @@
                 <div class="bg-white border border-gray-100 rounded-[24px] p-4 sm:p-6 shadow-sm min-h-[500px] flex flex-col">
                     <div class="flex gap-3 mb-6 pb-6 border-b border-gray-100 sm:hidden">
                         <div class="relative flex-1 bg-gray-50 rounded-full border border-gray-200 p-1">
-                            <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[40px]" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                            <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[40px] text-sm" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                            <button onclick="startDictation('newTaskInputBody', this)" class="mic-btn absolute right-1 top-[2px]">🎤</button>
                         </div>
                         <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-12 h-[48px] !px-0 rounded-full text-lg">+</button>
                     </div>
@@ -407,7 +391,7 @@
                 <div class="bg-white p-8 border border-gray-100 rounded-[24px] shadow-sm">
                     <div class="flex justify-between items-center mb-8">
                         <button onclick="changeMonth(-1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">◀</button>
-                        <h2 id="calendarMonthLabel" class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight"></h2>
+                        <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-gray-800 uppercase tracking-tight"></h2>
                         <button onclick="changeMonth(1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">▶</button>
                     </div>
                     <div class="grid grid-cols-7 gap-2 text-center text-[12px] font-bold text-gray-400 uppercase mb-4 tracking-wider">
@@ -428,7 +412,7 @@
                                     <th class="px-5 py-4">Итоговая сумма</th>
                                     <th class="px-5 py-4">Счет / Поставщик</th>
                                     <th class="px-5 py-4">Дата отгрузки</th>
-                                    <th class="px-5 py-4 text-right">Договор / Файл</th>
+                                    <th class="px-5 py-4 text-right">Файл</th>
                                 </tr>
                             </thead>
                             <tbody id="archive-items-content" class="divide-y divide-gray-100 text-[13px] bg-white"></tbody>
@@ -439,7 +423,7 @@
             </div>
             
             <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="bg-white border border-gray-100 rounded-[24px] p-8 shadow-sm">
+                <div class="bg-white border border-gray-100 rounded-[24px] p-6 sm:p-8 shadow-sm">
                     <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
                         <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">◀</button>
                         <h2 id="analyticsMonthLabel" class="text-xl font-extrabold text-gray-800 uppercase tracking-tight m-0"></h2>
@@ -448,20 +432,20 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                         <div class="p-6 bg-gray-50 border border-gray-100 rounded-[20px]">
                             <div class="text-[12px] text-gray-500 font-bold uppercase mb-2 tracking-wide">Создано сделок</div>
-                            <div class="text-3xl font-black text-gray-800 tracking-tight" id="stat-total-count">0</div>
+                            <div class="text-4xl font-black text-gray-800 tracking-tight" id="stat-total-count">0</div>
                         </div>
                         <div class="p-6 bg-blue-50 border border-blue-100 rounded-[20px]">
                             <div class="text-[12px] text-blue-600 font-bold uppercase mb-2 tracking-wide">Общая сумма</div>
-                            <div class="text-3xl font-black text-blue-700 tracking-tight" id="stat-total-sum">0 ₽</div>
+                            <div class="text-4xl font-black text-blue-700 tracking-tight" id="stat-total-sum">0 ₽</div>
                         </div>
                         <div class="p-6 bg-emerald-50 border border-emerald-100 rounded-[20px]">
                             <div class="text-[12px] text-emerald-600 font-bold uppercase mb-2 tracking-wide">Завершено (Успех)</div>
-                            <div class="text-3xl font-black text-emerald-700 tracking-tight" id="stat-success-sum">0 ₽</div>
+                            <div class="text-4xl font-black text-emerald-700 tracking-tight" id="stat-success-sum">0 ₽</div>
                             <div class="text-[11px] text-emerald-600 mt-2 font-bold" id="stat-success-count">0 сделок</div>
                         </div>
                         <div class="p-6 bg-red-50 border border-red-100 rounded-[20px]">
                             <div class="text-[12px] text-red-500 font-bold uppercase mb-2 tracking-wide">Остаток долга</div>
-                            <div class="text-3xl font-black text-red-600 tracking-tight" id="stat-debt-sum">0 ₽</div>
+                            <div class="text-4xl font-black text-red-600 tracking-tight" id="stat-debt-sum">0 ₽</div>
                         </div>
                     </div>
                     <h3 class="text-sm font-extrabold text-gray-800 uppercase border-b border-gray-100 pb-3 mb-6 tracking-wider">Счета поставщикам (в этом месяце)</h3>
@@ -499,6 +483,37 @@
         let taskView = 'active'; let currentEditId = null;
         let currentDate = new Date(); let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все'; let currentFolderId = null; 
+
+        // ИНТЕРАКТИВНЫЙ ВЫБОР СТАТУСА (ГЕНЕРАТОР БЕЙДЖА)
+        function getStageBadge(id, status) {
+            let badgeColor = "";
+            if (status === 'Новый') badgeColor = "bg-purple-50 text-purple-600 border-purple-100";
+            else if (status === 'В работе') badgeColor = "bg-blue-50 text-blue-600 border-blue-100";
+            else if (status === 'На складе') badgeColor = "bg-orange-50 text-orange-600 border-orange-100";
+            else if (status === 'Завершен') badgeColor = "bg-emerald-50 text-emerald-600 border-emerald-100";
+            else badgeColor = "bg-gray-50 text-gray-600 border-gray-200"; 
+
+            return `
+            <div class="relative inline-block" onclick="event.stopPropagation()">
+                <div class="px-2.5 py-1.5 rounded-lg font-bold uppercase text-[9px] border ${badgeColor} shadow-sm flex items-center justify-center gap-1 cursor-pointer hover:shadow-md transition-all active:scale-95">
+                    ${status} <span class="text-[7px] opacity-70">▼</span>
+                </div>
+                <select onchange="changeStatus(${id}, this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none text-[16px]">
+                    <option value="Новый" ${status === 'Новый' ? 'selected' : ''}>Новый</option>
+                    <option value="В работе" ${status === 'В работе' ? 'selected' : ''}>В работе</option>
+                    <option value="На складе" ${status === 'На складе' ? 'selected' : ''}>На складе</option>
+                    <option value="Завершен" ${status === 'Завершен' ? 'selected' : ''}>Завершен</option>
+                </select>
+            </div>
+            `;
+        }
+
+        async function changeStatus(id, st) { 
+            showToast("Перемещение...", false);
+            await _supabase.from('orders').update({ status: st }).eq('id', id); 
+            loadData(); 
+            showToast("Стадия изменена", false);
+        }
 
         function checkBodyScroll() {
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
@@ -568,7 +583,6 @@
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
 
         function switchSection(sectionId, btnElement = null) {
-            // Сохраняем в память
             activeSection = sectionId;
             localStorage.setItem('crm_active_section', sectionId);
 
@@ -605,7 +619,7 @@
 
         function renderDashboard() {
             const today = new Date(); const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            let dEl = document.getElementById('dash-date'); if(dEl) dEl.innerText = today.toLocaleDateString('ru-RU', options);
+            let dEl = document.getElementById('dash-date'); if(dEl) dEl.innerText = "Сегодня: " + today.toLocaleDateString('ru-RU', options);
 
             const activeDeals = allOrders.filter(o => o.status !== 'Завершен');
             const totalActiveSum = activeDeals.reduce((sum, o) => sum + (Number(o.total_price) || 0), 0);
@@ -629,7 +643,7 @@
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] text-gray-500 mt-1.5 truncate flex items-center gap-1">📍 ${o.delivery_address || 'Адрес не указан'}</div>
                             </div>
-                            <span class="px-3 py-1.5 rounded-lg uppercase text-[9px] font-extrabold tracking-wide bg-blue-50 text-blue-600 whitespace-nowrap">${o.status || 'Новый'}</span>
+                            ${getStageBadge(o.id, o.status || 'Новый')}
                         </div>
                     `).join('');
                 }
@@ -647,7 +661,7 @@
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] font-bold text-orange-500 mt-1.5 flex items-center gap-1">📅 ${formatDateStr(o.shipment_date)}</div>
                             </div>
-                            <span class="px-3 py-1.5 rounded-lg uppercase text-[9px] font-extrabold tracking-wide bg-gray-100 text-gray-600 whitespace-nowrap">${o.status || 'Новый'}</span>
+                            ${getStageBadge(o.id, o.status || 'Новый')}
                         </div>
                     `).join('');
                 }
@@ -674,7 +688,7 @@
                 const { data, error } = await _supabase.from('crm_files').select('*').order('is_folder', { ascending: false }).order('created_at', { ascending: false });
                 if (error) throw error;
                 allFiles = data || []; renderFiles();
-            } catch (err) { console.log("Таблица файлов не готова."); }
+            } catch (err) { console.log("Таблица crm_files еще не создана."); }
         }
 
         function renderFiles() {
@@ -933,21 +947,6 @@
                 sums[status] += price;
                 if(status !== 'Завершен') total += price;
 
-                let badge = `<span class="px-2 py-1 rounded-md font-bold uppercase text-[9px] bg-purple-50 text-purple-600 border border-purple-100 shadow-sm">Новый</span>`;
-                let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:text-blue-700";
-                let prevSt = null, prevBtnTxt = "Назад", prevBtnClass = "text-gray-500 bg-gray-50 border border-gray-200 hover:bg-gray-100";
-
-                if (status === 'В работе') { 
-                    badge = `<span class="px-2 py-1 rounded-md font-bold uppercase text-[9px] bg-blue-50 text-blue-600 border border-blue-100 shadow-sm">В работе</span>`;
-                    btnTxt = "На склад"; nextSt = "На складе"; btnClass = "text-orange-600 bg-orange-50 border border-orange-100 hover:bg-orange-100"; prevSt = "Новый";
-                } else if (status === 'На складе') {
-                    badge = `<span class="px-2 py-1 rounded-md font-bold uppercase text-[9px] bg-orange-50 text-orange-600 border border-orange-100 shadow-sm">На складе</span>`;
-                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100"; prevSt = "В работе";
-                } else if (status === 'Завершен') {
-                    badge = `<span class="px-2 py-1 rounded-md font-bold uppercase text-[9px] bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm">Завершен</span>`;
-                    btnClass = "hidden"; prevSt = "На складе";
-                }
-
                 let supColor = "bg-gray-50 text-gray-500 border border-gray-200";
                 if(item.supplier_status === 'Оплачен') supColor = "bg-emerald-50 text-emerald-600 border border-emerald-100";
                 else if(item.supplier_status === 'Предоплата') supColor = "bg-yellow-50 text-yellow-600 border border-yellow-100";
@@ -1023,8 +1022,7 @@
                     <div class="flex justify-between items-center pt-3 border-t border-gray-100 mt-1">
                         <div>${fileLink}</div>
                         <div class="flex items-center gap-2">
-                            ${prevSt ? `<button onclick="event.stopPropagation(); changeStatus(${item.id}, '${prevSt}')" class="${prevBtnClass} px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase transition-all shadow-sm">Назад</button>` : ''}
-                            ${status !== 'Завершен' ? `<button onclick="event.stopPropagation(); changeStatus(${item.id}, '${nextSt}')" class="${btnClass} px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase transition-all shadow-sm">Вперед</button>` : ''}
+                            ${getStageBadge(item.id, status)}
                         </div>
                     </div>
                 </div>`;
@@ -1043,7 +1041,7 @@
                     </div>
                     <div class="text-left sm:text-right flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-2 sm:mt-0 gap-2 border-t sm:border-t-0 border-gray-100 pt-4 sm:pt-0 shrink-0">
                         <div class="font-black text-[18px] text-gray-800">${price.toLocaleString()} ₽</div>
-                        ${badge}
+                        ${getStageBadge(item.id, status)}
                     </div>
                 </div>`;
 
@@ -1061,14 +1059,12 @@
                         ${addressHtml}
                     </td>
                     <td class="px-5 py-4"><div class="font-extrabold text-gray-800 text-sm">${price.toLocaleString()} ₽</div>${balHtml}</td>
-                    <td class="px-5 py-4">${badge}</td>
+                    <td class="px-5 py-4">${getStageBadge(item.id, status)}</td>
                     <td class="px-5 py-4"><div class="text-[11px] font-bold text-gray-600 uppercase tracking-wide">${item.supplier_invoice || '—'}</div><span class="text-[9px] px-2 py-1 rounded-md font-bold uppercase ${supColor} inline-block mt-1 shadow-sm">${item.supplier_status || 'Не оплачен'}</span></td>
                     <td class="px-5 py-4 text-[12px] font-bold text-gray-700">${formatDate(item.shipment_date)}</td>
                     <td class="px-5 py-4 text-right" onclick="event.stopPropagation()">
                         <div class="flex justify-end items-center gap-3">
                             ${fileLink}
-                            ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-200 cursor-pointer shadow-sm transition-all" title="Вернуть назад">←</button>` : ''}
-                            <button onclick="changeStatus(${item.id}, '${nextSt}')" class="w-8 h-8 flex items-center justify-center rounded-lg ${btnClass} cursor-pointer shadow-sm transition-all ${status === 'Завершен' ? 'hidden' : ''}" title="Вперед">→</button>
                         </div>
                     </td>
                 </tr>`;
