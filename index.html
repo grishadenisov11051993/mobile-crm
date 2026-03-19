@@ -23,13 +23,13 @@
         .bx-input:focus { border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
         textarea.bx-input { height: auto; padding: 12px 16px; }
         
-        .bx-btn-success { background-color: #2563eb !important; color: #ffffff !important; font-weight: 600; font-size: 14px; border-radius: 12px; padding: 0 24px; height: 44px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+        .bx-btn-success { background-color: #2563eb !important; color: #ffffff !important; font-weight: 600; font-size: 13px; border-radius: 9999px; padding: 0 24px; height: 44px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
         .bx-btn-success:hover { background-color: #1d4ed8 !important; }
         
-        .bx-btn-default { background-color: #ffffff !important; border: 1px solid #d1d5db !important; color: #374151 !important; border-radius: 12px; font-weight: 600; font-size: 14px; padding: 0 20px; height: 44px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .bx-btn-default { background-color: #ffffff !important; border: 1px solid #d1d5db !important; color: #374151 !important; border-radius: 9999px; font-weight: 600; font-size: 13px; padding: 0 20px; height: 44px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .bx-btn-default:hover { border-color: #9ca3af !important; background-color: #f9fafb !important; }
 
-        .bx-tab { text-transform: none; font-size: 14px; font-weight: 600; color: #6b7280 !important; padding: 10px 20px; margin-right: 8px; transition: 0.2s; cursor: pointer; border-radius: 999px; border: 1px solid transparent; }
+        .bx-tab { text-transform: none; font-size: 14px; font-weight: 600; color: #6b7280 !important; padding: 8px 20px; margin-right: 8px; transition: 0.2s; cursor: pointer; border-radius: 999px; border: 1px solid transparent; }
         .bx-tab.active { color: #111827 !important; background: #ffffff !important; border-color: #e5e7eb !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; }
 
         .kanban-col { background: transparent !important; border-radius: 0; padding: 0 10px; border-right: 1px dashed #e5e7eb; }
@@ -40,29 +40,11 @@
         .drag-over { background-color: rgba(59, 130, 246, 0.1) !important; border-radius: 20px; border: 2px dashed #3b82f6 !important; }
         .dragging { opacity: 0.5; transform: scale(0.95); }
         
-        .mic-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; }
+        .mic-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; }
         .mic-btn:hover { background: #f3f4f6; }
         .mic-recording { background: #fee2e2 !important; color: #ef4444 !important; animation: pulse 1.5s infinite; }
         
-        .bx-tag { display: inline-block; background-color: #f8f9fa; color: #4b5563; border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 600; white-space: nowrap; border: 1px solid #e5e7eb; }
-
-        /* Адаптивные файлы: кнопки видны на мобильных всегда, на ПК при наведении */
-        .file-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; border: 1px solid #e5e7eb; border-radius: 20px; background: #fff; transition: 0.3s; height: 130px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .file-item:hover { border-color: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.1); transform: translateY(-3px); }
-        .file-icon { font-size: 44px; margin-bottom: 12px; pointer-events: none; }
-        .file-name { font-size: 12px; font-weight: 600; color: #374151; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
-        .folder-icon { color: #f59e0b; }
-        
-        .file-action-btn { position: absolute; top: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 15px; cursor: pointer; transition: 0.2s; color: #4b5563; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .file-action-btn:hover { background: #f3f4f6; }
-        .btn-share { right: 8px; }
-        .btn-delete { left: 8px; color: #ef4444; }
-        .btn-delete:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
-        
-        @media (min-width: 1024px) {
-            .file-action-btn { opacity: 0; }
-            .file-item:hover .file-action-btn { opacity: 1; }
-        }
+        .bx-tag { display: inline-block; background-color: #f8f9fa; color: #4b5563; border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 600; white-space: nowrap; border: 1px solid #e5e7eb; }
     </style>
 </head>
 <body class="transition-all duration-300 relative">
@@ -326,40 +308,35 @@
                     </div>
                 </div>
 
-                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-6 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full">
+                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-4 pb-6 snap-x snap-mandatory no-scrollbar w-full">
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-purple-700 uppercase tracking-wide m-0">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-500">0</span></div>
-                            <div class="text-[20px] font-black text-purple-900 tracking-tight" id="cnt-new-sum">0 ₽</div>
+                            <div class="text-[18px] font-black text-purple-900 tracking-tight" id="cnt-new-sum">0 ₽</div>
                         </div>
                         <div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div>
                     </div>
-
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full">
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-blue-700 uppercase tracking-wide m-0">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-500">0</span></div>
-                            <div class="text-[20px] font-black text-blue-900 tracking-tight" id="cnt-work-sum">0 ₽</div>
+                            <div class="text-[18px] font-black text-blue-900 tracking-tight" id="cnt-work-sum">0 ₽</div>
                         </div>
                         <div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div>
                     </div>
-
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full">
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-orange-700 uppercase tracking-wide m-0">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-500">0</span></div>
-                            <div class="text-[20px] font-black text-orange-900 tracking-tight" id="cnt-stock-sum">0 ₽</div>
+                            <div class="text-[18px] font-black text-orange-900 tracking-tight" id="cnt-stock-sum">0 ₽</div>
                         </div>
                         <div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div>
                     </div>
-
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full border-none">
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full border-none">
                         <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-emerald-700 uppercase tracking-wide m-0">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-500">0</span></div>
-                            <div class="text-[20px] font-black text-emerald-900 tracking-tight" id="cnt-done-sum">0 ₽</div>
+                            <div class="text-[18px] font-black text-emerald-900 tracking-tight" id="cnt-done-sum">0 ₽</div>
                         </div>
                         <div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div>
                     </div>
-
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-4"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></div>
@@ -453,7 +430,7 @@
                 <div class="bg-white border border-gray-100 rounded-[24px] p-6 sm:p-8 shadow-sm">
                     <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
                         <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
-                        <h2 id="analyticsMonthLabel" class="text-xl sm:text-2xl font-extrabold text-gray-800 uppercase tracking-tight m-0"></h2>
+                        <h2 id="analyticsMonthLabel" class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight m-0"></h2>
                         <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -511,7 +488,6 @@
         let currentDate = new Date(); let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все'; let currentFolderId = null; 
 
-        // ИНТЕРАКТИВНЫЙ БАРАБАН ДЛЯ СТАТУСОВ С ЗАЩИТОЙ
         function getStageBadge(id, status) {
             let badgeColor = "";
             if (status === 'Новый') badgeColor = "bg-purple-50 text-purple-600 border-purple-200";
@@ -521,11 +497,11 @@
             else badgeColor = "bg-gray-50 text-gray-600 border-gray-200"; 
 
             return `
-            <div class="relative inline-block w-max pointer-events-auto" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()">
-                <div class="px-3 py-1.5 rounded-lg font-extrabold uppercase text-[10px] tracking-wider border ${badgeColor} shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
+            <div class="relative inline-block w-max pointer-events-auto" onclick="event.stopPropagation()">
+                <div class="px-3 py-1.5 rounded-lg font-extrabold uppercase text-[10px] tracking-wider border ${badgeColor} shadow-sm flex items-center justify-center gap-1.5 cursor-pointer hover:shadow-md transition-all active:scale-95">
                     ${status} <span class="text-[8px] opacity-70">▼</span>
                 </div>
-                <select onchange="changeStatus(${id}, this.value)" onclick="event.stopPropagation()" class="absolute inset-0 w-full h-full cursor-pointer z-50" style="opacity: 0.01; appearance: none; -webkit-appearance: none;">
+                <select onclick="event.stopPropagation()" onchange="changeStatus(${id}, this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none z-50">
                     <option value="Новый" ${status === 'Новый' ? 'selected' : ''}>Новый</option>
                     <option value="В работе" ${status === 'В работе' ? 'selected' : ''}>В работе</option>
                     <option value="На складе" ${status === 'На складе' ? 'selected' : ''}>На складе</option>
@@ -550,7 +526,9 @@
                 const { error } = await _supabase.from('orders').update({ status: st }).eq('id', id); 
                 if (error) throw error;
                 // Небольшая задержка перед полным ререндером с сервера
-                setTimeout(() => { loadData(); }, 300);
+                setTimeout(() => {
+                    loadData();
+                }, 300);
             } catch(e) {
                 showToast("Ошибка сохранения статуса", true);
                 loadData();
@@ -561,6 +539,12 @@
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
+
+        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
+        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
+        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+        function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
 
         function applyPhoneMask(phoneStr) {
             let val = String(phoneStr || '').replace(/\D/g, ''); if (!val) return '';
@@ -675,7 +659,7 @@
                     shipmentsContainer.innerHTML = `<div class="text-gray-400 text-sm text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">Нет отгрузок на сегодня</div>`;
                 } else {
                     shipmentsContainer.innerHTML = todaysOrders.map(o => `
-                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-2xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
+                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
                             <div class="min-w-0 pr-3">
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] text-gray-500 mt-1.5 truncate flex items-center gap-1">📍 ${o.delivery_address || 'Адрес не указан'}</div>
@@ -693,7 +677,7 @@
                     upcomingContainer.innerHTML = `<div class="text-gray-400 text-sm text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">Предстоящих отгрузок нет.</div>`;
                 } else {
                     upcomingContainer.innerHTML = upcomingOrders.map(o => `
-                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-2xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
+                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
                             <div class="min-w-0 pr-3">
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] font-bold text-orange-500 mt-1.5 flex items-center gap-1">📅 ${formatDateStr(o.shipment_date)}</div>
@@ -720,11 +704,53 @@
             }
         }
 
+        async function loadData() {
+            // Быстрая отрисовка из кэша
+            let cached = localStorage.getItem('crm_orders_cache');
+            if (cached) {
+                try { 
+                    allOrders = JSON.parse(cached); 
+                    renderData(); renderAnalytics(); 
+                    if(activeSection === 'dashboard') renderDashboard(); 
+                } catch(e) {}
+            }
+            // Асинхронный запрос свежих данных
+            try {
+                const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                allOrders = data || []; 
+                localStorage.setItem('crm_orders_cache', JSON.stringify(allOrders)); // обновляем кэш
+                renderData(); renderAnalytics(); checkTodaysShipments();
+                if(activeSection === 'dashboard') renderDashboard(); 
+            } catch (err) { console.log("Ошибка загрузки заказов"); }
+        }
+
+        async function loadTasks() {
+            const cached = localStorage.getItem('crm_tasks_cache');
+            if (cached) {
+                try { allTasks = JSON.parse(cached); renderTasks(); if(activeSection === 'dashboard') renderDashboard(); } catch(e){}
+            }
+            try {
+                const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                allTasks = data || [];
+                localStorage.setItem('crm_tasks_cache', JSON.stringify(allTasks));
+                renderTasks();
+                if(activeSection === 'dashboard') renderDashboard();
+            } catch (err) { console.log("Ошибка задач"); }
+        }
+
         async function loadFiles() {
+            const cached = localStorage.getItem('crm_files_cache');
+            if (cached) {
+                try { allFiles = JSON.parse(cached); renderFiles(); } catch(e){}
+            }
             try {
                 const { data, error } = await _supabase.from('crm_files').select('*').order('is_folder', { ascending: false }).order('created_at', { ascending: false });
                 if (error) throw error;
-                allFiles = data || []; renderFiles();
+                allFiles = data || [];
+                localStorage.setItem('crm_files_cache', JSON.stringify(allFiles));
+                renderFiles();
             } catch (err) { console.log("Таблица файлов не готова."); }
         }
 
@@ -748,7 +774,7 @@
                         grid.innerHTML += `
                         <div class="file-item relative flex flex-col items-center justify-center p-4 border border-gray-200 rounded-2xl bg-white hover:border-blue-500 shadow-sm transition-all h-32 cursor-pointer" onclick="openFolder(${f.id}, '${String(f.name).replace(/'/g, "\\'")}')">
                             <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, null, true)" class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-lg text-red-500 transition-colors z-10" title="Удалить папку">🗑</button>
-                            <div class="text-5xl mb-2 transition-transform hover:scale-110">📁</div>
+                            <div class="text-4xl mb-2 transition-transform hover:scale-110">📁</div>
                             <div class="text-xs font-semibold text-gray-700 w-full text-center truncate px-2" title="${f.name}">${f.name}</div>
                         </div>`;
                     });
@@ -768,7 +794,7 @@
                         <div class="file-item relative flex flex-col items-center justify-center p-4 border border-gray-200 rounded-2xl bg-white hover:border-blue-500 shadow-sm transition-all h-32 cursor-pointer" onclick="window.open('${f.file_url}', '_blank')">
                             <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, '${f.file_url}', false)" class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-lg text-red-500 transition-colors z-10" title="Удалить файл">🗑</button>
                             <button onclick="event.stopPropagation(); shareSpecificFile('${f.file_url}', '${String(f.name).replace(/'/g, "\\'")}')" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-blue-50 rounded-lg text-blue-600 transition-colors z-10" title="Поделиться">📤</button>
-                            <div class="text-5xl mb-2 text-blue-300 transition-transform hover:scale-110">📄</div>
+                            <div class="text-4xl mb-2 text-blue-300 transition-transform hover:scale-110">📄</div>
                             <div class="text-xs font-semibold text-gray-700 w-full text-center truncate px-2" title="${f.name}">${f.name}</div>
                         </div>`;
                     });
@@ -834,15 +860,6 @@
             } catch(e) { showToast("Ошибка удаления", true); }
         }
 
-        async function loadTasks() {
-            try {
-                const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                allTasks = data || []; renderTasks();
-                if(activeSection === 'dashboard') renderDashboard(); 
-            } catch (err) { console.log("Ошибка задач"); }
-        }
-
         function setTaskView(view) {
             taskView = view;
             document.getElementById('t-active').className = view === 'active' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !text-gray-500 !m-0 !px-6';
@@ -867,7 +884,7 @@
                 const date = formatDateStr(t.created_at);
 
                 container.innerHTML += `
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-[24px] hover:border-blue-200 hover:shadow-md transition-all bg-white mb-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-[20px] hover:border-blue-200 hover:shadow-md transition-all bg-white mb-3">
                     <div class="flex items-center gap-4 cursor-pointer flex-1 mb-3 sm:mb-0" onclick="toggleTask(${t.id}, ${!isCheck})">
                         ${checkCircle}
                         <div><div class="${textStyle} text-[15px] break-words">${t.title}</div><div class="text-[11px] text-gray-400 mt-1 font-medium">Создано: ${date}</div></div>
@@ -918,32 +935,6 @@
             else { navigator.clipboard.writeText(shareText).then(() => { showToast("Данные скопированы в буфер", false); }).catch(err => { showToast("Ошибка копирования", true); }); }
         }
 
-        async function loadData() {
-            try {
-                const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                allOrders = data || []; 
-                renderData(); renderAnalytics(); checkTodaysShipments();
-                if(activeSection === 'dashboard') renderDashboard(); 
-            } catch (err) { showToast("Ошибка загрузки. Проверьте БД", true); }
-        }
-
-        function formatDate(dateString) {
-            if(!dateString) return '—';
-            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-        function formatDateStr(dateString) {
-            if(!dateString) return '';
-            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        function getTagsHtml(tagsString) {
-            if(!tagsString) return '';
-            const arr = String(tagsString).split(',').map(t => t.trim()).filter(t => t);
-            if(arr.length === 0) return '';
-            return `<div class="mt-3 flex flex-wrap gap-1.5 pointer-events-none">` + arr.map(t => `<span class="bx-tag shadow-sm bg-gray-50 border border-gray-200">#${t}</span>`).join('') + `</div>`;
-        }
-
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allOrders.filter(o => {
@@ -990,7 +981,7 @@
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border border-red-100";
 
                 const cleanPhone = item.phone ? String(item.phone).replace(/\D/g, '') : '';
-                let commsHtml = `<div class="flex flex-wrap gap-2 pointer-events-auto">`;
+                let commsHtml = `<div class="flex flex-wrap gap-1.5 pointer-events-auto">`;
                 if (cleanPhone) {
                     commsHtml += `<a href="tel:+${cleanPhone}" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-colors shadow-sm text-lg text-decoration-none" title="Звонок" onclick="event.stopPropagation()">📞</a>
                                   <a href="https://wa.me/${cleanPhone}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-[#25D366] hover:bg-green-50 transition-colors shadow-sm text-lg text-decoration-none" title="WhatsApp" onclick="event.stopPropagation()">💬</a>
@@ -1017,7 +1008,7 @@
                         <td class="px-5 py-4">
                             <div class="font-extrabold text-gray-800 group-hover:text-blue-600 transition-colors text-sm mb-3">${item.customer_name}</div>
                             ${commsHtml}
-                            ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[12px] text-gray-500 hover:text-blue-600 mt-3 font-mono block font-semibold" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
+                            ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-gray-500 hover:text-blue-600 mt-3 font-mono block font-semibold" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
                             ${tagsHtml}${addressHtml}
                         </td>
                         <td class="px-5 py-4"><div class="font-extrabold text-gray-800 text-sm">${price.toLocaleString()} ₽</div></td>
@@ -1098,7 +1089,7 @@
                     </td>
                     <td class="px-5 py-4">
                         <div class="font-extrabold text-gray-800 group-hover:text-blue-600 transition-colors text-sm mb-2">${item.customer_name}</div>
-                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[12px] text-gray-500 font-mono font-semibold block mb-3 hover:text-blue-600" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
+                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-gray-500 font-mono font-semibold block mb-3 hover:text-blue-600" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
                         <div class="mb-2">${commsHtml}</div>
                         ${tagsHtml}
                         ${addressHtml}
@@ -1132,38 +1123,6 @@
             if(document.getElementById('archiveTotalSum')) document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
         }
 
-        function changeAnalyticsMonth(direction) { analyticsDate.setMonth(analyticsDate.getMonth() + direction); renderAnalytics(); }
-        function renderAnalytics() {
-            const year = analyticsDate.getFullYear(); const month = analyticsDate.getMonth();
-            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-            if(document.getElementById('analyticsMonthLabel')) document.getElementById('analyticsMonthLabel').innerText = `${monthNames[month]} ${year}`;
-
-            const monthOrders = allOrders.filter(o => {
-                if(!o.created_at) return false;
-                const d = new Date(o.created_at); return d.getFullYear() === year && d.getMonth() === month;
-            });
-
-            let tCount = monthOrders.length, tSum = 0, sSum = 0, sCount = 0, dSum = 0;
-            let supUnpaid = 0, supPrepay = 0, supPaid = 0;
-
-            monthOrders.forEach(o => {
-                const price = Number(o.total_price) || 0; const prepay = Number(o.prepayment) || 0;
-                tSum += price;
-                if(o.status === 'Завершен') { sSum += price; sCount++; } 
-                else { const diff = price - prepay; if(diff > 0) dSum += diff; }
-                if(o.supplier_status === 'Оплачен') supPaid++; else if(o.supplier_status === 'Предоплата') supPrepay++; else supUnpaid++;
-            });
-
-            if(document.getElementById('stat-total-count')) document.getElementById('stat-total-count').innerText = tCount; 
-            if(document.getElementById('stat-total-sum')) document.getElementById('stat-total-sum').innerText = tSum.toLocaleString() + ' ₽';
-            if(document.getElementById('stat-success-sum')) document.getElementById('stat-success-sum').innerText = sSum.toLocaleString() + ' ₽'; 
-            if(document.getElementById('stat-success-count')) document.getElementById('stat-success-count').innerText = sCount + ' сделок';
-            if(document.getElementById('stat-debt-sum')) document.getElementById('stat-debt-sum').innerText = dSum.toLocaleString() + ' ₽';
-            if(document.getElementById('stat-sup-unpaid')) document.getElementById('stat-sup-unpaid').innerText = supUnpaid; 
-            if(document.getElementById('stat-sup-prepay')) document.getElementById('stat-sup-prepay').innerText = supPrepay;
-            if(document.getElementById('stat-sup-paid')) document.getElementById('stat-sup-paid').innerText = supPaid;
-        }
-
         async function saveEdit() {
             if(!currentEditId) return; const btn = document.getElementById('saveEditBtn'); btn.innerText = 'Сохранение...'; btn.disabled = true;
             const order = allOrders.find(x => x.id === currentEditId); const fileInput = document.getElementById('editFile');
@@ -1191,7 +1150,15 @@
                 }
                 const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 if(error) throw error;
-                showToast("Сохранено", false); closeEditModal(); loadData();
+                
+                // Обновляем кэш
+                const orderIndex = allOrders.findIndex(o => o.id === currentEditId);
+                if (orderIndex !== -1) {
+                    allOrders[orderIndex] = { ...allOrders[orderIndex], ...updates };
+                    localStorage.setItem('crm_orders_cache', JSON.stringify(allOrders));
+                }
+
+                showToast("Сохранено", false); closeEditModal(); renderData(); loadData();
             } catch(e) { showToast("Ошибка сохранения", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
