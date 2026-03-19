@@ -4,14 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    
     <title>Хорошие полы - CRM</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="ХП CRM">
-    <meta name="theme-color" content="#2563eb">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%232563eb' rx='112'/%3E%3Ctext x='256' y='320' font-family='Arial' font-size='200' fill='white' font-weight='bold' text-anchor='middle'%3E%D0%A5%D0%9F%3C/text%3E%3C/svg%3E">
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -69,20 +63,6 @@
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-all duration-300">
     
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-lg hidden z-[300] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800 dark:bg-gray-700"></div>
-
-    <div id="installModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[400] flex items-center justify-center p-4 transition-all">
-        <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-sm overflow-hidden flex flex-col p-6 text-center relative">
-            <button onclick="document.getElementById('installModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
-            <div class="w-16 h-16 bg-blue-600 rounded-[16px] flex items-center justify-center text-white text-2xl font-bold shadow-md mx-auto mb-4">ХП</div>
-            <h3 class="font-bold text-gray-800 dark:text-white text-lg mb-2">Установка приложения</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Чтобы CRM всегда была под рукой как приложение, сделайте следующее:</p>
-            <div class="text-left bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-sm text-gray-700 dark:text-gray-300 space-y-3">
-                <p>🍏 <b>iPhone (Safari):</b> Нажмите кнопку «Поделиться» (квадрат со стрелочкой) внизу экрана, затем выберите <b>«На экран "Домой"»</b>.</p>
-                <p>🤖 <b>Android (Chrome):</b> Нажмите меню (три точки) в правом верхнем углу и выберите <b>«Добавить на главный экран»</b>.</p>
-            </div>
-            <button onclick="document.getElementById('installModal').classList.add('hidden')" class="bx-btn-success w-full mt-6">Понятно</button>
-        </div>
-    </div>
 
     <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
         <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
@@ -204,7 +184,6 @@
                 <div class="sidebar-category mt-6">Отчеты и Настройки</div>
                 <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
                 <button onclick="toggleDarkMode()" class="w-full text-left bx-sidebar-item bg-transparent border-none cursor-pointer"><span class="bx-sidebar-icon" id="themeIcon">🌙</span> Тема</button>
-                <button id="installAppBtn" onclick="installApp()" class="w-full text-left bx-sidebar-item bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-none cursor-pointer mt-4"><span class="bx-sidebar-icon">📲</span> Установить CRM</button>
             </nav>
             <div class="p-5 border-t border-gray-100 dark:border-gray-700">
                 <button onclick="lockCrm()" class="w-full px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl text-left font-semibold text-sm transition-all cursor-pointer border-none flex items-center gap-2">🚪 Выйти</button>
@@ -229,7 +208,7 @@
                         <div onclick="setView('table')" id="v-table" class="bx-tab !mr-0 !px-5 !py-2 text-gray-500 hidden md:block">Таблица</div>
                     </div>
                     <div class="hidden sm:flex gap-3 items-center shrink-0">
-                        <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="bx-input w-56 rounded-full shadow-sm">
+                        <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск..." class="bx-input w-56 rounded-full shadow-sm">
                         <button onclick="exportToCSV()" class="bx-btn-default rounded-full px-5">Excel</button>
                         <button onclick="toggleForm()" class="bx-btn-success rounded-full shadow-md">+ Сделка</button>
                     </div>
@@ -453,33 +432,6 @@
     </div>
 
     <script>
-        // --- Настройки PWA (Манифест) ---
-        const manifestObj = {
-            name: "Хорошие полы - CRM", short_name: "ХП CRM", display: "standalone",
-            background_color: "#f3f4f6", theme_color: "#2563eb", start_url: location.href,
-            icons: [{ src: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%232563eb' rx='112'/%3E%3Ctext x='256' y='320' font-family='Arial' font-size='200' fill='white' font-weight='bold' text-anchor='middle'%3E%D0%A5%D0%9F%3C/text%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }]
-        };
-        const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
-        const linkManifest = document.createElement('link'); linkManifest.rel = 'manifest'; linkManifest.href = URL.createObjectURL(manifestBlob);
-        document.head.appendChild(linkManifest);
-
-        // --- Установка PWA (Универсальная) ---
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
-        });
-
-        function installApp() {
-            // Если браузер позволяет показать родное окно установки
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => { deferredPrompt = null; });
-            } else {
-                // Если мы на iOS или браузер блокирует прямую установку с локального файла
-                document.getElementById('installModal').classList.remove('hidden');
-            }
-        }
-
         // --- Настройки Supabase ---
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
@@ -526,7 +478,7 @@
         }
 
         function checkBodyScroll() {
-            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('installModal').classList.contains('hidden');
+            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
 
@@ -643,10 +595,35 @@
         async function massChangeStatus(st) { if(selectedOrders.length===0)return; showToast(`Перемещение...`); try { await _supabase.from('orders').update({status:st}).in('id', selectedOrders); showToast(`Успешно`); clearSelection(); loadData(); } catch(e) { showToast("Ошибка", true); } }
         async function massDelete() { if(selectedOrders.length===0)return; if(!confirm(`Удалить ${selectedOrders.length} сделок?`))return; showToast(`Удаление...`); try { await _supabase.from('orders').delete().in('id', selectedOrders); showToast(`Удалено`); clearSelection(); loadData(); } catch(e) { showToast("Ошибка", true); } }
 
-        // --- Загрузка БД ---
-        async function loadData() { try { const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false }); if (error) throw error; allOrders = data || []; renderData(); renderAnalytics(); if(activeSection === 'dashboard') renderDashboard(); if(activeSection === 'calendar') renderCalendar(); } catch (err) { showToast("Ошибка БД", true); } }
+        // --- Загрузка БД (С Кэшированием) ---
+        async function loadData() { 
+            const cached = localStorage.getItem('crm_orders_cache');
+            if (cached) {
+                allOrders = JSON.parse(cached);
+                renderData();
+                if(activeSection === 'dashboard') renderDashboard(); 
+                if(activeSection === 'calendar') renderCalendar();
+            }
+            try { 
+                const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false }); 
+                if (error) throw error; 
+                allOrders = data || []; 
+                localStorage.setItem('crm_orders_cache', JSON.stringify(allOrders));
+                renderData(); renderAnalytics(); 
+                if(activeSection === 'dashboard') renderDashboard(); 
+                if(activeSection === 'calendar') renderCalendar(); 
+            } catch (err) { showToast("Ошибка БД", true); } 
+        }
+        
         async function loadTasks() { try { const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false }); if (error) throw error; allTasks = data || []; renderTasks(); if(activeSection === 'dashboard') renderDashboard(); } catch (err) { console.log(err); } }
         async function loadFiles() { try { const { data, error } = await _supabase.from('crm_files').select('*').order('is_folder', { ascending: false }).order('created_at', { ascending: false }); if (error) throw error; allFiles = data || []; renderFiles(); } catch (err) { console.log(err); } }
+
+        // --- Debounce Поиска ---
+        let searchTimeout;
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => { renderData(); }, 300);
+        }
 
         // --- Рендер Дашборда ---
         function renderDashboard() {
@@ -667,7 +644,7 @@
             if(tskC) tskC.innerHTML = opTasks.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Всё выполнено!</div>` : opTasks.map(t => `<div class="flex items-center gap-4 p-3 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-xl cursor-pointer" onclick="toggleTask(${t.id}, true)"><div class="w-5 h-5 border-2 border-gray-300 rounded-md"></div><div class="text-sm font-medium">${t.title}</div></div>`).join('');
         }
 
-        // --- Главный Рендер (Сделки) ---
+        // --- Главный Рендер (Сделки) - Оптимизированный ---
         function renderData() {
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
             document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
@@ -680,10 +657,9 @@
                 return ms && tag;
             });
 
-            ['col-new', 'col-work', 'col-stock', 'col-done'].forEach(id => { let el = document.getElementById(id); if(el) el.innerHTML = ''; });
-            let listEl = document.getElementById('list-items-content'); if(listEl) listEl.innerHTML = ''; 
-            let tableEl = document.getElementById('table-items-content'); if(tableEl) tableEl.innerHTML = '';
-            let archiveEl = document.getElementById('archive-items-content'); if(archiveEl) archiveEl.innerHTML = '';
+            // Строки для быстрой вставки DOM
+            let htmlNew = '', htmlWork = '', htmlStock = '', htmlDone = '';
+            let htmlList = '', htmlTable = '', htmlArchive = '';
 
             const counts = { 'Новый': 0, 'В работе': 0, 'На складе': 0, 'Завершен': 0 }; 
             const sums = { 'Новый': 0, 'В работе': 0, 'На складе': 0, 'Завершен': 0 }; 
@@ -720,29 +696,41 @@
                 </div>`;
 
                 // Archive
-                if (status === 'Завершен' && archiveEl) {
+                if (status === 'Завершен' && document.getElementById('archive-items-content')) {
                     archiveTotal += price;
-                    archiveEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${tagsHtml}</td><td class="px-5 py-4 font-black">${price.toLocaleString()} ₽</td><td class="px-5 py-4"><span class="${supColor} text-[9px] px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
+                    htmlArchive += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${tagsHtml}</td><td class="px-5 py-4 font-black">${price.toLocaleString()} ₽</td><td class="px-5 py-4"><span class="${supColor} text-[9px] px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
                 }
 
                 // Table
-                if(activeView === 'table' && status !== 'Завершен' && tableEl) {
+                if(activeView === 'table' && status !== 'Завершен' && document.getElementById('table-items-content')) {
                     const isChecked = selectedOrders.includes(item.id) ? 'checked' : '';
-                    tableEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}</td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-1">${item.phone}</div>`:''}${tagsHtml}</td><td class="px-5 py-4"><div class="font-black">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">${status}</span></td><td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4"><div class="flex justify-end items-center gap-2">${fileLink}${galleryBadge}${actionButtons}</div></td></tr>`;
+                    htmlTable += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}</td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-1">${item.phone}</div>`:''}${tagsHtml}</td><td class="px-5 py-4"><div class="font-black">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">${status}</span></td><td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4"><div class="flex justify-end items-center gap-2">${fileLink}${galleryBadge}${actionButtons}</div></td></tr>`;
                 }
 
                 // List
-                if(activeView === 'list' && status !== 'Завершен' && listEl) {
-                    listEl.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 flex flex-col sm:flex-row justify-between cursor-pointer mb-4 gap-4" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-3"><div class="font-extrabold text-[16px]">${item.customer_name}</div><div class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</div></div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-2">${item.phone}</div>`:''}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-gray-100 dark:border-gray-700 pt-4 sm:pt-0 shrink-0"><div><div class="font-black text-[22px]">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-4 flex items-center gap-2"><div class="pointer-events-auto">${fileLink}${galleryBadge}</div>${actionButtons}</div></div></div>`;
+                if(activeView === 'list' && status !== 'Завершен' && document.getElementById('list-items-content')) {
+                    htmlList += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 flex flex-col sm:flex-row justify-between cursor-pointer mb-4 gap-4" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-3"><div class="font-extrabold text-[16px]">${item.customer_name}</div><div class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</div></div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-2">${item.phone}</div>`:''}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-gray-100 dark:border-gray-700 pt-4 sm:pt-0 shrink-0"><div><div class="font-black text-[22px]">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-4 flex items-center gap-2"><div class="pointer-events-auto">${fileLink}${galleryBadge}</div>${actionButtons}</div></div></div>`;
                 }
 
                 // Kanban
                 if(activeView === 'kanban') {
-                    const colMap = { 'Новый': 'col-new', 'В работе': 'col-work', 'На складе': 'col-stock', 'Завершен': 'col-done' };
-                    let el = document.getElementById(colMap[status]);
-                    if(el) el.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-extrabold text-[15px]">${item.customer_name}</div><span class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</span></div><div><div class="font-black text-[20px]">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 text-[11px] flex justify-between items-center border border-gray-100 dark:border-gray-700"><span class="${supColor} px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span>📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700 mt-2"><div class="pointer-events-auto flex items-center">${fileLink}${galleryBadge}</div>${actionButtons}</div></div>`;
+                    const cardStr = `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-extrabold text-[15px]">${item.customer_name}</div><span class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</span></div><div><div class="font-black text-[20px]">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 text-[11px] flex justify-between items-center border border-gray-100 dark:border-gray-700"><span class="${supColor} px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span>📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700 mt-2"><div class="pointer-events-auto flex items-center">${fileLink}${galleryBadge}</div>${actionButtons}</div></div>`;
+                    
+                    if (status === 'Новый') htmlNew += cardStr;
+                    else if (status === 'В работе') htmlWork += cardStr;
+                    else if (status === 'На складе') htmlStock += cardStr;
+                    else if (status === 'Завершен') htmlDone += cardStr;
                 }
             });
+
+            // Массовая вставка в DOM (в 10 раз быстрее)
+            if(document.getElementById('col-new')) document.getElementById('col-new').innerHTML = htmlNew;
+            if(document.getElementById('col-work')) document.getElementById('col-work').innerHTML = htmlWork;
+            if(document.getElementById('col-stock')) document.getElementById('col-stock').innerHTML = htmlStock;
+            if(document.getElementById('col-done')) document.getElementById('col-done').innerHTML = htmlDone;
+            if(document.getElementById('list-items-content')) document.getElementById('list-items-content').innerHTML = htmlList;
+            if(document.getElementById('table-items-content')) document.getElementById('table-items-content').innerHTML = htmlTable;
+            if(document.getElementById('archive-items-content')) document.getElementById('archive-items-content').innerHTML = htmlArchive;
 
             if(document.getElementById('cnt-new-count')) document.getElementById('cnt-new-count').innerText = counts['Новый'] + ' шт';
             if(document.getElementById('cnt-new-sum')) document.getElementById('cnt-new-sum').innerText = sums['Новый'].toLocaleString() + ' ₽';
