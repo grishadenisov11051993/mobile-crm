@@ -9,29 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        tailwind.config = { darkMode: 'class' }
-    </script>
 
     <style>
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; }
         
-        /* Скроллбары */
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Сайдбар */
-        .bx-sidebar-item { 
-            border-radius: 12px; transition: all 0.2s ease; 
-            font-size: 15px; font-weight: 600; text-decoration: none; 
-            margin: 6px 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; 
-            color: #6b7280;
-        }
+        .bx-sidebar-item { border-radius: 12px; transition: all 0.2s ease; font-size: 15px; font-weight: 600; text-decoration: none; margin: 6px 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; color: #6b7280; }
         .dark .bx-sidebar-item { color: #9ca3af; }
         .bx-sidebar-item:hover { background-color: rgba(59, 130, 246, 0.05); color: #1f2937; }
         .dark .bx-sidebar-item:hover { background-color: rgba(59, 130, 246, 0.1); color: #f3f4f6; }
@@ -40,7 +30,6 @@
         .bx-sidebar-icon { font-size: 18px; width: 24px; text-align: center; } 
         .sidebar-category { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; font-weight: 700; padding: 20px 28px 8px; }
 
-        /* UI Элементы */
         .bx-input { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: #1f2937; }
         .dark .bx-input { background-color: #1f2937; border-color: #374151; color: #f3f4f6; }
         .bx-input:focus { border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
@@ -60,25 +49,24 @@
         .dark .bx-tab { color: #9ca3af; }
         .dark .bx-tab.active { color: #f3f4f6; background: #1f2937; border-color: #374151; }
         
-        .bx-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; }
+        .bx-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; display: inline-block;}
 
-        /* Kanban Drag */
         .cursor-grab { cursor: grab; }
         .cursor-grab:active { cursor: grabbing; }
         .drag-over { background-color: rgba(59, 130, 246, 0.1) !important; border-radius: 16px; border: 2px dashed #3b82f6 !important; }
         .dragging { opacity: 0.5; transform: scale(0.95); }
 
-        /* Чекбоксы массовых действий */
         .mass-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: #2563eb; }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-all duration-300">
     
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-lg hidden z-[200] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800 dark:bg-gray-700"></div>
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-lg hidden z-[300] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800 dark:bg-gray-700"></div>
 
     <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
         <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800 shrink-0">
+                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
                 <h3 id="dayModalTitle" class="font-bold text-gray-800 dark:text-white text-base m-0 text-center flex-1">Планы на день</h3>
                 <button onclick="closeDayModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
             </div>
@@ -92,6 +80,7 @@
     <div id="editModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[160] flex items-center justify-center p-3 sm:p-5 transition-all">
         <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800 shrink-0">
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
                 <h3 class="font-bold text-gray-800 dark:text-white text-lg m-0 text-center flex-1">Карточка сделки</h3>
                 <button onclick="closeEditModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
             </div>
@@ -102,7 +91,7 @@
                         <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">№ Заказа</label><input id="editOrderNum" type="text" class="bx-input"></div>
                         <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Имя клиента *</label><input id="editName" type="text" class="bx-input"></div>
                         <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
-                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Теги (через запятую)</label><input id="editTags" type="text" placeholder="авито, дизайнер, tarkett" class="bx-input font-medium text-blue-600 dark:text-blue-400"></div>
+                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Теги (через запятую)</label><input id="editTags" type="text" placeholder="например: авито, tarkett" class="bx-input font-medium text-blue-600 dark:text-blue-400"></div>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -121,6 +110,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="p-5 border border-yellow-100 dark:border-yellow-900/30 rounded-[20px] bg-yellow-50 dark:bg-yellow-900/10 shadow-sm">
+                    <h4 class="font-bold text-yellow-800 dark:text-yellow-500 uppercase text-[11px] mb-4 tracking-wider">Логистика</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div><label class="block text-[12px] font-semibold text-gray-700 dark:text-gray-400 mb-1.5">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input bg-white dark:bg-gray-800"></div>
+                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Адрес доставки</label><input id="editAddress" type="text" class="bx-input bg-white dark:bg-gray-800" placeholder="Город, улица..."></div>
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
                         <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase">Стадия сделки</label>
@@ -131,12 +127,13 @@
                     <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-gray-50 dark:bg-gray-800/50 shadow-sm">
                         <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase">Документ</label>
                         <div id="currentFileLink" class="mb-4"></div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-white dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-full file:font-semibold cursor-pointer">
+                        <input id="editFile" type="file" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-white dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-full file:font-semibold cursor-pointer hover:file:bg-gray-50 transition">
                     </div>
                 </div>
             </div>
             <div class="p-5 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col-reverse sm:flex-row justify-end gap-3 shrink-0">
                 <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
+                <button onclick="shareOrder(currentEditId)" class="w-full sm:w-auto bx-btn-default text-blue-600 border-blue-200 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-gray-700">📤 Поделиться</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success">Сохранить</button>
             </div>
         </div>
@@ -156,23 +153,21 @@
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
         <aside id="sidebar" class="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 fixed inset-y-0 left-0 w-[260px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-xl md:shadow-none">
             <div class="p-6 text-xl font-extrabold flex justify-between items-center text-gray-800 dark:text-white border-b border-gray-100 dark:border-gray-700">
-                <span class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-[12px] flex items-center justify-center text-white text-sm shadow-md">ХП</div> CRM
-                </span>
+                <span class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-600 rounded-[12px] flex items-center justify-center text-white text-sm shadow-md">ХП</div> CRM</span>
                 <button onclick="toggleSidebar()" class="md:hidden text-gray-400 text-3xl bg-transparent border-none cursor-pointer leading-none">&times;</button>
             </div>
             
             <nav class="flex-1 py-4 space-y-1.5 overflow-y-auto px-2">
                 <div class="sidebar-category mt-2">Рабочий стол</div>
-                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard', this)" class="bx-sidebar-item active"><span class="bx-sidebar-icon">🏠</span> Главная</a>
-                <a href="#" id="nav-deals" onclick="switchSection('deals', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">💼</span> Сделки</a>
-                <a href="#" id="nav-tasks" onclick="switchSection('tasks', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">✅</span> Задачи</a>
-                <a href="#" id="nav-files" onclick="switchSection('files', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📁</span> Общий диск</a>
-                <a href="#" id="nav-calendar" onclick="switchSection('calendar', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📅</span> Календарь</a>
-                <a href="#" id="nav-archive" onclick="switchSection('archive', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">🗄️</span> Архив</a>
+                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard')" class="bx-sidebar-item active"><span class="bx-sidebar-icon">🏠</span> Главная</a>
+                <a href="#" id="nav-deals" onclick="switchSection('deals')" class="bx-sidebar-item"><span class="bx-sidebar-icon">💼</span> Сделки</a>
+                <a href="#" id="nav-tasks" onclick="switchSection('tasks')" class="bx-sidebar-item"><span class="bx-sidebar-icon">✅</span> Задачи</a>
+                <a href="#" id="nav-files" onclick="switchSection('files')" class="bx-sidebar-item"><span class="bx-sidebar-icon">📁</span> Общий диск</a>
+                <a href="#" id="nav-calendar" onclick="switchSection('calendar')" class="bx-sidebar-item"><span class="bx-sidebar-icon">📅</span> Календарь</a>
+                <a href="#" id="nav-archive" onclick="switchSection('archive')" class="bx-sidebar-item"><span class="bx-sidebar-icon">🗄️</span> Архив</a>
                 
                 <div class="sidebar-category mt-6">Отчеты и Настройки</div>
-                <a href="#" id="nav-analytics" onclick="switchSection('analytics', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
+                <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
                 <button onclick="toggleDarkMode()" class="w-full text-left bx-sidebar-item bg-transparent border-none cursor-pointer"><span class="bx-sidebar-icon" id="themeIcon">🌙</span> Тема</button>
             </nav>
             <div class="p-5 border-t border-gray-100 dark:border-gray-700">
@@ -180,7 +175,7 @@
             </div>
         </aside>
 
-        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative bg-[#f3f4f6] dark:bg-gray-900">
+        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
             
             <header class="sticky top-0 z-40 px-6 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
                 <div class="flex items-center justify-between w-full sm:w-auto h-[70px] sm:h-auto">
@@ -191,7 +186,7 @@
                     <button onclick="toggleForm()" class="sm:hidden bg-blue-600 w-11 h-11 p-0 text-white font-bold rounded-full shadow-md text-2xl flex items-center justify-center pb-1">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-between sm:justify-end gap-3 py-3 sm:py-0">
+                <div id="dealsToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-between sm:justify-end gap-3 sm:gap-5 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
                     <div class="flex bg-white dark:bg-gray-800 rounded-full p-1 shadow-sm border border-gray-200 dark:border-gray-700 shrink-0">
                         <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !mr-0 !px-5 !py-2">Канбан</div>
                         <div onclick="setView('list')" id="v-list" class="bx-tab !mr-0 !px-5 !py-2 text-gray-500">Список</div>
@@ -199,23 +194,72 @@
                     </div>
                     <div class="hidden sm:flex gap-3 items-center shrink-0">
                         <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="bx-input w-56 rounded-full shadow-sm">
+                        <button onclick="exportToCSV()" class="bx-btn-default rounded-full px-5">Excel</button>
                         <button onclick="toggleForm()" class="bx-btn-success rounded-full shadow-md">+ Сделка</button>
                     </div>
+                </div>
+
+                <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
+                    <div class="hidden sm:flex gap-2 items-center relative bg-white dark:bg-gray-800 rounded-full shadow-sm p-1 pr-2 border border-gray-200 dark:border-gray-700">
+                        <input id="newTaskInputHead" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none pl-4 pr-10 h-[38px] w-64 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
+                        <button onclick="startDictation('newTaskInputHead', this)" class="absolute right-2 top-1.5">🎤</button>
+                    </div>
+                    <button onclick="addTask('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex rounded-full">Добавить</button>
+                </div>
+
+                <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
+                    <button onclick="createFolder()" class="bx-btn-default rounded-full">📁 Папка</button>
+                    <input type="file" id="crmFileInput" class="hidden" multiple onchange="uploadCrmFile(event)">
+                    <button onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success rounded-full shadow-md">📤 Загрузить</button>
                 </div>
             </header>
 
             <div id="massActionToolbar" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 md:ml-[130px] bg-gray-800 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-4 z-50 transition-all duration-300 translate-y-24 opacity-0 pointer-events-none">
                 <div class="font-bold text-sm border-r border-gray-600 pr-4">Выбрано: <span id="massCount" class="text-blue-400">0</span></div>
-                <button onclick="massChangeStatus('В работе')" class="text-xs font-bold hover:text-blue-300 transition-colors">В работу</button>
-                <button onclick="massChangeStatus('На складе')" class="text-xs font-bold hover:text-orange-300 transition-colors">На склад</button>
-                <button onclick="massChangeStatus('Завершен')" class="text-xs font-bold hover:text-emerald-300 transition-colors">Завершить</button>
+                <button onclick="massChangeStatus('В работе')" class="text-xs font-bold hover:text-blue-300">В работу</button>
+                <button onclick="massChangeStatus('На складе')" class="text-xs font-bold hover:text-orange-300">На склад</button>
+                <button onclick="massChangeStatus('Завершен')" class="text-xs font-bold hover:text-emerald-300">Завершить</button>
                 <div class="border-r border-gray-600 h-4 mx-1"></div>
-                <button onclick="massDelete()" class="text-xs font-bold text-red-400 hover:text-red-300 transition-colors">Удалить</button>
+                <button onclick="massDelete()" class="text-xs font-bold text-red-400 hover:text-red-300">Удалить</button>
                 <button onclick="clearSelection()" class="ml-2 w-6 h-6 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-lg leading-none">&times;</button>
             </div>
 
+            <div id="section-dashboard" class="p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Доброе утро 👋</h2>
+                        <p class="text-gray-500 dark:text-gray-400 font-medium mt-1 text-sm sm:text-base" id="dash-date">Сегодня: ...</p>
+                    </div>
+                    <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm">+ Создать сделку</button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">🚚 Отгрузки сегодня</h3><button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
+                        <div id="dash-todays-shipments" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">🔜 Ближайшие</h3><button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
+                        <div id="dash-upcoming-shipments" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">✅ Задачи</h3><button onclick="switchSection('tasks')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button></div>
+                        <div class="flex gap-2 mb-5 relative bg-gray-50 dark:bg-gray-900 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
+                            <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full pl-4 pr-10 text-sm font-medium h-[40px]" onkeypress="if(event.key==='Enter') addTask('dashTaskInput')">
+                            <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 top-2">🎤</button>
+                        </div>
+                        <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm border-b-4 border-b-blue-500"><div class="text-[12px] font-bold text-gray-400 uppercase">Сделок в работе</div><div class="text-4xl font-black text-gray-800 dark:text-white mt-2" id="dash-active-deals">0</div></div>
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm border-b-4 border-b-green-500"><div class="text-[12px] font-bold text-gray-400 uppercase">Сумма в работе</div><div class="text-4xl font-black text-gray-800 dark:text-white mt-2" id="dash-active-sum">0</div></div>
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm border-b-4 border-b-orange-500"><div class="text-[12px] font-bold text-gray-400 uppercase">Открытых задач</div><div class="text-4xl font-black text-gray-800 dark:text-white mt-2" id="dash-active-tasks">0</div></div>
+                </div>
+            </div>
+
             <div id="section-deals" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1600px]">
-                
                 <div class="flex gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
                     <button onclick="setFilter('Все')" id="filter-Все" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-blue-600 text-white shadow-md border-none cursor-pointer">Все</button>
                     <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer shadow-sm">Не оплачен</button>
@@ -230,11 +274,14 @@
                         <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
                         <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
                         <div class="sm:col-span-4 lg:col-span-4"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Теги (через запятую)</label><input id="cTags" type="text" placeholder="сайт, tarkett, акция..." class="bx-input font-medium text-blue-600 dark:text-blue-400"></div>
-                        
                         <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
                         <div><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-2 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-blue-200 dark:border-blue-700 bg-blue-50/50 dark:bg-blue-900/20"></div>
                         <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
                         <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
+                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
+                        <div class="sm:col-span-3"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Адрес доставки</label><input id="cAddress" type="text" class="bx-input"></div>
+                        <div class="lg:col-span-4"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
+                        <div class="lg:col-span-4 p-4 border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 rounded-2xl"><label class="block text-[12px] font-semibold text-gray-500 mb-3 uppercase">Документ</label><input id="cFile" type="file" class="bx-input !p-2 !h-auto"></div>
                     </div>
                     <div class="flex gap-3">
                         <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success h-12 px-8 rounded-full">Создать сделку</button>
@@ -243,22 +290,10 @@
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-4 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
-                        <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-purple-700 dark:text-purple-400 uppercase m-0">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-500">0</span></div><div class="text-[18px] font-black text-purple-900 dark:text-purple-300" id="cnt-new-sum">0 ₽</div></div>
-                        <div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div>
-                    </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
-                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-blue-700 dark:text-blue-400 uppercase m-0">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-500">0</span></div><div class="text-[18px] font-black text-blue-900 dark:text-blue-300" id="cnt-work-sum">0 ₽</div></div>
-                        <div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div>
-                    </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
-                        <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-orange-700 dark:text-orange-400 uppercase m-0">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-500">0</span></div><div class="text-[18px] font-black text-orange-900 dark:text-orange-300" id="cnt-stock-sum">0 ₽</div></div>
-                        <div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div>
-                    </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full border-none">
-                        <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-emerald-700 dark:text-emerald-400 uppercase m-0">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-500">0</span></div><div class="text-[18px] font-black text-emerald-900 dark:text-emerald-300" id="cnt-done-sum">0 ₽</div></div>
-                        <div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div>
-                    </div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-purple-700 dark:text-purple-400 uppercase m-0">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-500">0</span></div><div class="text-[18px] font-black text-purple-900 dark:text-purple-300" id="cnt-new-sum">0 ₽</div></div><div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div></div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-blue-700 dark:text-blue-400 uppercase m-0">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-500">0</span></div><div class="text-[18px] font-black text-blue-900 dark:text-blue-300" id="cnt-work-sum">0 ₽</div></div><div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div></div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-orange-700 dark:text-orange-400 uppercase m-0">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-500">0</span></div><div class="text-[18px] font-black text-orange-900 dark:text-orange-300" id="cnt-stock-sum">0 ₽</div></div><div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div></div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-emerald-700 dark:text-emerald-400 uppercase m-0">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-500">0</span></div><div class="text-[18px] font-black text-emerald-900 dark:text-emerald-300" id="cnt-done-sum">0 ₽</div></div><div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div></div>
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-4"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></div>
@@ -275,33 +310,106 @@
                                         <th class="px-5 py-4">Сумма (Остаток)</th>
                                         <th class="px-5 py-4">Стадия</th>
                                         <th class="px-5 py-4">Поставщик</th>
+                                        <th class="px-5 py-4">Отгрузка</th>
                                         <th class="px-5 py-4 text-right">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-items-content" class="divide-y divide-gray-100 dark:divide-gray-700 text-[13px] bg-white dark:bg-gray-800"></tbody>
                             </table>
                         </div>
+                        <div id="totalSum" class="bg-white dark:bg-gray-800 px-6 py-5 text-right text-gray-800 dark:text-white font-black text-lg border-t border-gray-200 dark:border-gray-700"></div>
                     </div>
                 </div>
             </div>
 
-            <div id="section-dashboard" class="hidden p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8">Дашборд (в разработке)</h2>
+            <div id="section-files" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm min-h-[500px] flex flex-col">
+                    <div class="flex items-center gap-2 mb-8 pb-4 border-b border-gray-100 dark:border-gray-700 text-sm">
+                        <span onclick="openFolder(null)" class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold text-xl transition-colors">📁 Общий диск</span>
+                        <span id="currentFolderBreadcrumb" class="text-gray-300 dark:text-gray-600 font-bold text-xl hidden"> / </span>
+                    </div>
+                    <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6"></div>
+                </div>
             </div>
-            <div id="section-analytics" class="hidden p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
-                 <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8">Аналитика (в разработке)</h2>
+
+            <div id="section-tasks" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[800px]">
+                <div class="flex gap-2 mb-6 bg-white dark:bg-gray-800 p-1 rounded-full shadow-sm border border-gray-100 dark:border-gray-700 w-max">
+                    <div onclick="setTaskView('active')" id="t-active" class="bx-tab active !m-0 !px-6">Текущие</div>
+                    <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab !m-0 !px-6 text-gray-500">Архив</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-4 sm:p-6 shadow-sm min-h-[500px] flex flex-col">
+                    <div class="flex gap-3 mb-6 pb-6 border-b border-gray-100 dark:border-gray-700 sm:hidden">
+                        <div class="relative flex-1 bg-gray-50 dark:bg-gray-900 rounded-full border border-gray-200 dark:border-gray-700 p-1">
+                            <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[44px] text-sm" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                            <button onclick="startDictation('newTaskInputBody', this)" class="absolute right-2 top-2">🎤</button>
+                        </div>
+                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-14 h-[52px] !px-0 rounded-full text-xl">+</button>
+                    </div>
+                    <div id="tasks-list-content" class="space-y-4 flex-1 overflow-y-auto pr-2"></div>
+                </div>
             </div>
-            <div id="section-calendar" class="hidden p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8">Календарь (в разработке)</h2>
-           </div>
-           <div id="section-tasks" class="hidden p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8">Задачи (в разработке)</h2>
+
+            <div id="section-calendar" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="bg-white dark:bg-gray-800 p-6 sm:p-8 border border-gray-100 dark:border-gray-700 rounded-[24px] shadow-sm">
+                    <div class="flex justify-between items-center mb-8">
+                        <button onclick="changeMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
+                        <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-white uppercase tracking-tight"></h2>
+                        <button onclick="changeMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 text-center text-[12px] font-bold text-gray-400 uppercase mb-4 tracking-wider">
+                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-400">Сб</div><div class="text-red-400">Вс</div>
+                    </div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-2 md:gap-3"></div>
+                </div>
             </div>
-            <div id="section-files" class="hidden p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8">Общий диск (в разработке)</h2>
+
+            <div id="section-archive" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] overflow-hidden w-full shadow-sm">
+                    <div class="overflow-x-auto no-scrollbar w-full">
+                        <table class="w-full text-left border-collapse min-w-[1000px]">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <th class="px-5 py-4 w-24 text-center">№ / Дата</th>
+                                    <th class="px-5 py-4">Имя клиента / Связь</th>
+                                    <th class="px-5 py-4">Итоговая сумма</th>
+                                    <th class="px-5 py-4">Счет / Поставщик</th>
+                                    <th class="px-5 py-4">Дата отгрузки</th>
+                                    <th class="px-5 py-4 text-right">Файл</th>
+                                </tr>
+                            </thead>
+                            <tbody id="archive-items-content" class="divide-y divide-gray-100 dark:divide-gray-700 text-[13px] bg-white dark:bg-gray-800"></tbody>
+                        </table>
+                    </div>
+                    <div id="archiveTotalSum" class="bg-emerald-50 dark:bg-emerald-900/20 px-6 py-5 text-right text-emerald-700 dark:text-emerald-400 font-black text-lg border-t border-emerald-100 dark:border-emerald-800/50"></div>
+                </div>
             </div>
-            <div id="section-archive" class="hidden p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
-                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8">Архив (в разработке)</h2>
+            
+            <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
+                <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 sm:p-8 shadow-sm">
+                    <div class="flex justify-between items-center mb-8 border-b border-gray-100 dark:border-gray-700 pb-5">
+                        <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
+                        <h2 id="analyticsMonthLabel" class="text-2xl font-extrabold text-gray-800 dark:text-white uppercase tracking-tight m-0"></h2>
+                        <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700 rounded-[20px]">
+                            <div class="text-[12px] text-gray-500 dark:text-gray-400 font-bold uppercase mb-2">Создано сделок</div>
+                            <div class="text-4xl font-black text-gray-800 dark:text-white" id="stat-total-count">0</div>
+                        </div>
+                        <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-[20px]">
+                            <div class="text-[12px] text-blue-600 dark:text-blue-400 font-bold uppercase mb-2">Общая сумма</div>
+                            <div class="text-4xl font-black text-blue-700 dark:text-blue-300" id="stat-total-sum">0 ₽</div>
+                        </div>
+                        <div class="p-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-[20px]">
+                            <div class="text-[12px] text-emerald-600 dark:text-emerald-400 font-bold uppercase mb-2">Завершено (Успех)</div>
+                            <div class="text-4xl font-black text-emerald-700 dark:text-emerald-300" id="stat-success-sum">0 ₽</div>
+                        </div>
+                        <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/50 rounded-[20px]">
+                            <div class="text-[12px] text-red-500 dark:text-red-400 font-bold uppercase mb-2">Остаток долга</div>
+                            <div class="text-4xl font-black text-red-600 dark:text-red-300" id="stat-debt-sum">0 ₽</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -313,37 +421,36 @@
         const SECRET_PIN = '1234';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let activeView = localStorage.getItem('crm_view_mode') || 'table'; 
-        let activeSection = localStorage.getItem('crm_active_section') || 'deals';
-        let allOrders = [], currentSupplierFilter = 'Все', currentEditId = null;
-        
-        // Массив для массовых действий
+        let activeView = localStorage.getItem('crm_view_mode') || 'kanban'; 
+        let activeSection = localStorage.getItem('crm_active_section') || 'dashboard';
+        let allOrders = [], allTasks = [], allFiles = [];
+        let taskView = 'active', currentEditId = null, currentFolderId = null;
+        let currentDate = new Date(), analyticsDate = new Date(); 
+        let currentSupplierFilter = 'Все';
         let selectedOrders = [];
 
         // --- Темная тема ---
         function applyTheme() {
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
-                document.getElementById('themeIcon').innerText = '☀️';
+                if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '☀️';
             } else {
                 document.documentElement.classList.remove('dark');
-                document.getElementById('themeIcon').innerText = '🌙';
+                if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '🌙';
             }
         }
         function toggleDarkMode() {
             if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
+                document.documentElement.classList.remove('dark'); localStorage.setItem('theme', 'light');
                 document.getElementById('themeIcon').innerText = '🌙';
             } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
+                document.documentElement.classList.add('dark'); localStorage.setItem('theme', 'dark');
                 document.getElementById('themeIcon').innerText = '☀️';
             }
         }
-        applyTheme(); // Вызываем при загрузке
+        applyTheme();
 
-        // --- Утилиты ---
+        // --- Вспомогательные функции ---
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
@@ -352,33 +459,60 @@
             setTimeout(() => toast.classList.add('hidden'), 3000);
         }
 
-        // --- Логика Умных Цветных Тегов ---
-        function getTagColorClass(tag) {
-            const t = tag.toLowerCase().trim();
-            // Источники (Синие)
-            if(['авито', 'vk', 'вк', 'сайт', 'инста', 'телеграм'].includes(t)) return 'bg-blue-100 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800/50';
-            // Бренды покрытий (Изумрудные)
-            if(['tarkett', 'classen', 'kronopol', 'aberhof', 'my floor', 'first floor'].includes(t)) return 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800/50';
-            // Премиум дерево (Янтарные)
-            if(['karelia', 'kahrs', 'wood bee', 'antic wood', 'steinholz', 'паркет'].includes(t)) return 'bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50';
-            // Партнеры (Фиолетовые)
-            if(['дизайнер', 'прораб', 'архитектор'].includes(t)) return 'bg-purple-100 text-purple-700 border border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800/50';
-            // Важное (Красные)
-            if(['важно', 'акция', 'срочно', 'доставка'].includes(t)) return 'bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800/50';
-            // По умолчанию (Серые)
-            return 'bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
+        function checkBodyScroll() {
+            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
+            if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
 
-        function getTagsHtml(tagsString) {
-            if(!tagsString) return '';
-            const arr = String(tagsString).split(',').map(t => t.trim()).filter(t => t);
+        function applyPhoneMask(phoneStr) {
+            let val = String(phoneStr || '').replace(/\D/g, ''); if (!val) return '';
+            if (val[0] === '8') val = '7' + val.substring(1); else if (val[0] === '9') val = '7' + val; else if (val[0] !== '7') val = '7' + val; 
+            let res = '+7';
+            if (val.length > 1) res += ' (' + val.substring(1, 4);
+            if (val.length >= 5) res += ') ' + val.substring(4, 7);
+            if (val.length >= 8) res += '-' + val.substring(7, 9);
+            if (val.length >= 10) res += '-' + val.substring(9, 11);
+            return res;
+        }
+        function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
+        function formatDate(d) { return d ? new Date(d).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'; }
+        
+        function startDictation(inputId, btn) {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Speech) return showToast("Голосовой ввод не поддерживается", true);
+            const recognition = new Speech(); recognition.lang = 'ru-RU'; btn.innerText = '🛑';
+            recognition.onresult = (e) => { document.getElementById(inputId).value = e.results[0][0].transcript; };
+            recognition.onend = () => { btn.innerText = '🎤'; }; recognition.start();
+        }
+
+        // --- Умные теги ---
+        function getTagColorClass(tag) {
+            const t = tag.toLowerCase().trim();
+            if(['авито', 'vk', 'вк', 'сайт', 'инста', 'телеграм'].includes(t)) return 'bg-blue-100 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800/50';
+            if(['tarkett', 'classen', 'kronopol', 'aberhof', 'my floor', 'first floor'].includes(t)) return 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800/50';
+            if(['karelia', 'kahrs', 'wood bee', 'antic wood', 'steinholz', 'паркет'].includes(t)) return 'bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50';
+            if(['дизайнер', 'прораб', 'архитектор'].includes(t)) return 'bg-purple-100 text-purple-700 border border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800/50';
+            if(['важно', 'акция', 'срочно', 'доставка'].includes(t)) return 'bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800/50';
+            return 'bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
+        }
+        function getTagsHtml(tagsStr) {
+            if(!tagsStr) return '';
+            const arr = String(tagsStr).split(',').map(t => t.trim()).filter(t => t);
             if(arr.length === 0) return '';
             return `<div class="mt-3 flex flex-wrap gap-1.5 pointer-events-none">` + arr.map(t => `<span class="bx-tag shadow-sm ${getTagColorClass(t)}">#${t}</span>`).join('') + `</div>`;
         }
 
-        // --- Авторизация и Роутинг ---
+        // --- Drag & Drop ---
+        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
+        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
+        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+        function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
+
+        // --- Авторизация ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
+            document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
         });
         function checkPin() {
             if (document.getElementById('pinInput').value === SECRET_PIN) { sessionStorage.setItem('crm_auth', 'true'); unlockCrm(); } 
@@ -388,34 +522,38 @@
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainCrm').classList.remove('hidden');
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
-            switchSection(activeSection);
-            loadData();
+            switchSection(activeSection, document.getElementById('nav-' + activeSection));
+            loadData(); loadTasks(); loadFiles();
         }
         function lockCrm() { sessionStorage.removeItem('crm_auth'); location.reload(); }
-        
-        function switchSection(id) {
-            activeSection = id;
-            document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
-            const sec = document.getElementById('section-' + id);
-            if(sec) sec.classList.remove('hidden');
-            
-            document.querySelectorAll('.bx-sidebar-item').forEach(i => i.classList.remove('active'));
-            const nav = document.getElementById('nav-' + id);
-            if(nav) nav.classList.add('active');
 
-            document.getElementById('dealsToolbar').classList.toggle('hidden', id !== 'deals');
-            if(id === 'deals') setView(activeView);
+        // --- Навигация ---
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
+        function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); if(!document.getElementById('formSection').classList.contains('hidden')) document.getElementById('formSection').scrollIntoView({behavior:'smooth'}); }
+        
+        function switchSection(id, btnElement = null) {
+            activeSection = id; localStorage.setItem('crm_active_section', id);
+            ['dashboard', 'deals', 'calendar', 'analytics', 'archive', 'tasks', 'files'].forEach(sec => { let el = document.getElementById('section-' + sec); if(el) el.classList.add('hidden'); });
+            let secEl = document.getElementById('section-' + id); if(secEl) secEl.classList.remove('hidden');
+            
+            const titles = { 'dashboard': 'Дашборд', 'deals': 'Сделки', 'calendar': 'Календарь', 'analytics': 'Аналитика', 'archive': 'Архив', 'tasks': 'Задачи', 'files': 'Общий диск' };
+            document.getElementById('headerTitle').innerText = titles[id];
+            
+            document.getElementById('dealsToolbar').classList.add('hidden'); document.getElementById('tasksToolbar').classList.add('hidden'); document.getElementById('filesToolbar').classList.add('hidden');
+            if (id === 'deals' || id === 'archive') { document.getElementById('dealsToolbar').classList.remove('hidden'); if(id === 'deals') setView(activeView); } 
+            else if (id === 'tasks') { document.getElementById('tasksToolbar').classList.remove('hidden'); }
+            else if (id === 'files') { document.getElementById('filesToolbar').classList.remove('hidden'); }
+            
+            document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
+            let navBtn = btnElement || document.getElementById('nav-' + id); if(navBtn) navBtn.classList.add('active');
+            
+            if(id === 'analytics') renderAnalytics(); if(id === 'dashboard') renderDashboard(); if(id === 'calendar') renderCalendar();
+            if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) toggleSidebar();
         }
 
         function setView(mode) { 
-            activeView = mode; 
-            ['kanban', 'list', 'table'].forEach(m => {
-                const el = document.getElementById('v-' + m);
-                if(el) {
-                    if (mode === m) { el.classList.add('active'); el.classList.remove('text-gray-500'); } 
-                    else { el.classList.remove('active'); el.classList.add('text-gray-500'); }
-                }
-            });
+            activeView = mode; localStorage.setItem('crm_view_mode', mode); 
+            ['kanban', 'list', 'table'].forEach(m => { const el = document.getElementById('v-' + m); if(el) { if (mode === m) { el.classList.add('active'); el.classList.remove('text-gray-500'); } else { el.classList.remove('active'); el.classList.add('text-gray-500'); } } });
             renderData(); 
         }
 
@@ -431,159 +569,261 @@
             renderData();
         }
 
-        // --- Загрузка и Рендер Данных ---
-        async function loadData() {
-            try {
-                const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                allOrders = data || []; 
-                renderData(); 
-            } catch (err) { showToast("Ошибка загрузки данных", true); }
+        // --- Массовые Действия ---
+        function toggleOrderSelection(id) { const i = selectedOrders.indexOf(id); if (i === -1) selectedOrders.push(id); else selectedOrders.splice(i, 1); updateMassToolbar(); }
+        function toggleAllSelections(cb) { const vis = document.querySelectorAll('.order-checkbox'); selectedOrders = []; if (cb.checked) { vis.forEach(c => { c.checked = true; selectedOrders.push(c.value); }); } else { vis.forEach(c => { c.checked = false; }); } updateMassToolbar(); }
+        function updateMassToolbar() { const tb = document.getElementById('massActionToolbar'); document.getElementById('massCount').innerText = selectedOrders.length; if (selectedOrders.length > 0) { tb.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none'); } else { tb.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none'); const mCb = document.getElementById('selectAllCheckbox'); if(mCb) mCb.checked = false; } }
+        function clearSelection() { selectedOrders = []; document.querySelectorAll('.order-checkbox').forEach(c => c.checked = false); updateMassToolbar(); }
+        async function massChangeStatus(st) { if(selectedOrders.length===0)return; showToast(`Перемещение...`); try { await _supabase.from('orders').update({status:st}).in('id', selectedOrders); showToast(`Успешно`); clearSelection(); loadData(); } catch(e) { showToast("Ошибка", true); } }
+        async function massDelete() { if(selectedOrders.length===0)return; if(!confirm(`Удалить ${selectedOrders.length} сделок?`))return; showToast(`Удаление...`); try { await _supabase.from('orders').delete().in('id', selectedOrders); showToast(`Удалено`); clearSelection(); loadData(); } catch(e) { showToast("Ошибка", true); } }
+
+        // --- Загрузка БД ---
+        async function loadData() { try { const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false }); if (error) throw error; allOrders = data || []; renderData(); renderAnalytics(); if(activeSection === 'dashboard') renderDashboard(); if(activeSection === 'calendar') renderCalendar(); } catch (err) { showToast("Ошибка БД", true); } }
+        async function loadTasks() { try { const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false }); if (error) throw error; allTasks = data || []; renderTasks(); if(activeSection === 'dashboard') renderDashboard(); } catch (err) { console.log(err); } }
+        async function loadFiles() { try { const { data, error } = await _supabase.from('crm_files').select('*').order('is_folder', { ascending: false }).order('created_at', { ascending: false }); if (error) throw error; allFiles = data || []; renderFiles(); } catch (err) { console.log(err); } }
+
+        // --- Рендер Дашборда ---
+        function renderDashboard() {
+            const today = new Date(); const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            document.getElementById('dash-date').innerText = "Сегодня: " + today.toLocaleDateString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const active = allOrders.filter(o => o.status !== 'Завершен');
+            document.getElementById('dash-active-deals').innerText = active.length;
+            document.getElementById('dash-active-sum').innerText = active.reduce((s, o) => s + (Number(o.total_price) || 0), 0).toLocaleString();
+            document.getElementById('dash-active-tasks').innerText = allTasks.filter(t => !t.is_completed).length;
+
+            const shipC = document.getElementById('dash-todays-shipments'); const todays = allOrders.filter(o => o.shipment_date === todayStr);
+            if(shipC) shipC.innerHTML = todays.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Нет отгрузок</div>` : todays.map(o => `<div class="p-4 border border-gray-100 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-200 cursor-pointer" onclick="openEditModal('${o.id}')"><div class="font-bold text-sm">${o.customer_name}</div><div class="text-[11px] text-gray-500 mt-1">📍 ${o.delivery_address || '—'}</div></div>`).join('');
+
+            const upC = document.getElementById('dash-upcoming-shipments'); const upcoming = allOrders.filter(o => o.shipment_date > todayStr && o.status !== 'Завершен').sort((a, b) => new Date(a.shipment_date) - new Date(b.shipment_date)).slice(0, 5);
+            if(upC) upC.innerHTML = upcoming.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Нет будущих отгрузок</div>` : upcoming.map(o => `<div class="p-4 border border-gray-100 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-200 cursor-pointer" onclick="openEditModal('${o.id}')"><div class="font-bold text-sm">${o.customer_name}</div><div class="text-[11px] font-bold text-orange-500 mt-1">📅 ${formatDate(o.shipment_date)}</div></div>`).join('');
+
+            const tskC = document.getElementById('dash-recent-tasks'); const opTasks = allTasks.filter(t => !t.is_completed).slice(0,5);
+            if(tskC) tskC.innerHTML = opTasks.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Всё выполнено!</div>` : opTasks.map(t => `<div class="flex items-center gap-4 p-3 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-xl cursor-pointer" onclick="toggleTask(${t.id}, true)"><div class="w-5 h-5 border-2 border-gray-300 rounded-md"></div><div class="text-sm font-medium">${t.title}</div></div>`).join('');
         }
 
-        // --- МАССОВЫЕ ДЕЙСТВИЯ (Логика) ---
-        function toggleOrderSelection(id) {
-            const index = selectedOrders.indexOf(id);
-            if (index === -1) selectedOrders.push(id);
-            else selectedOrders.splice(index, 1);
-            updateMassToolbar();
-        }
-
-        function toggleAllSelections(checkbox) {
-            const visibleCheckboxes = document.querySelectorAll('.order-checkbox');
-            selectedOrders = [];
-            if (checkbox.checked) {
-                visibleCheckboxes.forEach(cb => { cb.checked = true; selectedOrders.push(cb.value); });
-            } else {
-                visibleCheckboxes.forEach(cb => { cb.checked = false; });
-            }
-            updateMassToolbar();
-        }
-
-        function updateMassToolbar() {
-            const toolbar = document.getElementById('massActionToolbar');
-            document.getElementById('massCount').innerText = selectedOrders.length;
-            
-            if (selectedOrders.length > 0) {
-                toolbar.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
-            } else {
-                toolbar.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
-                const mainCb = document.getElementById('selectAllCheckbox');
-                if(mainCb) mainCb.checked = false;
-            }
-        }
-
-        function clearSelection() {
-            selectedOrders = [];
-            document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = false);
-            updateMassToolbar();
-        }
-
-        async function massChangeStatus(newStatus) {
-            if(selectedOrders.length === 0) return;
-            showToast(`Перемещение (${selectedOrders.length})...`);
-            try {
-                // В Supabase можно обновить массив ID одним запросом: .in('id', array)
-                const { error } = await _supabase.from('orders').update({ status: newStatus }).in('id', selectedOrders);
-                if (error) throw error;
-                showToast(`Успешно перенесено: ${selectedOrders.length}`);
-                clearSelection();
-                loadData();
-            } catch(e) { showToast("Ошибка массового переноса", true); }
-        }
-
-        async function massDelete() {
-            if(selectedOrders.length === 0) return;
-            if(!confirm(`Вы уверены, что хотите УДАЛИТЬ ${selectedOrders.length} сделок навсегда?`)) return;
-            showToast("Удаление...");
-            try {
-                const { error } = await _supabase.from('orders').delete().in('id', selectedOrders);
-                if (error) throw error;
-                showToast("Сделки удалены");
-                clearSelection();
-                loadData();
-            } catch(e) { showToast("Ошибка при удалении", true); }
-        }
-
-        // --- Главный Рендер ---
+        // --- Главный Рендер (Сделки) ---
         function renderData() {
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
             document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
             document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
 
-            const search = (document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : '');
-            
+            const search = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : '';
             const filtered = allOrders.filter(o => {
-                const ms = String(o.customer_name || '').toLowerCase().includes(search) || String(o.phone || '').includes(search) || String(o.tags || '').toLowerCase().includes(search);
+                const ms = String(o.customer_name||'').toLowerCase().includes(search) || String(o.phone||'').includes(search) || String(o.order_number||'').toLowerCase().includes(search) || String(o.tags||'').toLowerCase().includes(search);
                 const tag = currentSupplierFilter === 'Все' || (o.supplier_status || 'Не оплачен') === currentSupplierFilter;
                 return ms && tag;
             });
 
-            // Очистка контейнеров
             ['col-new', 'col-work', 'col-stock', 'col-done'].forEach(id => { let el = document.getElementById(id); if(el) el.innerHTML = ''; });
+            let listEl = document.getElementById('list-items-content'); if(listEl) listEl.innerHTML = ''; 
             let tableEl = document.getElementById('table-items-content'); if(tableEl) tableEl.innerHTML = '';
+            let archiveEl = document.getElementById('archive-items-content'); if(archiveEl) archiveEl.innerHTML = '';
+
+            const counts = { 'Новый': 0, 'В работе': 0, 'На складе': 0, 'Завершен': 0 }; 
+            const sums = { 'Новый': 0, 'В работе': 0, 'На складе': 0, 'Завершен': 0 }; 
+            let total = 0, archiveTotal = 0;
 
             filtered.forEach(item => {
-                const status = item.status || 'Новый';
-                const price = Number(item.total_price || 0);
-                const tagsHtml = getTagsHtml(item.tags); // Внедряем цветные теги
-                
+                const status = item.status || 'Новый'; counts[status]++; 
+                const price = Number(item.total_price || 0); sums[status] += price;
+                if(status !== 'Завершен') total += price;
+
+                let nextSt = "В работе", btnClass = "text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800";
+                let prevSt = null, prevBtnClass = "text-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700";
+
+                if (status === 'В работе') { nextSt = "На складе"; btnClass = "text-orange-600 bg-orange-50 dark:bg-orange-900/30 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800"; prevSt = "Новый"; } 
+                else if (status === 'На складе') { nextSt = "Завершен"; btnClass = "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-800"; prevSt = "В работе"; } 
+                else if (status === 'Завершен') { btnClass = "hidden"; prevSt = "На складе"; }
+
                 let supColor = "bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400";
                 if(item.supplier_status === 'Оплачен') supColor = "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400";
                 else if(item.supplier_status === 'Предоплата') supColor = "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400";
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400";
 
-                const isChecked = selectedOrders.includes(item.id) ? 'checked' : '';
+                let bal = price - Number(item.prepayment || 0);
+                let balHtml = item.prepayment ? `<div class="text-[11px] font-bold mt-1 ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
+                const tagsHtml = getTagsHtml(item.tags);
+                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-600 dark:text-blue-400 text-[11px] font-bold pointer-events-auto bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-800/50" onclick="event.stopPropagation()">📎 Файл</a>` : '';
+                
+                const actionButtons = `<div class="flex gap-2 pointer-events-auto" onclick="event.stopPropagation()">
+                    ${prevSt ? `<button onclick="changeStatus('${item.id}', '${prevSt}')" class="${prevBtnClass} px-3 py-2 rounded-xl text-[10px] font-extrabold uppercase transition-all shadow-sm">Назад</button>` : ''}
+                    ${status !== 'Завершен' ? `<button onclick="changeStatus('${item.id}', '${nextSt}')" class="${btnClass} px-3 py-2 rounded-xl text-[10px] font-extrabold uppercase transition-all shadow-sm">Вперед</button>` : ''}
+                </div>`;
 
-                // Генерация строки для Таблицы
-                if(activeView === 'table' && status !== 'Завершен' && tableEl) {
-                    tableEl.innerHTML += `
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-100 dark:border-gray-700 last:border-0 cursor-pointer" onclick="openEditModal('${item.id}')">
-                        <td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()">
-                            <input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')">
-                        </td>
-                        <td class="px-5 py-4 font-mono text-[11px] text-gray-400 dark:text-gray-500 text-center font-bold">#${item.order_number || item.id}</td>
-                        <td class="px-5 py-4">
-                            <div class="font-extrabold text-gray-800 dark:text-gray-100 text-sm mb-1">${item.customer_name}</div>
-                            ${tagsHtml}
-                        </td>
-                        <td class="px-5 py-4"><div class="font-black text-gray-800 dark:text-gray-100 text-sm">${price.toLocaleString()} ₽</div></td>
-                        <td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-extrabold uppercase text-[9px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">${status}</span></td>
-                        <td class="px-5 py-4"><span class="text-[9px] px-2 py-1 rounded-md font-bold uppercase ${supColor}">${item.supplier_status || 'Не оплачен'}</span></td>
-                        <td class="px-5 py-4 text-right">
-                            <button onclick="event.stopPropagation(); changeStatus('${item.id}', 'Завершен')" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold px-3 py-2 rounded-lg pointer-events-auto hover:bg-blue-100 transition-colors">Вперед</button>
-                        </td>
-                    </tr>`;
+                // Archive
+                if (status === 'Завершен' && archiveEl) {
+                    archiveTotal += price;
+                    archiveEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${tagsHtml}</td><td class="px-5 py-4 font-black">${price.toLocaleString()} ₽</td><td class="px-5 py-4"><span class="${supColor} text-[9px] px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right pointer-events-auto">${fileLink}</td></tr>`;
                 }
 
-                // Генерация карточки для Канбана (без чекбоксов, как и раньше, но с тегами)
+                // Table
+                if(activeView === 'table' && status !== 'Завершен' && tableEl) {
+                    const isChecked = selectedOrders.includes(item.id) ? 'checked' : '';
+                    tableEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}</td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-1">${item.phone}</div>`:''}${tagsHtml}</td><td class="px-5 py-4"><div class="font-black">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">${status}</span></td><td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4"><div class="flex justify-end items-center gap-3">${fileLink}${actionButtons}</div></td></tr>`;
+                }
+
+                // List
+                if(activeView === 'list' && status !== 'Завершен' && listEl) {
+                    listEl.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 flex flex-col sm:flex-row justify-between cursor-pointer mb-4 gap-4" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-3"><div class="font-extrabold text-[16px]">${item.customer_name}</div><div class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</div></div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-2">${item.phone}</div>`:''}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-gray-100 dark:border-gray-700 pt-4 sm:pt-0 shrink-0"><div><div class="font-black text-[22px]">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-4 flex items-center gap-3"><div class="pointer-events-auto">${fileLink}</div>${actionButtons}</div></div></div>`;
+                }
+
+                // Kanban
                 if(activeView === 'kanban') {
                     const colMap = { 'Новый': 'col-new', 'В работе': 'col-work', 'На складе': 'col-stock', 'Завершен': 'col-done' };
                     let el = document.getElementById(colMap[status]);
-                    if(el) {
-                        el.innerHTML += `
-                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] p-5 shadow-sm hover:shadow-md transition-all mb-4 cursor-pointer" onclick="openEditModal('${item.id}')">
-                            <div class="font-bold text-gray-800 dark:text-gray-100 mb-1">${item.customer_name}</div>
-                            <div class="font-black text-lg text-gray-900 dark:text-white">${price.toLocaleString()} ₽</div>
-                            ${tagsHtml}
-                        </div>`;
-                    }
+                    if(el) el.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-extrabold text-[15px]">${item.customer_name}</div><span class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</span></div><div><div class="font-black text-[20px]">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 text-[11px] flex justify-between items-center border border-gray-100 dark:border-gray-700"><span class="${supColor} px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span>📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700 mt-2"><div class="pointer-events-auto">${fileLink}</div>${actionButtons}</div></div>`;
                 }
             });
-            
-            // Восстанавливаем состояние "Выбрать все", если отрендерились все выбранные
-            const visibleCbs = document.querySelectorAll('.order-checkbox');
+
+            if(document.getElementById('cnt-new-count')) document.getElementById('cnt-new-count').innerText = counts['Новый'] + ' шт';
+            if(document.getElementById('cnt-new-sum')) document.getElementById('cnt-new-sum').innerText = sums['Новый'].toLocaleString() + ' ₽';
+            if(document.getElementById('cnt-work-count')) document.getElementById('cnt-work-count').innerText = counts['В работе'] + ' шт';
+            if(document.getElementById('cnt-work-sum')) document.getElementById('cnt-work-sum').innerText = sums['В работе'].toLocaleString() + ' ₽';
+            if(document.getElementById('cnt-stock-count')) document.getElementById('cnt-stock-count').innerText = counts['На складе'] + ' шт';
+            if(document.getElementById('cnt-stock-sum')) document.getElementById('cnt-stock-sum').innerText = sums['На складе'].toLocaleString() + ' ₽';
+            if(document.getElementById('cnt-done-count')) document.getElementById('cnt-done-count').innerText = counts['Завершен'] + ' шт';
+            if(document.getElementById('cnt-done-sum')) document.getElementById('cnt-done-sum').innerText = sums['Завершен'].toLocaleString() + ' ₽';
+            if(document.getElementById('totalSum')) document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
+            if(document.getElementById('archiveTotalSum')) document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
+
             const mainCb = document.getElementById('selectAllCheckbox');
-            if(mainCb && visibleCbs.length > 0) {
-                mainCb.checked = Array.from(visibleCbs).every(cb => cb.checked);
+            if(mainCb) {
+                const vis = document.querySelectorAll('.order-checkbox');
+                mainCb.checked = vis.length > 0 && Array.from(vis).every(cb => cb.checked);
             }
         }
 
-        // Заглушки для функций (чтобы не было ошибок в консоли)
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
-        function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); }
-        function openEditModal(id) { /* Логика открытия (взята из старой версии) */ showToast("Открытие карточки..."); }
-        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
+        // --- Изменение данных ---
+        async function changeStatus(id, st) { showToast("Обновление...", false); try { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); showToast("Статус изменен", false); } catch(e) { showToast("Ошибка", true); } }
+        
+        function openEditModal(id) {
+            const o = allOrders.find(x => String(x.id) === String(id)); if(!o) return; currentEditId = o.id;
+            ['editOrderNum','editName','editPrice','editPrepayment','editPhone','editTags','editInvoice','editSupplierStatus','editShipDate','editAddress','editComments','editStatus'].forEach(field => {
+                const map = { editOrderNum: o.order_number, editName: o.customer_name, editPrice: o.total_price, editPrepayment: o.prepayment, editPhone: applyPhoneMask(o.phone), editTags: o.tags, editInvoice: o.supplier_invoice, editSupplierStatus: o.supplier_status || 'Не оплачен', editShipDate: o.shipment_date, editAddress: o.delivery_address, editComments: o.comments, editStatus: o.status || 'Новый' };
+                if(document.getElementById(field)) document.getElementById(field).value = map[field] || '';
+            });
+            const linkDiv = document.getElementById('currentFileLink');
+            if (o.file_url) linkDiv.innerHTML = `<div class="flex gap-3"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-800/50">📎 Открыть</a><button type="button" onclick="deleteAttachedFile('${o.id}', '${o.file_url}')" class="text-[12px] font-bold text-red-500">Удалить</button></div>`;
+            else linkDiv.innerHTML = '<span class="text-gray-400 text-xs font-medium">Файл не загружен</span>';
+            document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
+        }
+
+        async function saveEdit() {
+            if(!currentEditId) return; const btn = document.getElementById('saveEditBtn'); btn.innerText = 'Сохранение...'; btn.disabled = true;
+            let updates = { order_number: document.getElementById('editOrderNum').value, customer_name: document.getElementById('editName').value, total_price: document.getElementById('editPrice').value || null, prepayment: document.getElementById('editPrepayment').value || null, phone: document.getElementById('editPhone').value, tags: document.getElementById('editTags').value, supplier_invoice: document.getElementById('editInvoice').value, supplier_status: document.getElementById('editSupplierStatus').value, shipment_date: document.getElementById('editShipDate').value || null, delivery_address: document.getElementById('editAddress').value, comments: document.getElementById('editComments').value, status: document.getElementById('editStatus').value };
+            try {
+                const fileInput = document.getElementById('editFile');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0]; const ext = file.name.split('.').pop(); const name = `${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+                    const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
+                    if (!upErr) updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
+                }
+                await _supabase.from('orders').update(updates).eq('id', currentEditId);
+                showToast("Сохранено", false); closeEditModal(); loadData();
+            } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
+        }
+
+        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editFile').value = ''; checkBodyScroll(); }
+
+        async function saveOrder() {
+            const btn = document.getElementById('saveBtn'); btn.innerText = 'Создание...'; btn.disabled = true;
+            let newOrder = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value || null, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, tags: document.getElementById('cTags').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, delivery_address: document.getElementById('cAddress').value, comments: document.getElementById('cComments').value, status: 'Новый' };
+            if (!newOrder.customer_name) { showToast("Укажите имя", true); btn.innerText = 'Создать сделку'; btn.disabled = false; return; }
+            try {
+                const fileInput = document.getElementById('cFile');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0]; const ext = file.name.split('.').pop(); const name = `${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+                    const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
+                    if (!upErr) newOrder.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
+                }
+                await _supabase.from('orders').insert([newOrder]); toggleForm(); showToast("Сделка создана", false); loadData();
+                ['cOrderNum','cName','cPrice','cPrepayment','cPhone','cTags','cInvoice','cShipDate','cComments','cAddress'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; }); document.getElementById('cFile').value = '';
+            } catch(e) { showToast("Ошибка создания", true); } finally { btn.disabled = false; btn.innerText = "Создать сделку"; }
+        }
+
+        // --- Разное (Экспорт, Шаринг, Файлы) ---
+        function exportToCSV() {
+            if(allOrders.length===0) return showToast("Нет данных", true);
+            let csv = "ID;Свои номер;Клиент;Телефон;Сумма;Предоплата;Статус;Счет;Оплата;Отгрузка;Адрес;Теги;Комментарий\n";
+            allOrders.forEach(o => { csv += [o.id, o.order_number||'', o.customer_name||'', o.phone||'', o.total_price||0, o.prepayment||0, o.status||'Новый', o.supplier_invoice||'', o.supplier_status||'Не оплачен', formatDate(o.shipment_date), String(o.delivery_address||'').replace(/;/g,','), String(o.tags||'').replace(/;/g,','), String(o.comments||'').replace(/;/g,',').replace(/\n/g,' ')].join(';') + "\n"; });
+            const blob = new Blob(["\ufeff", csv], {type: 'text/csv;charset=utf-8;'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Baza_${new Date().toLocaleDateString('ru-RU')}.csv`; a.click();
+        }
+        function shareOrder(id) {
+            const o = allOrders.find(x => String(x.id) === String(id)); if (!o) return;
+            const text = `Заказ: ${o.customer_name}\nТелефон: ${o.phone||'—'}\nАдрес: ${o.delivery_address||'—'}\nОстаток к оплате: ${(Number(o.total_price||0) - Number(o.prepayment||0))} ₽\nФайл: ${o.file_url||'Нет'}`;
+            if (navigator.share) navigator.share({ title: `Сделка: ${o.customer_name}`, text }).catch(e=>{}); else { navigator.clipboard.writeText(text); showToast("Скопировано"); }
+        }
+        async function deleteAttachedFile(id, url) {
+            if(!confirm("Удалить файл?")) return;
+            try { await _supabase.storage.from('order-files').remove([url.split('/').pop()]); await _supabase.from('orders').update({ file_url: null }).eq('id', id); document.getElementById('currentFileLink').innerHTML = '<span class="text-gray-400 text-xs">Удален</span>'; const o = allOrders.find(x => String(x.id) === String(id)); if(o) o.file_url = null; loadData(); } catch (err) { showToast("Ошибка", true); }
+        }
+
+        // --- Задачи ---
+        function setTaskView(v) { taskView = v; document.getElementById('t-active').className = v === 'active' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 text-gray-500'; document.getElementById('t-archive').className = v === 'archive' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 text-gray-500'; renderTasks(); }
+        function renderTasks() {
+            const container = document.getElementById('tasks-list-content'); if(!container) return;
+            const filtered = allTasks.filter(t => taskView === 'active' ? !t.is_completed : t.is_completed);
+            if (filtered.length === 0) { container.innerHTML = `<div class="text-center text-gray-400 py-10 font-bold bg-gray-50 dark:bg-gray-900 rounded-[20px]">${taskView === 'active' ? 'Все задачи выполнены! 🎉' : 'Архив пуст'}</div>`; return; }
+            container.innerHTML = filtered.map(t => `<div class="flex items-center justify-between p-5 border border-gray-100 dark:border-gray-700 rounded-[24px] bg-white dark:bg-gray-800 mb-3 hover:shadow-md transition-all"><div class="flex items-center gap-4 cursor-pointer flex-1" onclick="toggleTask(${t.id}, ${!t.is_completed})">${t.is_completed ? `<div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md">✓</div>` : `<div class="w-6 h-6 border-2 border-gray-300 rounded-full hover:border-blue-500 transition-colors"></div>`} <div><div class="${t.is_completed ? 'line-through text-gray-400' : 'text-gray-800 dark:text-gray-100 font-semibold'} text-[15px] break-words">${t.title}</div><div class="text-[11px] text-gray-400 mt-1">${formatDate(t.created_at)}</div></div></div><div class="flex items-center gap-3"><button onclick="toggleTask(${t.id}, ${!t.is_completed})" class="bx-btn-default h-10 px-4 text-[12px] bg-gray-50 dark:bg-gray-700 border-transparent rounded-full">${t.is_completed ? 'Вернуть' : 'Готово'}</button><button onclick="deleteTask(${t.id})" class="text-gray-400 hover:text-red-500 text-2xl bg-transparent border-none cursor-pointer px-2">&times;</button></div></div>`).join('');
+        }
+        async function addTask(id) { const i = document.getElementById(id); if(!i||!i.value.trim()) return showToast("Введите текст", true); await _supabase.from('tasks').insert([{ title: i.value.trim() }]); i.value = ''; loadTasks(); showToast("Добавлена", false); }
+        async function toggleTask(id, st) { await _supabase.from('tasks').update({ is_completed: st }).eq('id', id); loadTasks(); }
+        async function deleteTask(id) { if(confirm("Удалить?")) { await _supabase.from('tasks').delete().eq('id', id); loadTasks(); } }
+
+        // --- Общий диск ---
+        function renderFiles() {
+            const grid = document.getElementById('crm-files-grid'); if(!grid) return; grid.innerHTML = '';
+            if (currentFolderId === null) {
+                document.getElementById('currentFolderBreadcrumb').classList.add('hidden');
+                allFiles.filter(f => f.is_folder).forEach(f => { grid.innerHTML += `<div class="p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-500 shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group" onclick="openFolder(${f.id})"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, true)" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100">🗑</button><div class="text-5xl mb-2 transition-transform group-hover:scale-110">📁</div><div class="text-xs font-semibold text-gray-700 dark:text-gray-300 text-center truncate w-full">${f.name}</div></div>`; });
+            } else {
+                const folder = allFiles.find(f => f.id === currentFolderId); document.getElementById('currentFolderBreadcrumb').classList.remove('hidden'); document.getElementById('currentFolderBreadcrumb').innerHTML = ` / <span class="text-gray-800 dark:text-white font-extrabold">${folder?folder.name:''}</span>`;
+                allFiles.filter(f => !f.is_folder && f.folder_id === currentFolderId).forEach(f => { grid.innerHTML += `<div class="p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-500 shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group" onclick="window.open('${f.file_url}', '_blank')"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, false, '${f.file_url}')" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100">🗑</button><div class="text-5xl mb-2 text-blue-300 transition-transform group-hover:scale-110">📄</div><div class="text-xs font-semibold text-gray-700 dark:text-gray-300 text-center truncate w-full">${f.name}</div></div>`; });
+            }
+        }
+        function openFolder(id) { currentFolderId = id; renderFiles(); }
+        async function createFolder() { const n = prompt("Название папки:"); if(n) { await _supabase.from('crm_files').insert([{name: n, is_folder: true}]); loadFiles(); } }
+        async function uploadCrmFile(e) { if(currentFolderId === null) return showToast("Зайдите в папку", true); showToast("Загрузка...", false); for(let file of e.target.files) { const name = `crm_${Date.now()}_${Math.random().toString(36).substring(2)}`; const { error } = await _supabase.storage.from('order-files').upload(name, file); if(!error) await _supabase.from('crm_files').insert([{ name: file.name, is_folder: false, folder_id: currentFolderId, file_url: _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl }]); } loadFiles(); showToast("Загружено"); e.target.value = ''; }
+        async function deleteCrmFile(id, isF, url) { if(!confirm("Удалить?")) return; if(!isF && url) await _supabase.storage.from('order-files').remove([url.split('/').pop()]); await _supabase.from('crm_files').delete().eq('id', id); if(isF) await _supabase.from('crm_files').delete().eq('folder_id', id); loadFiles(); }
+
+        // --- Аналитика ---
+        function changeAnalyticsMonth(d) { analyticsDate.setMonth(analyticsDate.getMonth() + d); renderAnalytics(); }
+        function renderAnalytics() {
+            const y = analyticsDate.getFullYear(); const m = analyticsDate.getMonth();
+            document.getElementById('analyticsMonthLabel').innerText = `${["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"][m]} ${y}`;
+            const mo = allOrders.filter(o => o.created_at && new Date(o.created_at).getFullYear() === y && new Date(o.created_at).getMonth() === m);
+            let tS = 0, sS = 0, dS = 0;
+            mo.forEach(o => { const p = Number(o.total_price)||0; tS += p; if(o.status === 'Завершен') sS += p; else { const d = p - (Number(o.prepayment)||0); if(d>0) dS+=d; } });
+            if(document.getElementById('stat-total-count')) document.getElementById('stat-total-count').innerText = mo.length; 
+            if(document.getElementById('stat-total-sum')) document.getElementById('stat-total-sum').innerText = tS.toLocaleString() + ' ₽';
+            if(document.getElementById('stat-success-sum')) document.getElementById('stat-success-sum').innerText = sS.toLocaleString() + ' ₽'; 
+            if(document.getElementById('stat-debt-sum')) document.getElementById('stat-debt-sum').innerText = dS.toLocaleString() + ' ₽';
+        }
+
+        // --- Календарь ---
+        function changeMonth(d) { currentDate.setMonth(currentDate.getMonth() + d); renderCalendar(); }
+        function renderCalendar() {
+            const y = currentDate.getFullYear(); const m = currentDate.getMonth();
+            document.getElementById('calendarMonthLabel').innerText = `${["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"][m]} ${y}`;
+            const fD = new Date(y, m, 1).getDay(); const dIM = new Date(y, m + 1, 0).getDate();
+            const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = '';
+            for (let i = 0; i < (fD === 0 ? 6 : fD - 1); i++) grid.innerHTML += `<div></div>`;
+            const td = new Date();
+            for (let i = 1; i <= dIM; i++) {
+                const dt = `${y}-${String(m + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const doO = allOrders.filter(o => o.shipment_date === dt);
+                const isT = (i === td.getDate() && m === td.getMonth() && y === td.getFullYear());
+                grid.innerHTML += `<div onclick="openDayModal('${dt}')" class="p-3 sm:p-4 rounded-2xl border ${isT ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md'} cursor-pointer flex flex-col items-center sm:items-start"><span class="font-extrabold ${isT ? 'text-blue-600 dark:text-blue-400 text-lg' : 'text-gray-700 dark:text-gray-300 text-base'}">${i}</span>${doO.length > 0 ? `<div class="mt-2 text-[10px] font-extrabold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg px-2 py-1">${doO.length} дел</div>` : ''}</div>`;
+            }
+        }
+        function openDayModal(dt) {
+            const doO = allOrders.filter(o => o.shipment_date === dt); document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dt)}`;
+            const l = document.getElementById('dayOrdersList');
+            if(doO.length === 0) l.innerHTML = `<div class="text-center text-gray-400 py-8 bg-gray-50 dark:bg-gray-900 rounded-2xl">Пусто</div>`;
+            else l.innerHTML = doO.map(o => `<div class="p-5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[20px] shadow-sm cursor-pointer mb-3 flex flex-col gap-2" onclick="openEditModal('${o.id}')"><div class="flex justify-between items-start"><div class="font-bold text-gray-800 dark:text-white">${o.customer_name}</div><span class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-[9px] uppercase font-bold">${o.status}</span></div><div class="text-[11px] text-gray-400 font-mono">#${o.order_number||o.id}</div><div class="text-lg font-black mt-1">${(Number(o.total_price)||0).toLocaleString()} ₽</div></div>`).join('');
+            document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
+        }
+        function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
     </script>
 </body>
 </html>
