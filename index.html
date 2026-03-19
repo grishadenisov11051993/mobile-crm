@@ -19,46 +19,50 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        .bx-sidebar { background-color: #ffffff !important; border-right: 1px solid #f3f4f6 !important; box-shadow: 4px 0 24px rgba(0,0,0,0.02); }
-        .bx-sidebar-item { color: #4b5563 !important; border-radius: 12px; transition: 0.2s; font-size: 14px; font-weight: 600; text-decoration: none; margin: 4px 12px; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
-        .bx-sidebar-item:hover { background-color: #f9fafb !important; color: #111827 !important; }
-        .bx-sidebar-item.active { background-color: #eff6ff !important; color: #2563eb !important; }
-        .sidebar-category { padding: 15px 20px 5px 20px; font-size: 10px; color: #6a7b96; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-
-        .bx-input { background-color: #f9fafb !important; border: 1px solid #e5e7eb !important; border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: inherit; }
-        .bx-input:focus { border-color: #3b82f6 !important; background-color: #ffffff !important; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .bx-input { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: inherit; }
+        .bx-input:focus { border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
         textarea.bx-input { height: auto; padding: 12px 16px; }
         
-        .bx-btn-success { background-color: #2563eb !important; color: #ffffff !important; font-weight: 600; font-size: 13px; border-radius: 9999px; padding: 0 24px; height: 44px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
+        .bx-btn-success { background-color: #2563eb !important; color: #ffffff !important; font-weight: 600; font-size: 14px; border-radius: 12px; padding: 0 24px; height: 44px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
         .bx-btn-success:hover { background-color: #1d4ed8 !important; }
         
-        .bx-btn-default { background-color: #ffffff !important; border: 1px solid #d1d5db !important; color: #374151 !important; border-radius: 9999px; font-weight: 600; font-size: 13px; padding: 0 20px; height: 44px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .bx-btn-default { background-color: #ffffff !important; border: 1px solid #d1d5db !important; color: #374151 !important; border-radius: 12px; font-weight: 600; font-size: 14px; padding: 0 20px; height: 44px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .bx-btn-default:hover { border-color: #9ca3af !important; background-color: #f9fafb !important; }
 
-        .bx-tab { text-transform: none; font-size: 14px; font-weight: 600; color: #6b7280 !important; padding: 8px 20px; margin-right: 8px; transition: 0.2s; cursor: pointer; border-radius: 999px; border: 1px solid transparent; }
+        .bx-tab { text-transform: none; font-size: 14px; font-weight: 600; color: #6b7280 !important; padding: 10px 20px; margin-right: 8px; transition: 0.2s; cursor: pointer; border-radius: 999px; border: 1px solid transparent; }
         .bx-tab.active { color: #111827 !important; background: #ffffff !important; border-color: #e5e7eb !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; }
 
         .kanban-col { background: transparent !important; border-radius: 0; padding: 0 10px; border-right: 1px dashed #e5e7eb; }
         .kanban-col:last-child { border-right: none; }
+
+        .cursor-grab { cursor: grab; }
+        .cursor-grab:active { cursor: grabbing; }
+        .drag-over { background-color: rgba(59, 130, 246, 0.1) !important; border-radius: 20px; border: 2px dashed #3b82f6 !important; }
+        .dragging { opacity: 0.5; transform: scale(0.95); }
         
-        .mic-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; }
+        .mic-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; }
         .mic-btn:hover { background: #f3f4f6; }
         .mic-recording { background: #fee2e2 !important; color: #ef4444 !important; animation: pulse 1.5s infinite; }
         
-        .bx-tag { display: inline-block; background-color: #f8f9fa; color: #4b5563; border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 600; white-space: nowrap; border: 1px solid #e5e7eb; }
+        .bx-tag { display: inline-block; background-color: #f8f9fa; color: #4b5563; border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 600; white-space: nowrap; border: 1px solid #e5e7eb; }
 
-        /* Стили файлов - ИКОНКИ ТЕПЕРЬ ВСЕГДА ВИДНЫ */
+        /* Адаптивные файлы: кнопки видны на мобильных всегда, на ПК при наведении */
         .file-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; border: 1px solid #e5e7eb; border-radius: 20px; background: #fff; transition: 0.3s; height: 130px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .file-item:hover { border-color: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.1); transform: translateY(-3px); }
         .file-icon { font-size: 44px; margin-bottom: 12px; pointer-events: none; }
         .file-name { font-size: 12px; font-weight: 600; color: #374151; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
         .folder-icon { color: #f59e0b; }
         
-        .file-action-btn { position: absolute; top: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; cursor: pointer; transition: 0.2s; color: #4b5563; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .file-action-btn { position: absolute; top: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 15px; cursor: pointer; transition: 0.2s; color: #4b5563; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .file-action-btn:hover { background: #f3f4f6; }
         .btn-share { right: 8px; }
         .btn-delete { left: 8px; color: #ef4444; }
         .btn-delete:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+        
+        @media (min-width: 1024px) {
+            .file-action-btn { opacity: 0; }
+            .file-item:hover .file-action-btn { opacity: 1; }
+        }
     </style>
 </head>
 <body class="transition-all duration-300 relative">
@@ -68,13 +72,13 @@
     <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
         <div class="bg-white rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
-                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
+                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer p-2 -ml-2">←</button>
                 <h3 id="dayModalTitle" class="font-bold text-gray-800 text-base m-0 text-center flex-1">Планы на день</h3>
-                <button onclick="closeDayModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+                <button onclick="closeDayModal()" class="text-gray-400 hover:text-red-500 text-3xl leading-none bg-transparent border-none cursor-pointer p-2 -mr-2">&times;</button>
             </div>
             <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-gray-50/50"></div>
             <div class="p-4 border-t border-gray-100 bg-white flex justify-center shrink-0">
-                <button onclick="closeDayModal()" class="bx-btn-default w-full">Закрыть</button>
+                <button onclick="closeDayModal()" class="bx-btn-default w-full">Закрыть окно</button>
             </div>
         </div>
     </div>
@@ -82,9 +86,9 @@
     <div id="editModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[160] flex items-center justify-center p-3 sm:p-5 transition-all">
         <div class="bg-white rounded-[24px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer p-2 -ml-2">←</button>
                 <h3 class="font-bold text-gray-800 text-lg m-0 text-center flex-1">Карточка сделки</h3>
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-red-500 text-3xl leading-none bg-transparent border-none cursor-pointer p-2 -mr-2">&times;</button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-6 flex-1 bg-gray-50 text-sm">
                 
@@ -98,7 +102,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="p-5 bg-blue-50 border border-blue-100 rounded-[20px] shadow-sm">
                         <h4 class="font-bold text-blue-800 uppercase text-[11px] mb-4 tracking-wider">Финансы (Клиент)</h4>
                         <div class="grid grid-cols-2 gap-4">
@@ -123,7 +127,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="p-5 border border-gray-200 rounded-[20px] bg-white shadow-sm">
                         <label class="block text-[12px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Стадия сделки</label>
                         <select id="editStatus" class="bx-input">
@@ -138,13 +142,13 @@
                     <div class="p-5 border border-gray-200 rounded-[20px] bg-gray-50 shadow-sm">
                         <label class="block text-[12px] font-semibold text-gray-500 mb-3 uppercase tracking-wider">Файл документа</label>
                         <div id="currentFileLink" class="mb-4"></div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:bg-white file:border file:border-gray-300 file:rounded-full file:font-semibold file:text-gray-700 cursor-pointer">
+                        <input id="editFile" type="file" class="block w-full text-xs text-gray-500 file:mr-4 file:py-3 file:px-5 file:bg-white file:border file:border-gray-300 file:rounded-xl file:font-semibold file:text-gray-700 cursor-pointer">
                     </div>
                 </div>
             </div>
             <div class="p-5 border-t border-gray-100 bg-white flex flex-col-reverse sm:flex-row justify-end gap-3 shrink-0">
                 <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
-                <button onclick="shareOrder(currentEditId)" class="w-full sm:w-auto bx-btn-default text-blue-600 border-blue-200 hover:bg-blue-50">📤 Поделиться</button>
+                <button onclick="shareOrder(currentEditId)" class="w-full sm:w-auto bx-btn-default text-blue-600 border-blue-200 bg-blue-50 hover:bg-blue-100">📤 Поделиться</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success">Сохранить</button>
             </div>
         </div>
@@ -163,48 +167,49 @@
         
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
 
-        <aside id="sidebar" class="bg-white border-r border-gray-200 fixed inset-y-0 left-0 w-[260px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+        <aside id="sidebar" class="bg-white border-r border-gray-200 fixed inset-y-0 left-0 w-[280px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
             <div class="p-6 text-xl font-extrabold flex justify-between items-center text-gray-800 border-b border-gray-100">
                 <span class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-blue-600 rounded-[12px] flex items-center justify-center text-white text-sm shadow-md">ХП</div>
                     CRM
                 </span>
-                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 text-3xl bg-transparent border-none cursor-pointer leading-none">&times;</button>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 text-3xl bg-transparent border-none cursor-pointer leading-none p-2">&times;</button>
             </div>
             
-            <nav class="flex-1 py-4 space-y-1.5 overflow-y-auto">
-                <div class="px-6 text-[10px] text-gray-400 uppercase font-bold mb-2 tracking-wider mt-2">Рабочий стол</div>
-                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard', this)" class="bx-sidebar-item active"><span class="bx-sidebar-icon">🏠</span> Главная</a>
-                <a href="#" id="nav-deals" onclick="switchSection('deals', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">💼</span> Сделки</a>
-                <a href="#" id="nav-tasks" onclick="switchSection('tasks', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">✅</span> Задачи</a>
-                <a href="#" id="nav-files" onclick="switchSection('files', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📁</span> Общий диск</a>
-                <a href="#" id="nav-calendar" onclick="switchSection('calendar', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📅</span> Календарь</a>
-                <a href="#" id="nav-archive" onclick="switchSection('archive', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">🗄️</span> Архив</a>
+            <nav class="flex-1 py-4 space-y-1.5 overflow-y-auto px-2">
+                <div class="px-4 text-[11px] text-gray-400 uppercase font-bold mb-3 tracking-wider mt-2">Меню</div>
                 
-                <div class="px-6 text-[10px] text-gray-400 uppercase font-bold mt-6 mb-2 tracking-wider">Отчеты</div>
-                <a href="#" id="nav-analytics" onclick="switchSection('analytics', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
+                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard')" class="sidebar-btn active flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">🏠</span> Главная</a>
+                <a href="#" id="nav-deals" onclick="switchSection('deals')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">💼</span> Сделки</a>
+                <a href="#" id="nav-tasks" onclick="switchSection('tasks')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">✅</span> Задачи</a>
+                <a href="#" id="nav-files" onclick="switchSection('files')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">📁</span> Общий диск</a>
+                <a href="#" id="nav-calendar" onclick="switchSection('calendar')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">📅</span> Календарь</a>
+                <a href="#" id="nav-archive" onclick="switchSection('archive')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">🗄️</span> Архив</a>
+                
+                <div class="px-4 text-[11px] text-gray-400 uppercase font-bold mt-8 mb-3 tracking-wider">Аналитика</div>
+                <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">📊</span> Отчеты</a>
             </nav>
             <div class="p-5 border-t border-gray-100">
-                <button onclick="lockCrm()" class="w-full px-4 py-3 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-xl text-left font-semibold text-sm transition-all cursor-pointer border-none flex items-center gap-2">🚪 Выйти</button>
+                <button onclick="lockCrm()" class="w-full px-4 py-3.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-2xl text-left font-bold text-sm transition-all cursor-pointer border-none flex items-center gap-3">🚪 Выйти</button>
             </div>
         </aside>
 
-        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
+        <main class="flex-1 md:ml-[280px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
             
-            <header class="sticky top-0 z-40 px-6 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/90 backdrop-blur-md border-b border-gray-200/50">
+            <header class="sticky top-0 z-40 px-4 sm:px-8 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/90 backdrop-blur-md border-b border-gray-200/50">
                 <div class="flex items-center justify-between w-full sm:w-auto h-[70px] sm:h-auto">
                     <div class="flex items-center gap-4 text-gray-800">
-                        <button onclick="toggleSidebar()" class="md:hidden text-gray-600 text-2xl bg-white shadow-sm w-10 h-10 rounded-full flex items-center justify-center border border-gray-200">☰</button>
+                        <button onclick="toggleSidebar()" class="md:hidden text-gray-600 text-2xl bg-white shadow-sm w-12 h-12 rounded-full flex items-center justify-center border border-gray-200">☰</button>
                         <h1 id="headerTitle" class="text-2xl font-extrabold m-0 tracking-tight">Загрузка...</h1>
                     </div>
-                    <button id="mobileAddBtn" onclick="toggleForm()" class="sm:hidden bg-blue-600 w-11 h-11 p-0 text-white font-bold rounded-full shadow-md text-2xl hidden flex items-center justify-center pb-1">+</button>
+                    <button id="mobileAddBtn" onclick="toggleForm()" class="sm:hidden bg-blue-600 w-12 h-12 p-0 text-white font-bold rounded-full shadow-md text-2xl hidden flex items-center justify-center pb-1">+</button>
                 </div>
                 
                 <div id="dealsToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-between sm:justify-end gap-3 sm:gap-5 py-3 sm:py-0 border-t sm:border-none border-gray-200/50">
                     <div class="flex bg-white rounded-full p-1 shadow-sm border border-gray-200 shrink-0">
-                        <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !mr-0 !px-5 !py-2">Канбан</div>
-                        <div onclick="setView('list')" id="v-list" class="bx-tab !mr-0 !px-5 !py-2 text-gray-500">Список</div>
-                        <div onclick="setView('table')" id="v-table" class="bx-tab !mr-0 !px-5 !py-2 text-gray-500">Таблица</div>
+                        <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !mr-0 !px-5 !py-2.5">Канбан</div>
+                        <div onclick="setView('list')" id="v-list" class="bx-tab !mr-0 !px-5 !py-2.5 text-gray-500">Список</div>
+                        <div onclick="setView('table')" id="v-table" class="bx-tab !mr-0 !px-5 !py-2.5 text-gray-500 hidden md:block">Таблица</div>
                     </div>
                     <div class="hidden sm:flex gap-3 items-center shrink-0">
                         <input id="searchInput" oninput="renderData()" type="text" placeholder="Поиск..." class="bx-input w-56 rounded-full shadow-sm border-gray-200">
@@ -215,8 +220,8 @@
 
                 <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0">
                     <div class="hidden sm:flex gap-2 items-center relative bg-white rounded-full shadow-sm p-1 pr-2 border border-gray-200">
-                        <input id="newTaskInputHead" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none pl-4 pr-10 h-[38px] w-64 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
-                        <button onclick="startDictation('newTaskInputHead', this)" class="mic-btn absolute right-1 top-[1px]">🎤</button>
+                        <input id="newTaskInputHead" type="text" placeholder="Новая задача..." class="bg-transparent border-none outline-none pl-5 pr-10 h-[40px] w-72 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
+                        <button onclick="startDictation('newTaskInputHead', this)" class="mic-btn absolute right-1 top-[3px]">🎤</button>
                     </div>
                     <button onclick="addTask('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex rounded-full">Добавить</button>
                 </div>
@@ -232,9 +237,9 @@
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
                     <div>
                         <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Доброе утро 👋</h2>
-                        <p class="text-gray-500 font-medium mt-1" id="dash-date">Сегодня: ...</p>
+                        <p class="text-gray-500 font-medium mt-1 text-sm sm:text-base" id="dash-date">Сегодня: ...</p>
                     </div>
-                    <button onclick="switchSection('deals', document.getElementById('nav-deals')); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm shadow-lg shadow-blue-500/30">+ Создать сделку</button>
+                    <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm shadow-lg shadow-blue-500/30">+ Создать сделку</button>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -260,8 +265,8 @@
                             <button onclick="switchSection('tasks')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer hover:underline p-0">Все задачи →</button>
                         </div>
                         <div class="flex gap-2 mb-5 relative bg-gray-50 rounded-xl p-1 border border-gray-200 focus-within:border-blue-400 focus-within:bg-white transition-colors">
-                            <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full pl-3 pr-10 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('dashTaskInput')">
-                            <button onclick="startDictation('dashTaskInput', this)" class="mic-btn absolute right-1 top-[1px]" title="Голосовой ввод">🎤</button>
+                            <input id="dashTaskInput" type="text" placeholder="Добавить..." class="bg-transparent border-none outline-none w-full pl-4 pr-10 text-sm font-medium h-[40px]" onkeypress="if(event.key==='Enter') addTask('dashTaskInput')">
+                            <button onclick="startDictation('dashTaskInput', this)" class="mic-btn absolute right-1 top-[3px]" title="Голосовой ввод">🎤</button>
                         </div>
                         <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
@@ -286,10 +291,10 @@
             <div id="section-deals" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1600px]">
                 
                 <div class="flex gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
-                    <button onclick="setFilter('Все')" id="filter-Все" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-gray-800 text-white shadow-md border-none cursor-pointer">Все</button>
-                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer shadow-sm">Не оплачен</button>
-                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer shadow-sm">Предоплата</button>
-                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer shadow-sm">Оплачен</button>
+                    <button onclick="setFilter('Все')" id="filter-Все" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-gray-800 text-white shadow-md border-none cursor-pointer transition-transform active:scale-95">Все</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer shadow-sm transition-transform active:scale-95">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer shadow-sm transition-transform active:scale-95">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 cursor-pointer shadow-sm transition-transform active:scale-95">Оплачен</button>
                 </div>
 
                 <div id="formSection" class="hidden bg-white p-6 sm:p-8 border border-gray-100 rounded-[24px] mb-8 shadow-lg">
@@ -321,35 +326,40 @@
                     </div>
                 </div>
 
-                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-4 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
+                <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-6 pb-6 snap-x snap-mandatory no-scrollbar w-full">
+                    
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full">
                         <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-purple-700 uppercase tracking-wide m-0">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-500">0</span></div>
-                            <div class="text-[18px] font-black text-purple-900 tracking-tight" id="cnt-new-sum">0 ₽</div>
+                            <div class="text-[20px] font-black text-purple-900 tracking-tight" id="cnt-new-sum">0 ₽</div>
                         </div>
                         <div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div>
                     </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
+
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full">
                         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-blue-700 uppercase tracking-wide m-0">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-500">0</span></div>
-                            <div class="text-[18px] font-black text-blue-900 tracking-tight" id="cnt-work-sum">0 ₽</div>
+                            <div class="text-[20px] font-black text-blue-900 tracking-tight" id="cnt-work-sum">0 ₽</div>
                         </div>
                         <div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div>
                     </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
+
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full">
                         <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-orange-700 uppercase tracking-wide m-0">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-500">0</span></div>
-                            <div class="text-[18px] font-black text-orange-900 tracking-tight" id="cnt-stock-sum">0 ₽</div>
+                            <div class="text-[20px] font-black text-orange-900 tracking-tight" id="cnt-stock-sum">0 ₽</div>
                         </div>
                         <div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div>
                     </div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full border-none">
+
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[360px] xl:w-auto flex flex-col h-full border-none">
                         <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-emerald-700 uppercase tracking-wide m-0">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-500">0</span></div>
-                            <div class="text-[18px] font-black text-emerald-900 tracking-tight" id="cnt-done-sum">0 ₽</div>
+                            <div class="text-[20px] font-black text-emerald-900 tracking-tight" id="cnt-done-sum">0 ₽</div>
                         </div>
                         <div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div>
                     </div>
+
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-4"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></div>
@@ -395,21 +405,21 @@
                 <div class="bg-white border border-gray-100 rounded-[24px] p-4 sm:p-6 shadow-sm min-h-[500px] flex flex-col">
                     <div class="flex gap-3 mb-6 pb-6 border-b border-gray-100 sm:hidden">
                         <div class="relative flex-1 bg-gray-50 rounded-full border border-gray-200 p-1">
-                            <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[40px] text-sm" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
-                            <button onclick="startDictation('newTaskInputBody', this)" class="mic-btn absolute right-1 top-[2px]">🎤</button>
+                            <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[44px] text-sm" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                            <button onclick="startDictation('newTaskInputBody', this)" class="mic-btn absolute right-1 top-[4px]">🎤</button>
                         </div>
-                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-12 h-[48px] !px-0 rounded-full text-lg">+</button>
+                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-14 h-[52px] !px-0 rounded-full text-xl">+</button>
                     </div>
                     <div id="tasks-list-content" class="space-y-4 flex-1 overflow-y-auto pr-2"></div>
                 </div>
             </div>
 
             <div id="section-calendar" class="hidden p-4 sm:p-6 mx-auto max-w-[1400px]">
-                <div class="bg-white p-8 border border-gray-100 rounded-[24px] shadow-sm">
+                <div class="bg-white p-6 sm:p-8 border border-gray-100 rounded-[24px] shadow-sm">
                     <div class="flex justify-between items-center mb-8">
-                        <button onclick="changeMonth(-1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">◀</button>
+                        <button onclick="changeMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
                         <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-gray-800 uppercase tracking-tight"></h2>
-                        <button onclick="changeMonth(1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">▶</button>
+                        <button onclick="changeMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
                     </div>
                     <div class="grid grid-cols-7 gap-2 text-center text-[12px] font-bold text-gray-400 uppercase mb-4 tracking-wider">
                         <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-400">Сб</div><div class="text-red-400">Вс</div>
@@ -442,9 +452,9 @@
             <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="bg-white border border-gray-100 rounded-[24px] p-6 sm:p-8 shadow-sm">
                     <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
-                        <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">◀</button>
-                        <h2 id="analyticsMonthLabel" class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight m-0"></h2>
-                        <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">▶</button>
+                        <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
+                        <h2 id="analyticsMonthLabel" class="text-xl sm:text-2xl font-extrabold text-gray-800 uppercase tracking-tight m-0"></h2>
+                        <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                         <div class="p-6 bg-gray-50 border border-gray-100 rounded-[20px]">
@@ -501,7 +511,7 @@
         let currentDate = new Date(); let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все'; let currentFolderId = null; 
 
-        // ИНТЕРАКТИВНЫЙ ВЫБОР СТАТУСА
+        // ИНТЕРАКТИВНЫЙ БАРАБАН ДЛЯ СТАТУСОВ С ЗАЩИТОЙ
         function getStageBadge(id, status) {
             let badgeColor = "";
             if (status === 'Новый') badgeColor = "bg-purple-50 text-purple-600 border-purple-200";
@@ -511,11 +521,11 @@
             else badgeColor = "bg-gray-50 text-gray-600 border-gray-200"; 
 
             return `
-            <div class="relative inline-block w-max pointer-events-auto" onclick="event.stopPropagation()">
-                <div class="px-3 py-1.5 rounded-lg font-extrabold uppercase text-[10px] tracking-wider border ${badgeColor} shadow-sm flex items-center justify-center gap-1.5 cursor-pointer hover:shadow-md transition-all active:scale-95">
+            <div class="relative inline-block w-max pointer-events-auto" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()">
+                <div class="px-3 py-1.5 rounded-lg font-extrabold uppercase text-[10px] tracking-wider border ${badgeColor} shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
                     ${status} <span class="text-[8px] opacity-70">▼</span>
                 </div>
-                <select onclick="event.stopPropagation()" onchange="changeStatus(${id}, this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none z-50">
+                <select onchange="changeStatus(${id}, this.value)" onclick="event.stopPropagation()" class="absolute inset-0 w-full h-full cursor-pointer z-50" style="opacity: 0.01; appearance: none; -webkit-appearance: none;">
                     <option value="Новый" ${status === 'Новый' ? 'selected' : ''}>Новый</option>
                     <option value="В работе" ${status === 'В работе' ? 'selected' : ''}>В работе</option>
                     <option value="На складе" ${status === 'На складе' ? 'selected' : ''}>На складе</option>
@@ -539,11 +549,8 @@
             try {
                 const { error } = await _supabase.from('orders').update({ status: st }).eq('id', id); 
                 if (error) throw error;
-                
-                // Задержка перед полным ререндером, чтобы барабан на телефоне успел скрыться
-                setTimeout(() => {
-                    loadData();
-                }, 300);
+                // Небольшая задержка перед полным ререндером с сервера
+                setTimeout(() => { loadData(); }, 300);
             } catch(e) {
                 showToast("Ошибка сохранения статуса", true);
                 loadData();
@@ -596,8 +603,8 @@
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
             try { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); } } catch(e) {}
             
-            const navBtn = document.getElementById('nav-' + activeSection) || document.getElementById('nav-dashboard');
-            switchSection(activeSection, navBtn);
+            // Восстанавливаем вкладку
+            switchSection(activeSection);
             
             loadData(); loadTasks(); loadFiles();
         }
@@ -636,9 +643,10 @@
             } else if (sectionId === 'tasks') { document.getElementById('tasksToolbar').classList.remove('hidden'); }
             else if (sectionId === 'files') { document.getElementById('filesToolbar').classList.remove('hidden'); }
             
-            document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
-            if(!btnElement) btnElement = document.getElementById('nav-' + sectionId);
-            if(btnElement) btnElement.classList.add('active');
+            document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.remove('active'));
+            
+            let currentNavBtn = btnElement || document.getElementById('nav-' + sectionId);
+            if(currentNavBtn) currentNavBtn.classList.add('active');
             
             if(sectionId === 'analytics') renderAnalytics();
             if(sectionId === 'dashboard') renderDashboard();
@@ -648,7 +656,7 @@
 
         function renderDashboard() {
             const today = new Date(); const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            let dEl = document.getElementById('dash-date'); if(dEl) dEl.innerText = "Сегодня: " + today.toLocaleDateString('ru-RU', options);
+            let dEl = document.getElementById('dash-date'); if(dEl) dEl.innerText = today.toLocaleDateString('ru-RU', options);
 
             const activeDeals = allOrders.filter(o => o.status !== 'Завершен');
             const totalActiveSum = activeDeals.reduce((sum, o) => sum + (Number(o.total_price) || 0), 0);
@@ -667,7 +675,7 @@
                     shipmentsContainer.innerHTML = `<div class="text-gray-400 text-sm text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">Нет отгрузок на сегодня</div>`;
                 } else {
                     shipmentsContainer.innerHTML = todaysOrders.map(o => `
-                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
+                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-2xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
                             <div class="min-w-0 pr-3">
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] text-gray-500 mt-1.5 truncate flex items-center gap-1">📍 ${o.delivery_address || 'Адрес не указан'}</div>
@@ -685,7 +693,7 @@
                     upcomingContainer.innerHTML = `<div class="text-gray-400 text-sm text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">Предстоящих отгрузок нет.</div>`;
                 } else {
                     upcomingContainer.innerHTML = upcomingOrders.map(o => `
-                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
+                        <div class="flex justify-between items-center p-4 border border-gray-100 rounded-2xl bg-white hover:border-blue-200 hover:shadow-md cursor-pointer transition-all" onclick="openEditModal(${o.id})">
                             <div class="min-w-0 pr-3">
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] font-bold text-orange-500 mt-1.5 flex items-center gap-1">📅 ${formatDateStr(o.shipment_date)}</div>
@@ -740,7 +748,7 @@
                         grid.innerHTML += `
                         <div class="file-item relative flex flex-col items-center justify-center p-4 border border-gray-200 rounded-2xl bg-white hover:border-blue-500 shadow-sm transition-all h-32 cursor-pointer" onclick="openFolder(${f.id}, '${String(f.name).replace(/'/g, "\\'")}')">
                             <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, null, true)" class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-lg text-red-500 transition-colors z-10" title="Удалить папку">🗑</button>
-                            <div class="text-4xl mb-2 transition-transform hover:scale-110">📁</div>
+                            <div class="text-5xl mb-2 transition-transform hover:scale-110">📁</div>
                             <div class="text-xs font-semibold text-gray-700 w-full text-center truncate px-2" title="${f.name}">${f.name}</div>
                         </div>`;
                     });
@@ -760,7 +768,7 @@
                         <div class="file-item relative flex flex-col items-center justify-center p-4 border border-gray-200 rounded-2xl bg-white hover:border-blue-500 shadow-sm transition-all h-32 cursor-pointer" onclick="window.open('${f.file_url}', '_blank')">
                             <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, '${f.file_url}', false)" class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-lg text-red-500 transition-colors z-10" title="Удалить файл">🗑</button>
                             <button onclick="event.stopPropagation(); shareSpecificFile('${f.file_url}', '${String(f.name).replace(/'/g, "\\'")}')" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-blue-50 rounded-lg text-blue-600 transition-colors z-10" title="Поделиться">📤</button>
-                            <div class="text-4xl mb-2 text-blue-300 transition-transform hover:scale-110">📄</div>
+                            <div class="text-5xl mb-2 text-blue-300 transition-transform hover:scale-110">📄</div>
                             <div class="text-xs font-semibold text-gray-700 w-full text-center truncate px-2" title="${f.name}">${f.name}</div>
                         </div>`;
                     });
@@ -859,14 +867,14 @@
                 const date = formatDateStr(t.created_at);
 
                 container.innerHTML += `
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-[20px] hover:border-blue-200 hover:shadow-md transition-all bg-white">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-[24px] hover:border-blue-200 hover:shadow-md transition-all bg-white mb-3">
                     <div class="flex items-center gap-4 cursor-pointer flex-1 mb-3 sm:mb-0" onclick="toggleTask(${t.id}, ${!isCheck})">
                         ${checkCircle}
                         <div><div class="${textStyle} text-[15px] break-words">${t.title}</div><div class="text-[11px] text-gray-400 mt-1 font-medium">Создано: ${date}</div></div>
                     </div>
                     <div class="flex items-center justify-end gap-3 shrink-0">
-                        <button onclick="toggleTask(${t.id}, ${!isCheck})" class="bx-btn-default h-9 px-4 text-[12px] bg-gray-50 border-transparent hover:bg-gray-100">${isCheck ? 'Вернуть' : 'Выполнено'}</button>
-                        <button onclick="deleteTask(${t.id})" class="w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 text-xl leading-none bg-transparent border-none cursor-pointer transition-colors" title="Удалить навсегда">&times;</button>
+                        <button onclick="toggleTask(${t.id}, ${!isCheck})" class="bx-btn-default h-10 px-4 text-[12px] bg-gray-50 border-transparent hover:bg-gray-100 rounded-full">${isCheck ? 'Вернуть' : 'Выполнено'}</button>
+                        <button onclick="deleteTask(${t.id})" class="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 text-2xl leading-none bg-transparent border-none cursor-pointer transition-colors" title="Удалить навсегда">&times;</button>
                     </div>
                 </div>`;
             });
@@ -982,16 +990,16 @@
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border border-red-100";
 
                 const cleanPhone = item.phone ? String(item.phone).replace(/\D/g, '') : '';
-                let commsHtml = `<div class="flex flex-wrap gap-1.5 pointer-events-auto">`;
+                let commsHtml = `<div class="flex flex-wrap gap-2 pointer-events-auto">`;
                 if (cleanPhone) {
-                    commsHtml += `<a href="tel:+${cleanPhone}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-colors shadow-sm text-sm text-decoration-none" title="Звонок" onclick="event.stopPropagation()">📞</a>
-                                  <a href="https://wa.me/${cleanPhone}" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-200 text-[#25D366] hover:bg-green-50 transition-colors shadow-sm text-sm text-decoration-none" title="WhatsApp" onclick="event.stopPropagation()">💬</a>
-                                  <a href="https://t.me/+${cleanPhone}" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-200 text-[#0088cc] hover:bg-blue-50 transition-colors shadow-sm text-sm text-decoration-none" title="Telegram" onclick="event.stopPropagation()">✈️</a>`;
+                    commsHtml += `<a href="tel:+${cleanPhone}" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-colors shadow-sm text-lg text-decoration-none" title="Звонок" onclick="event.stopPropagation()">📞</a>
+                                  <a href="https://wa.me/${cleanPhone}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-[#25D366] hover:bg-green-50 transition-colors shadow-sm text-lg text-decoration-none" title="WhatsApp" onclick="event.stopPropagation()">💬</a>
+                                  <a href="https://t.me/+${cleanPhone}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-[#0088cc] hover:bg-blue-50 transition-colors shadow-sm text-lg text-decoration-none" title="Telegram" onclick="event.stopPropagation()">✈️</a>`;
                 }
-                commsHtml += `<button type="button" onclick="event.stopPropagation(); shareOrder(${item.id})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-200 text-blue-600 hover:bg-blue-50 transition-colors shadow-sm text-sm" title="Поделиться">📤</button></div>`;
+                commsHtml += `<button type="button" onclick="event.stopPropagation(); shareOrder(${item.id})" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-blue-600 hover:bg-blue-50 transition-colors shadow-sm text-lg" title="Поделиться">📤</button></div>`;
 
                 const displayNum = item.order_number || item.id;
-                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-[11px] font-bold pointer-events-auto uppercase flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg text-decoration-none border border-blue-100 w-max" onclick="event.stopPropagation()">📎 Файл</a>` : '';
+                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-[11px] font-bold pointer-events-auto uppercase flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-lg text-decoration-none border border-blue-100 w-max" onclick="event.stopPropagation()">📎 Файл</a>` : '';
 
                 let bal = price - Number(item.prepayment || 0);
                 let balHtml = item.prepayment ? `<div class="text-[11px] font-bold mt-1 ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
@@ -1009,7 +1017,7 @@
                         <td class="px-5 py-4">
                             <div class="font-extrabold text-gray-800 group-hover:text-blue-600 transition-colors text-sm mb-3">${item.customer_name}</div>
                             ${commsHtml}
-                            ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-gray-500 hover:text-blue-600 mt-3 font-mono block font-semibold" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
+                            ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[12px] text-gray-500 hover:text-blue-600 mt-3 font-mono block font-semibold" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
                             ${tagsHtml}${addressHtml}
                         </td>
                         <td class="px-5 py-4"><div class="font-extrabold text-gray-800 text-sm">${price.toLocaleString()} ₽</div></td>
@@ -1021,10 +1029,10 @@
                 }
 
                 const card = `
-                <div class="bg-white border border-gray-200 rounded-[20px] shadow-sm hover:shadow-md hover:border-blue-200 transition-all p-5 mb-4 flex flex-col gap-3 group cursor-pointer" onclick="openEditModal(${item.id})">
+                <div class="bg-white border border-gray-200 rounded-[24px] shadow-sm hover:shadow-md hover:border-blue-300 transition-all p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, ${item.id})" ondragend="dragEnd(event)" onclick="openEditModal(${item.id})">
                     <div class="flex justify-between items-start gap-2">
                         <div class="flex-1 min-w-0 pr-2">
-                            <h4 class="font-extrabold text-gray-800 text-[15px] leading-tight group-hover:text-blue-600 transition-colors m-0 break-words mb-2">${item.customer_name}</h4>
+                            <h4 class="font-extrabold text-gray-800 text-[16px] leading-tight group-hover:text-blue-600 transition-colors m-0 break-words mb-2">${item.customer_name}</h4>
                             ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[12px] text-gray-500 hover:text-blue-600 font-mono block font-semibold mb-2" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
                         </div>
                         <div class="text-right shrink-0">
@@ -1035,47 +1043,47 @@
                     ${commsHtml}
                     
                     <div class="mt-2">
-                        <div class="font-black text-[20px] text-gray-900 tracking-tight">${price.toLocaleString()} ₽</div>
+                        <div class="font-black text-[22px] text-gray-900 tracking-tight">${price.toLocaleString()} ₽</div>
                         ${balHtml}
                     </div>
                     
                     ${tagsHtml}
                     
-                    <div class="bg-gray-50 rounded-xl p-3 text-[11px] text-gray-600 space-y-2 mt-2 border border-gray-100">
-                        <div class="flex justify-between items-center"><span class="font-medium">Счет: <b class="text-gray-800">${item.supplier_invoice || '—'}</b></span><span class="px-2 py-0.5 rounded-md font-bold uppercase text-[8px] ${supColor} shadow-sm">${item.supplier_status || 'Не оплачен'}</span></div>
+                    <div class="bg-gray-50 rounded-xl p-3.5 text-[12px] text-gray-600 space-y-2 mt-2 border border-gray-100">
+                        <div class="flex justify-between items-center"><span class="font-medium">Счет: <b class="text-gray-800">${item.supplier_invoice || '—'}</b></span><span class="px-2 py-0.5 rounded-md font-bold uppercase text-[9px] ${supColor} shadow-sm">${item.supplier_status || 'Не оплачен'}</span></div>
                         <div class="flex items-center gap-1 font-medium"><span>🚚 Отгрузка:</span> <b class="text-gray-800">${formatDate(item.shipment_date)}</b></div>
                     </div>
                     
                     ${commentHtml}
                     
-                    <div class="flex justify-between items-center pt-4 border-t border-gray-100 mt-2 pointer-events-auto">
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-100 mt-3 pointer-events-auto">
                         <div>${fileLink}</div>
                         ${getStageBadge(item.id, status)}
                     </div>
                 </div>`;
 
                 const list = `
-                <div class="bg-white border border-gray-200 rounded-[20px] shadow-sm hover:shadow-md hover:border-blue-200 transition-all p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer mb-3 group gap-4" onclick="openEditModal(${item.id})">
+                <div class="bg-white border border-gray-200 rounded-[24px] shadow-sm hover:shadow-md hover:border-blue-300 transition-all p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer mb-4 group gap-4" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0 pr-2">
-                        <div class="flex items-center justify-between sm:justify-start gap-3 mb-2">
-                            <div class="font-extrabold text-[15px] text-gray-800 group-hover:text-blue-600 transition-colors break-words">${item.customer_name}</div>
-                            <div class="text-[11px] font-extrabold text-gray-400 bg-gray-50 px-2 py-1 rounded-lg border border-gray-100 sm:hidden">#${displayNum}</div>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+                            <div class="font-extrabold text-[16px] text-gray-800 group-hover:text-blue-600 transition-colors break-words">${item.customer_name}</div>
+                            <div class="text-[11px] font-extrabold text-gray-400 bg-gray-50 px-2 py-1 rounded-lg border border-gray-100 sm:hidden w-max">#${displayNum}</div>
                         </div>
-                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[13px] text-gray-500 mb-3 font-mono inline-block font-semibold hover:text-blue-600" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
+                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[13px] text-gray-500 mb-4 font-mono inline-block font-semibold hover:text-blue-600" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
                         
-                        <div class="flex flex-wrap gap-2 mb-3">
+                        <div class="flex flex-wrap gap-2 mb-4">
                             ${commsHtml}
                         </div>
 
-                        <div class="text-[11px] text-gray-400 font-medium mt-1 hidden sm:block"><span class="font-bold text-gray-500">#${displayNum}</span> • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
-                        <div class="text-[11px] text-gray-400 font-medium mt-1 sm:hidden">Отгрузка: <b class="text-gray-600">${formatDate(item.shipment_date)}</b></div>
+                        <div class="text-[12px] text-gray-400 font-medium mt-1 hidden sm:block"><span class="font-bold text-gray-500">#${displayNum}</span> • Создана: ${createDate} • Отгрузка: ${formatDate(item.shipment_date)}</div>
+                        <div class="text-[12px] text-gray-400 font-medium mt-1 sm:hidden">Отгрузка: <b class="text-gray-600">${formatDate(item.shipment_date)}</b></div>
                         
                         ${tagsHtml}
-                        ${item.comments ? `<div class="text-[11px] text-gray-500 mt-3 truncate bg-yellow-50/50 px-3 py-1.5 rounded-lg w-max border border-yellow-100">💬 ${item.comments}</div>` : ''}
+                        ${item.comments ? `<div class="text-[12px] text-gray-500 mt-3 truncate bg-yellow-50/50 px-3 py-1.5 rounded-lg w-max border border-yellow-100">💬 ${item.comments}</div>` : ''}
                     </div>
-                    <div class="text-left sm:text-right flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-4 sm:mt-0 gap-3 border-t sm:border-t-0 border-gray-100 pt-4 sm:pt-0 shrink-0 pointer-events-auto">
+                    <div class="text-left sm:text-right flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-4 sm:mt-0 gap-3 border-t sm:border-t-0 border-gray-100 pt-5 sm:pt-0 shrink-0 pointer-events-auto">
                         <div>
-                            <div class="font-black text-[20px] text-gray-900 pointer-events-none">${price.toLocaleString()} ₽</div>
+                            <div class="font-black text-[22px] text-gray-900 pointer-events-none">${price.toLocaleString()} ₽</div>
                             ${balHtml}
                         </div>
                         ${getStageBadge(item.id, status)}
@@ -1090,7 +1098,7 @@
                     </td>
                     <td class="px-5 py-4">
                         <div class="font-extrabold text-gray-800 group-hover:text-blue-600 transition-colors text-sm mb-2">${item.customer_name}</div>
-                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[11px] text-gray-500 font-mono font-semibold block mb-3 hover:text-blue-600" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
+                        ${item.phone ? `<a href="tel:+${cleanPhone}" class="text-[12px] text-gray-500 font-mono font-semibold block mb-3 hover:text-blue-600" onclick="event.stopPropagation()">${item.phone}</a>` : ''}
                         <div class="mb-2">${commsHtml}</div>
                         ${tagsHtml}
                         ${addressHtml}
