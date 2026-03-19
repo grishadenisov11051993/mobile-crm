@@ -78,6 +78,54 @@
         </div>
     </div>
 
+    <div id="taskModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[165] flex items-center justify-center p-3 sm:p-5 transition-all">
+        <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
+            <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800 shrink-0">
+                <button onclick="closeTaskModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
+                <h3 class="font-bold text-gray-800 dark:text-white text-lg m-0 text-center flex-1">Карточка задачи</h3>
+                <button onclick="closeTaskModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+            </div>
+            <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-6 flex-1 bg-gray-50 dark:bg-gray-900 text-sm">
+                
+                <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
+                    <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Название задачи *</label>
+                    <input id="taskTitle" type="text" class="bx-input mb-4" placeholder="Что нужно сделать?">
+                    
+                    <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Связанная сделка</label>
+                    <select id="taskOrderSelect" class="bx-input mb-4">
+                        <option value="">-- Без привязки к сделке --</option>
+                    </select>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Крайний срок (Дедлайн)</label>
+                            <input id="taskDueDate" type="date" class="bx-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
+                    <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Подробное описание</label>
+                    <textarea id="taskDesc" rows="4" class="bx-input resize-none" placeholder="Заметки, чек-листы, важные детали..."></textarea>
+                </div>
+
+                <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
+                    <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Вложенный файл</label>
+                    <div id="currentTaskFileLink" class="mb-4"></div>
+                    <input id="taskFile" type="file" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-white dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-full file:font-semibold cursor-pointer hover:file:bg-gray-50 transition">
+                </div>
+
+            </div>
+            <div class="p-5 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col-reverse sm:flex-row justify-between gap-3 shrink-0">
+                <button onclick="deleteTaskFromModal()" class="w-full sm:w-auto bx-btn-default text-red-500 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/30">🗑 Удалить задачу</button>
+                <div class="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
+                    <button onclick="closeTaskModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
+                    <button onclick="saveTaskDetails()" id="saveTaskBtn" class="w-full sm:w-auto bx-btn-success">Сохранить задачу</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="editModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[160] flex items-center justify-center p-3 sm:p-5 transition-all">
         <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800 shrink-0">
@@ -216,10 +264,10 @@
 
                 <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
                     <div class="hidden sm:flex gap-2 items-center relative bg-white dark:bg-gray-800 rounded-full shadow-sm p-1 pr-2 border border-gray-200 dark:border-gray-700">
-                        <input id="newTaskInputHead" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none pl-4 pr-10 h-[38px] w-64 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
+                        <input id="newTaskInputHead" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none pl-4 pr-10 h-[38px] w-64 text-sm font-medium" onkeypress="if(event.key==='Enter') addTaskFromInput('newTaskInputHead')">
                         <button onclick="startDictation('newTaskInputHead', this)" class="absolute right-2 top-1.5">🎤</button>
                     </div>
-                    <button onclick="addTask('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex rounded-full">Добавить</button>
+                    <button onclick="addTaskFromInput('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex rounded-full">Добавить</button>
                 </div>
 
                 <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
@@ -260,7 +308,7 @@
                     <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm flex flex-col">
                         <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">✅ Задачи</h3><button onclick="switchSection('tasks')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button></div>
                         <div class="flex gap-2 mb-5 relative bg-gray-50 dark:bg-gray-900 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
-                            <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full pl-4 pr-10 text-sm font-medium h-[40px]" onkeypress="if(event.key==='Enter') addTask('dashTaskInput')">
+                            <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full pl-4 pr-10 text-sm font-medium h-[40px]" onkeypress="if(event.key==='Enter') addTaskFromInput('dashTaskInput')">
                             <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 top-2">🎤</button>
                         </div>
                         <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
@@ -357,10 +405,10 @@
                 <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-4 sm:p-6 shadow-sm min-h-[500px] flex flex-col">
                     <div class="flex gap-3 mb-6 pb-6 border-b border-gray-100 dark:border-gray-700 sm:hidden">
                         <div class="relative flex-1 bg-gray-50 dark:bg-gray-900 rounded-full border border-gray-200 dark:border-gray-700 p-1">
-                            <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[44px] text-sm" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
+                            <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[44px] text-sm" onkeypress="if(event.key==='Enter') addTaskFromInput('newTaskInputBody')">
                             <button onclick="startDictation('newTaskInputBody', this)" class="absolute right-2 top-1.5">🎤</button>
                         </div>
-                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-14 h-[52px] !px-0 rounded-full text-xl">+</button>
+                        <button onclick="addTaskFromInput('newTaskInputBody')" class="bx-btn-success shrink-0 w-14 h-[52px] !px-0 rounded-full text-xl">+</button>
                     </div>
                     <div id="tasks-list-content" class="space-y-4 flex-1 overflow-y-auto pr-2"></div>
                 </div>
@@ -440,7 +488,7 @@
         let activeView = localStorage.getItem('crm_view_mode') || 'kanban'; 
         let activeSection = localStorage.getItem('crm_active_section') || 'dashboard';
         let allOrders = [], allTasks = [], allFiles = [];
-        let taskView = 'active', currentEditId = null, currentFolderId = null;
+        let taskView = 'active', currentEditId = null, currentFolderId = null, currentTaskId = null;
         let currentDate = new Date(), analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все';
         let selectedOrders = [];
@@ -475,7 +523,7 @@
         }
 
         function checkBodyScroll() {
-            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
+            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden');
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
 
@@ -630,7 +678,7 @@
             if(upC) upC.innerHTML = upcoming.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Нет будущих отгрузок</div>` : upcoming.map(o => `<div class="p-4 border border-gray-100 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-200 cursor-pointer" onclick="openEditModal('${o.id}')"><div class="font-bold text-sm">${o.customer_name}</div><div class="text-[11px] font-bold text-orange-500 mt-1">📅 ${formatDate(o.shipment_date)}</div></div>`).join('');
 
             const tskC = document.getElementById('dash-recent-tasks'); const opTasks = allTasks.filter(t => !t.is_completed).slice(0,5);
-            if(tskC) tskC.innerHTML = opTasks.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Всё выполнено!</div>` : opTasks.map(t => `<div class="flex items-center gap-4 p-3 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-xl cursor-pointer" onclick="toggleTask(${t.id}, true)"><div class="w-5 h-5 border-2 border-gray-300 rounded-md"></div><div class="text-sm font-medium">${t.title}</div></div>`).join('');
+            if(tskC) tskC.innerHTML = opTasks.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Всё выполнено!</div>` : opTasks.map(t => `<div class="flex items-center gap-4 p-3 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-xl cursor-pointer" onclick="openTaskModal('${t.id}')"><div class="w-5 h-5 border-2 border-gray-300 rounded-md flex-shrink-0" onclick="event.stopPropagation(); toggleTask('${t.id}', true)"></div><div class="text-sm font-medium">${t.title}</div></div>`).join('');
         }
 
         function renderData() {
@@ -836,17 +884,143 @@
             try { await _supabase.storage.from('order-files').remove([url.split('/').pop()]); await _supabase.from('orders').update({ file_url: null }).eq('id', id); document.getElementById('currentFileLink').innerHTML = '<span class="text-gray-400 text-xs">Удален</span>'; const o = allOrders.find(x => String(x.id) === String(id)); if(o) o.file_url = null; loadData(); } catch (err) { showToast("Ошибка", true); }
         }
 
+        // --- Задачи (Новый функционал) ---
         function setTaskView(v) { taskView = v; document.getElementById('t-active').className = v === 'active' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 text-gray-500'; document.getElementById('t-archive').className = v === 'archive' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 text-gray-500'; renderTasks(); }
+        
         function renderTasks() {
             const container = document.getElementById('tasks-list-content'); if(!container) return;
             const filtered = allTasks.filter(t => taskView === 'active' ? !t.is_completed : t.is_completed);
             if (filtered.length === 0) { container.innerHTML = `<div class="text-center text-gray-400 py-10 font-bold bg-gray-50 dark:bg-gray-900 rounded-[20px]">${taskView === 'active' ? 'Все задачи выполнены! 🎉' : 'Архив пуст'}</div>`; return; }
-            container.innerHTML = filtered.map(t => `<div class="flex items-center justify-between p-5 border border-gray-100 dark:border-gray-700 rounded-[24px] bg-white dark:bg-gray-800 mb-3 hover:shadow-md transition-all"><div class="flex items-center gap-4 cursor-pointer flex-1" onclick="toggleTask(${t.id}, ${!t.is_completed})">${t.is_completed ? `<div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md">✓</div>` : `<div class="w-6 h-6 border-2 border-gray-300 rounded-full hover:border-blue-500 transition-colors"></div>`} <div><div class="${t.is_completed ? 'line-through text-gray-400' : 'text-gray-800 dark:text-gray-100 font-semibold'} text-[15px] break-words">${t.title}</div><div class="text-[11px] text-gray-400 mt-1">${formatDate(t.created_at)}</div></div></div><div class="flex items-center gap-3"><button onclick="toggleTask(${t.id}, ${!t.is_completed})" class="bx-btn-default h-10 px-4 text-[12px] bg-gray-50 dark:bg-gray-700 border-transparent rounded-full">${t.is_completed ? 'Вернуть' : 'Готово'}</button><button onclick="deleteTask(${t.id})" class="text-gray-400 hover:text-red-500 text-2xl bg-transparent border-none cursor-pointer px-2">&times;</button></div></div>`).join('');
+            
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            container.innerHTML = filtered.map(t => {
+                let badgeHtml = '';
+                if (t.due_date && !t.is_completed) {
+                    const dDate = new Date(t.due_date);
+                    if (dDate < today) badgeHtml = `<span class="bg-red-100 text-red-600 px-2 py-0.5 rounded text-[10px] font-bold ml-2">⚠️ Просрочено</span>`;
+                    else if (dDate.getTime() === today.getTime()) badgeHtml = `<span class="bg-orange-100 text-orange-600 px-2 py-0.5 rounded text-[10px] font-bold ml-2">🔥 Сегодня</span>`;
+                    else badgeHtml = `<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-[10px] font-bold ml-2">📅 ${formatDate(t.due_date)}</span>`;
+                }
+
+                let orderLink = '';
+                if (t.order_id) {
+                    const linkedOrder = allOrders.find(o => String(o.id) === String(t.order_id));
+                    if (linkedOrder) orderLink = `<div class="mt-1.5"><span onclick="event.stopPropagation(); openEditModal('${linkedOrder.id}')" class="text-[11px] font-semibold text-blue-600 hover:underline cursor-pointer bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">🔗 ${linkedOrder.customer_name}</span></div>`;
+                }
+
+                const fileIcon = t.file_url ? '📎 ' : '';
+
+                return `
+                <div class="flex items-center justify-between p-4 sm:p-5 border border-gray-100 dark:border-gray-700 rounded-[24px] bg-white dark:bg-gray-800 mb-3 hover:shadow-md transition-all cursor-pointer" onclick="openTaskModal('${t.id}')">
+                    <div class="flex items-start gap-4 flex-1">
+                        <div class="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 cursor-pointer ${t.is_completed ? 'bg-blue-600 text-white shadow-md' : 'border-2 border-gray-300 hover:border-blue-500'}" onclick="event.stopPropagation(); toggleTask('${t.id}', ${!t.is_completed})">
+                            ${t.is_completed ? '<span class="text-xs font-bold">✓</span>' : ''}
+                        </div>
+                        <div>
+                            <div class="${t.is_completed ? 'line-through text-gray-400' : 'text-gray-800 dark:text-gray-100 font-semibold'} text-[15px] break-words">
+                                ${fileIcon}${t.title} ${badgeHtml}
+                            </div>
+                            ${orderLink}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
         }
-        async function addTask(id) { const i = document.getElementById(id); if(!i||!i.value.trim()) return showToast("Введите текст", true); await _supabase.from('tasks').insert([{ title: i.value.trim() }]); i.value = ''; loadTasks(); showToast("Добавлена", false); }
+
+        async function addTaskFromInput(id) { 
+            const i = document.getElementById(id); if(!i||!i.value.trim()) return showToast("Введите текст", true); 
+            await _supabase.from('tasks').insert([{ title: i.value.trim() }]); 
+            i.value = ''; loadTasks(); showToast("Добавлена", false); 
+        }
+        
         async function toggleTask(id, st) { await _supabase.from('tasks').update({ is_completed: st }).eq('id', id); loadTasks(); }
         async function deleteTask(id) { if(confirm("Удалить?")) { await _supabase.from('tasks').delete().eq('id', id); loadTasks(); } }
 
+        function openTaskModal(id) {
+            const t = allTasks.find(x => String(x.id) === String(id)); if(!t) return; 
+            currentTaskId = t.id;
+            
+            document.getElementById('taskTitle').value = t.title || '';
+            document.getElementById('taskDesc').value = t.description || '';
+            document.getElementById('taskDueDate').value = t.due_date || '';
+            
+            // Наполняем селект сделками
+            const select = document.getElementById('taskOrderSelect');
+            select.innerHTML = '<option value="">-- Без привязки к сделке --</option>';
+            // Берем активные сделки + текущую привязанную (даже если она завершена)
+            const activeOrders = allOrders.filter(o => o.status !== 'Завершен' || String(o.id) === String(t.order_id));
+            activeOrders.forEach(o => {
+                select.innerHTML += `<option value="${o.id}">${o.customer_name} (Заказ #${o.order_number||o.id})</option>`;
+            });
+            select.value = t.order_id || '';
+
+            const linkDiv = document.getElementById('currentTaskFileLink');
+            if (t.file_url) linkDiv.innerHTML = `<div class="flex gap-3"><a href="${t.file_url}" target="_blank" class="text-[12px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-800/50">📎 Открыть файл</a><button type="button" onclick="deleteTaskAttachedFile('${t.id}', '${t.file_url}')" class="text-[12px] font-bold text-red-500">Удалить</button></div>`;
+            else linkDiv.innerHTML = '<span class="text-gray-400 text-xs font-medium">Файл не прикреплен</span>';
+
+            document.getElementById('taskModal').classList.remove('hidden'); checkBodyScroll();
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.add('hidden');
+            document.getElementById('taskFile').value = '';
+            currentTaskId = null;
+            checkBodyScroll();
+        }
+
+        async function saveTaskDetails() {
+            if(!currentTaskId) return; 
+            const title = document.getElementById('taskTitle').value.trim();
+            if(!title) return showToast("Укажите название задачи", true);
+
+            const btn = document.getElementById('saveTaskBtn'); btn.innerText = 'Сохранение...'; btn.disabled = true;
+            
+            let updates = { 
+                title: title,
+                description: document.getElementById('taskDesc').value,
+                due_date: document.getElementById('taskDueDate').value || null,
+                order_id: document.getElementById('taskOrderSelect').value || null
+            };
+
+            try {
+                const fileInput = document.getElementById('taskFile');
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0]; const ext = file.name.split('.').pop(); const name = `task_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+                    const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
+                    if (!upErr) updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
+                }
+                
+                await _supabase.from('tasks').update(updates).eq('id', currentTaskId);
+                showToast("Задача сохранена", false); 
+                closeTaskModal(); 
+                loadTasks();
+            } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить задачу"; }
+        }
+
+        async function deleteTaskFromModal() {
+            if(!currentTaskId) return;
+            if(confirm("Удалить задачу навсегда?")) {
+                await _supabase.from('tasks').delete().eq('id', currentTaskId);
+                closeTaskModal();
+                loadTasks();
+                showToast("Задача удалена");
+            }
+        }
+
+        async function deleteTaskAttachedFile(id, url) {
+            if(!confirm("Удалить прикрепленный файл?")) return;
+            try { 
+                await _supabase.storage.from('order-files').remove([url.split('/').pop()]); 
+                await _supabase.from('tasks').update({ file_url: null }).eq('id', id); 
+                document.getElementById('currentTaskFileLink').innerHTML = '<span class="text-gray-400 text-xs">Файл удален</span>'; 
+                const t = allTasks.find(x => String(x.id) === String(id)); if(t) t.file_url = null; 
+                loadTasks(); 
+            } catch (err) { showToast("Ошибка удаления файла", true); }
+        }
+
+        // --- Общий диск ---
         function renderFiles() {
             const grid = document.getElementById('crm-files-grid'); if(!grid) return; grid.innerHTML = '';
             if (currentFolderId === null) {
