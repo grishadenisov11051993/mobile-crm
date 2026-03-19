@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="color-scheme" content="light">
+    <meta name="color-scheme" content="light only">
     <title>Хорошие полы - CRM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,15 +12,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
+        :root { color-scheme: light !important; }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6 !important; color: #1f2937 !important; }
         
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        .bx-input { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: inherit; }
-        .bx-input:focus { border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .bx-sidebar { background-color: #ffffff !important; border-right: 1px solid #f3f4f6 !important; box-shadow: 4px 0 24px rgba(0,0,0,0.02); }
+        .bx-sidebar-item { color: #4b5563 !important; border-radius: 12px; transition: 0.2s; font-size: 14px; font-weight: 600; text-decoration: none; margin: 4px 12px; padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+        .bx-sidebar-item:hover { background-color: #f9fafb !important; color: #111827 !important; }
+        .bx-sidebar-item.active { background-color: #eff6ff !important; color: #2563eb !important; }
+        .sidebar-category { padding: 15px 20px 5px 20px; font-size: 10px; color: #6a7b96; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+        .bx-input { background-color: #f9fafb !important; border: 1px solid #e5e7eb !important; border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: #1f2937 !important; }
+        .bx-input:focus { border-color: #3b82f6 !important; background-color: #ffffff !important; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
         textarea.bx-input { height: auto; padding: 12px 16px; }
         
         .bx-btn-success { background-color: #2563eb !important; color: #ffffff !important; font-weight: 600; font-size: 13px; border-radius: 9999px; padding: 0 24px; height: 44px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
@@ -34,17 +41,23 @@
 
         .kanban-col { background: transparent !important; border-radius: 0; padding: 0 10px; border-right: 1px dashed #e5e7eb; }
         .kanban-col:last-child { border-right: none; }
-
-        .cursor-grab { cursor: grab; }
-        .cursor-grab:active { cursor: grabbing; }
-        .drag-over { background-color: rgba(59, 130, 246, 0.1) !important; border-radius: 20px; border: 2px dashed #3b82f6 !important; }
-        .dragging { opacity: 0.5; transform: scale(0.95); }
         
         .mic-btn { background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; }
         .mic-btn:hover { background: #f3f4f6; }
-        .mic-recording { background: #fee2e2 !important; color: #ef4444 !important; animation: pulse 1.5s infinite; }
         
         .bx-tag { display: inline-block; background-color: #f8f9fa; color: #4b5563; border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 600; white-space: nowrap; border: 1px solid #e5e7eb; }
+
+        /* Файлы */
+        .file-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; border: 1px solid #e5e7eb; border-radius: 20px; background: #fff; transition: 0.3s; height: 130px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .file-item:hover { border-color: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.1); transform: translateY(-3px); }
+        .file-icon { font-size: 44px; margin-bottom: 12px; pointer-events: none; }
+        .file-name { font-size: 12px; font-weight: 600; color: #374151; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+        .folder-icon { color: #f59e0b; }
+        
+        .file-action-btn { position: absolute; top: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 15px; cursor: pointer; transition: 0.2s; color: #4b5563; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .file-action-btn:hover { background: #f3f4f6; }
+        .btn-share { right: 8px; }
+        .btn-delete { left: 8px; color: #ef4444; }
     </style>
 </head>
 <body class="transition-all duration-300 relative">
@@ -54,9 +67,9 @@
     <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
         <div class="bg-white rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
-                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer p-2 -ml-2">←</button>
+                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
                 <h3 id="dayModalTitle" class="font-bold text-gray-800 text-base m-0 text-center flex-1">Планы на день</h3>
-                <button onclick="closeDayModal()" class="text-gray-400 hover:text-red-500 text-3xl leading-none bg-transparent border-none cursor-pointer p-2 -mr-2">&times;</button>
+                <button onclick="closeDayModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
             </div>
             <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-gray-50/50"></div>
             <div class="p-4 border-t border-gray-100 bg-white flex justify-center shrink-0">
@@ -68,9 +81,9 @@
     <div id="editModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[160] flex items-center justify-center p-3 sm:p-5 transition-all">
         <div class="bg-white rounded-[24px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer p-2 -ml-2">←</button>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
                 <h3 class="font-bold text-gray-800 text-lg m-0 text-center flex-1">Карточка сделки</h3>
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-red-500 text-3xl leading-none bg-transparent border-none cursor-pointer p-2 -mr-2">&times;</button>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-6 flex-1 bg-gray-50 text-sm">
                 
@@ -149,34 +162,33 @@
         
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
 
-        <aside id="sidebar" class="bg-white border-r border-gray-200 fixed inset-y-0 left-0 w-[280px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+        <aside id="sidebar" class="bg-white border-r border-gray-200 fixed inset-y-0 left-0 w-[260px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
             <div class="p-6 text-xl font-extrabold flex justify-between items-center text-gray-800 border-b border-gray-100">
                 <span class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-blue-600 rounded-[12px] flex items-center justify-center text-white text-sm shadow-md">ХП</div>
                     CRM
                 </span>
-                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 text-3xl bg-transparent border-none cursor-pointer leading-none p-2">&times;</button>
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 text-3xl bg-transparent border-none cursor-pointer leading-none">&times;</button>
             </div>
             
             <nav class="flex-1 py-4 space-y-1.5 overflow-y-auto px-2">
-                <div class="px-4 text-[11px] text-gray-400 uppercase font-bold mb-3 tracking-wider mt-2">Меню</div>
+                <div class="px-6 text-[10px] text-gray-400 uppercase font-bold mb-2 tracking-wider mt-2">Рабочий стол</div>
+                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard', this)" class="bx-sidebar-item active"><span class="bx-sidebar-icon">🏠</span> Главная</a>
+                <a href="#" id="nav-deals" onclick="switchSection('deals', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">💼</span> Сделки</a>
+                <a href="#" id="nav-tasks" onclick="switchSection('tasks', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">✅</span> Задачи</a>
+                <a href="#" id="nav-files" onclick="switchSection('files', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📁</span> Общий диск</a>
+                <a href="#" id="nav-calendar" onclick="switchSection('calendar', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📅</span> Календарь</a>
+                <a href="#" id="nav-archive" onclick="switchSection('archive', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">🗄️</span> Архив</a>
                 
-                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard')" class="sidebar-btn active flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">🏠</span> Главная</a>
-                <a href="#" id="nav-deals" onclick="switchSection('deals')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">💼</span> Сделки</a>
-                <a href="#" id="nav-tasks" onclick="switchSection('tasks')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">✅</span> Задачи</a>
-                <a href="#" id="nav-files" onclick="switchSection('files')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">📁</span> Общий диск</a>
-                <a href="#" id="nav-calendar" onclick="switchSection('calendar')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">📅</span> Календарь</a>
-                <a href="#" id="nav-archive" onclick="switchSection('archive')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">🗄️</span> Архив</a>
-                
-                <div class="px-4 text-[11px] text-gray-400 uppercase font-bold mt-8 mb-3 tracking-wider">Аналитика</div>
-                <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="sidebar-btn flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-600 hover:bg-gray-50 transition-all font-semibold"><span class="text-xl w-6 text-center">📊</span> Отчеты</a>
+                <div class="px-6 text-[10px] text-gray-400 uppercase font-bold mt-6 mb-2 tracking-wider">Отчеты</div>
+                <a href="#" id="nav-analytics" onclick="switchSection('analytics', this)" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
             </nav>
             <div class="p-5 border-t border-gray-100">
-                <button onclick="lockCrm()" class="w-full px-4 py-3.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-2xl text-left font-bold text-sm transition-all cursor-pointer border-none flex items-center gap-3">🚪 Выйти</button>
+                <button onclick="lockCrm()" class="w-full px-4 py-3 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-xl text-left font-semibold text-sm transition-all cursor-pointer border-none flex items-center gap-2">🚪 Выйти</button>
             </div>
         </aside>
 
-        <main class="flex-1 md:ml-[280px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
+        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
             
             <header class="sticky top-0 z-40 px-4 sm:px-8 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/90 backdrop-blur-md border-b border-gray-200/50">
                 <div class="flex items-center justify-between w-full sm:w-auto h-[70px] sm:h-auto">
@@ -221,7 +233,7 @@
                         <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Доброе утро 👋</h2>
                         <p class="text-gray-500 font-medium mt-1 text-sm sm:text-base" id="dash-date">Сегодня: ...</p>
                     </div>
-                    <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm shadow-lg shadow-blue-500/30">+ Создать сделку</button>
+                    <button onclick="switchSection('deals', document.getElementById('nav-deals')); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm shadow-lg shadow-blue-500/30">+ Создать сделку</button>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -309,6 +321,7 @@
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-4 pb-6 snap-x snap-mandatory no-scrollbar w-full">
+                    
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-purple-700 uppercase tracking-wide m-0">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-500">0</span></div>
@@ -316,6 +329,7 @@
                         </div>
                         <div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div>
                     </div>
+
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-blue-700 uppercase tracking-wide m-0">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-500">0</span></div>
@@ -323,6 +337,7 @@
                         </div>
                         <div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div>
                     </div>
+
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full">
                         <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-orange-700 uppercase tracking-wide m-0">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-500">0</span></div>
@@ -330,6 +345,7 @@
                         </div>
                         <div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div>
                     </div>
+
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full border-none">
                         <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1">
                             <div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-emerald-700 uppercase tracking-wide m-0">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-500">0</span></div>
@@ -337,6 +353,7 @@
                         </div>
                         <div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div>
                     </div>
+
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-4"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></div>
@@ -353,7 +370,7 @@
                                         <th class="px-5 py-4">Стадия</th>
                                         <th class="px-5 py-4">Поставщик</th>
                                         <th class="px-5 py-4">Отгрузка</th>
-                                        <th class="px-5 py-4 text-right">Файл</th>
+                                        <th class="px-5 py-4 text-right">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-items-content" class="divide-y divide-gray-100 text-[13px] bg-white"></tbody>
@@ -429,9 +446,9 @@
             <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="bg-white border border-gray-100 rounded-[24px] p-6 sm:p-8 shadow-sm">
                     <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
-                        <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
+                        <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">◀</button>
                         <h2 id="analyticsMonthLabel" class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight m-0"></h2>
-                        <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
+                        <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-10 px-5 text-sm font-bold rounded-full">▶</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                         <div class="p-6 bg-gray-50 border border-gray-100 rounded-[20px]">
@@ -488,50 +505,14 @@
         let currentDate = new Date(); let analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все'; let currentFolderId = null; 
 
-        function getStageBadge(id, status) {
-            let badgeColor = "";
-            if (status === 'Новый') badgeColor = "bg-purple-50 text-purple-600 border-purple-200";
-            else if (status === 'В работе') badgeColor = "bg-blue-50 text-blue-600 border-blue-200";
-            else if (status === 'На складе') badgeColor = "bg-orange-50 text-orange-600 border-orange-200";
-            else if (status === 'Завершен') badgeColor = "bg-emerald-50 text-emerald-600 border-emerald-200";
-            else badgeColor = "bg-gray-50 text-gray-600 border-gray-200"; 
-
-            return `
-            <div class="relative inline-block w-max pointer-events-auto" onclick="event.stopPropagation()">
-                <div class="px-3 py-1.5 rounded-lg font-extrabold uppercase text-[10px] tracking-wider border ${badgeColor} shadow-sm flex items-center justify-center gap-1.5 cursor-pointer hover:shadow-md transition-all active:scale-95">
-                    ${status} <span class="text-[8px] opacity-70">▼</span>
-                </div>
-                <select onclick="event.stopPropagation()" onchange="changeStatus(${id}, this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer appearance-none z-50">
-                    <option value="Новый" ${status === 'Новый' ? 'selected' : ''}>Новый</option>
-                    <option value="В работе" ${status === 'В работе' ? 'selected' : ''}>В работе</option>
-                    <option value="На складе" ${status === 'На складе' ? 'selected' : ''}>На складе</option>
-                    <option value="Завершен" ${status === 'Завершен' ? 'selected' : ''}>Завершен</option>
-                </select>
-            </div>
-            `;
-        }
-
         async function changeStatus(id, st) { 
             showToast("Перемещение...", false);
-            
-            // Оптимистичное обновление для мгновенного отклика
-            const orderIndex = allOrders.findIndex(o => o.id === id);
-            if (orderIndex !== -1) {
-                allOrders[orderIndex].status = st;
-                renderData();
-                if(activeSection === 'dashboard') renderDashboard();
-            }
-
             try {
                 const { error } = await _supabase.from('orders').update({ status: st }).eq('id', id); 
                 if (error) throw error;
-                // Небольшая задержка перед полным ререндером с сервера
-                setTimeout(() => {
-                    loadData();
-                }, 300);
+                loadData(); 
             } catch(e) {
-                showToast("Ошибка сохранения статуса", true);
-                loadData();
+                showToast("Ошибка обновления", true);
             }
         }
 
@@ -587,8 +568,8 @@
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
             try { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { Notification.requestPermission(); } } catch(e) {}
             
-            // Восстанавливаем вкладку
-            switchSection(activeSection);
+            const navBtn = document.getElementById('nav-' + activeSection) || document.getElementById('nav-dashboard');
+            switchSection(activeSection, navBtn);
             
             loadData(); loadTasks(); loadFiles();
         }
@@ -640,7 +621,7 @@
 
         function renderDashboard() {
             const today = new Date(); const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            let dEl = document.getElementById('dash-date'); if(dEl) dEl.innerText = today.toLocaleDateString('ru-RU', options);
+            let dEl = document.getElementById('dash-date'); if(dEl) dEl.innerText = "Сегодня: " + today.toLocaleDateString('ru-RU', options);
 
             const activeDeals = allOrders.filter(o => o.status !== 'Завершен');
             const totalActiveSum = activeDeals.reduce((sum, o) => sum + (Number(o.total_price) || 0), 0);
@@ -664,7 +645,7 @@
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] text-gray-500 mt-1.5 truncate flex items-center gap-1">📍 ${o.delivery_address || 'Адрес не указан'}</div>
                             </div>
-                            ${getStageBadge(o.id, o.status || 'Новый')}
+                            <span class="px-3 py-1.5 rounded-lg uppercase text-[9px] font-extrabold tracking-wide bg-blue-50 text-blue-600 whitespace-nowrap">${o.status || 'Новый'}</span>
                         </div>
                     `).join('');
                 }
@@ -682,7 +663,7 @@
                                 <div class="font-bold text-gray-800 text-sm truncate">${o.customer_name}</div>
                                 <div class="text-[11px] font-bold text-orange-500 mt-1.5 flex items-center gap-1">📅 ${formatDateStr(o.shipment_date)}</div>
                             </div>
-                            ${getStageBadge(o.id, o.status || 'Новый')}
+                            <span class="px-3 py-1.5 rounded-lg uppercase text-[9px] font-extrabold tracking-wide bg-gray-100 text-gray-600 whitespace-nowrap">${o.status || 'Новый'}</span>
                         </div>
                     `).join('');
                 }
@@ -704,53 +685,11 @@
             }
         }
 
-        async function loadData() {
-            // Быстрая отрисовка из кэша
-            let cached = localStorage.getItem('crm_orders_cache');
-            if (cached) {
-                try { 
-                    allOrders = JSON.parse(cached); 
-                    renderData(); renderAnalytics(); 
-                    if(activeSection === 'dashboard') renderDashboard(); 
-                } catch(e) {}
-            }
-            // Асинхронный запрос свежих данных
-            try {
-                const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                allOrders = data || []; 
-                localStorage.setItem('crm_orders_cache', JSON.stringify(allOrders)); // обновляем кэш
-                renderData(); renderAnalytics(); checkTodaysShipments();
-                if(activeSection === 'dashboard') renderDashboard(); 
-            } catch (err) { console.log("Ошибка загрузки заказов"); }
-        }
-
-        async function loadTasks() {
-            const cached = localStorage.getItem('crm_tasks_cache');
-            if (cached) {
-                try { allTasks = JSON.parse(cached); renderTasks(); if(activeSection === 'dashboard') renderDashboard(); } catch(e){}
-            }
-            try {
-                const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                allTasks = data || [];
-                localStorage.setItem('crm_tasks_cache', JSON.stringify(allTasks));
-                renderTasks();
-                if(activeSection === 'dashboard') renderDashboard();
-            } catch (err) { console.log("Ошибка задач"); }
-        }
-
         async function loadFiles() {
-            const cached = localStorage.getItem('crm_files_cache');
-            if (cached) {
-                try { allFiles = JSON.parse(cached); renderFiles(); } catch(e){}
-            }
             try {
                 const { data, error } = await _supabase.from('crm_files').select('*').order('is_folder', { ascending: false }).order('created_at', { ascending: false });
                 if (error) throw error;
-                allFiles = data || [];
-                localStorage.setItem('crm_files_cache', JSON.stringify(allFiles));
-                renderFiles();
+                allFiles = data || []; renderFiles();
             } catch (err) { console.log("Таблица файлов не готова."); }
         }
 
@@ -772,10 +711,10 @@
                     
                     folders.forEach(f => {
                         grid.innerHTML += `
-                        <div class="file-item relative flex flex-col items-center justify-center p-4 border border-gray-200 rounded-2xl bg-white hover:border-blue-500 shadow-sm transition-all h-32 cursor-pointer" onclick="openFolder(${f.id}, '${String(f.name).replace(/'/g, "\\'")}')">
-                            <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, null, true)" class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-lg text-red-500 transition-colors z-10" title="Удалить папку">🗑</button>
-                            <div class="text-4xl mb-2 transition-transform hover:scale-110">📁</div>
-                            <div class="text-xs font-semibold text-gray-700 w-full text-center truncate px-2" title="${f.name}">${f.name}</div>
+                        <div class="file-item group" onclick="openFolder(${f.id}, '${String(f.name).replace(/'/g, "\\'")}')">
+                            <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, null, true)" class="file-action-btn btn-delete" title="Удалить папку">🗑</button>
+                            <div class="file-icon folder-icon transition-transform group-hover:scale-110">📁</div>
+                            <div class="file-name" title="${f.name}">${f.name}</div>
                         </div>`;
                     });
                 } else {
@@ -791,11 +730,11 @@
 
                     files.forEach(f => {
                         grid.innerHTML += `
-                        <div class="file-item relative flex flex-col items-center justify-center p-4 border border-gray-200 rounded-2xl bg-white hover:border-blue-500 shadow-sm transition-all h-32 cursor-pointer" onclick="window.open('${f.file_url}', '_blank')">
-                            <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, '${f.file_url}', false)" class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-red-50 rounded-lg text-red-500 transition-colors z-10" title="Удалить файл">🗑</button>
-                            <button onclick="event.stopPropagation(); shareSpecificFile('${f.file_url}', '${String(f.name).replace(/'/g, "\\'")}')" class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-gray-50 hover:bg-blue-50 rounded-lg text-blue-600 transition-colors z-10" title="Поделиться">📤</button>
-                            <div class="text-4xl mb-2 text-blue-300 transition-transform hover:scale-110">📄</div>
-                            <div class="text-xs font-semibold text-gray-700 w-full text-center truncate px-2" title="${f.name}">${f.name}</div>
+                        <div class="file-item group" onclick="window.open('${f.file_url}', '_blank')">
+                            <button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, '${f.file_url}', false)" class="file-action-btn btn-delete" title="Удалить файл">🗑</button>
+                            <button onclick="event.stopPropagation(); shareSpecificFile('${f.file_url}', '${String(f.name).replace(/'/g, "\\'")}')" class="file-action-btn btn-share" title="Поделиться">📤</button>
+                            <div class="file-icon text-blue-300 transition-transform group-hover:scale-110">📄</div>
+                            <div class="file-name" title="${f.name}">${f.name}</div>
                         </div>`;
                     });
                 }
@@ -860,6 +799,15 @@
             } catch(e) { showToast("Ошибка удаления", true); }
         }
 
+        async function loadTasks() {
+            try {
+                const { data, error } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                allTasks = data || []; renderTasks();
+                if(activeSection === 'dashboard') renderDashboard(); 
+            } catch (err) { console.log("Ошибка задач"); }
+        }
+
         function setTaskView(view) {
             taskView = view;
             document.getElementById('t-active').className = view === 'active' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !text-gray-500 !m-0 !px-6';
@@ -884,7 +832,7 @@
                 const date = formatDateStr(t.created_at);
 
                 container.innerHTML += `
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-[20px] hover:border-blue-200 hover:shadow-md transition-all bg-white mb-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-gray-100 rounded-[24px] hover:border-blue-200 hover:shadow-md transition-all bg-white mb-3">
                     <div class="flex items-center gap-4 cursor-pointer flex-1 mb-3 sm:mb-0" onclick="toggleTask(${t.id}, ${!isCheck})">
                         ${checkCircle}
                         <div><div class="${textStyle} text-[15px] break-words">${t.title}</div><div class="text-[11px] text-gray-400 mt-1 font-medium">Создано: ${date}</div></div>
@@ -935,6 +883,32 @@
             else { navigator.clipboard.writeText(shareText).then(() => { showToast("Данные скопированы в буфер", false); }).catch(err => { showToast("Ошибка копирования", true); }); }
         }
 
+        async function loadData() {
+            try {
+                const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                allOrders = data || []; 
+                renderData(); renderAnalytics(); checkTodaysShipments();
+                if(activeSection === 'dashboard') renderDashboard(); 
+            } catch (err) { showToast("Ошибка загрузки. Проверьте БД", true); }
+        }
+
+        function formatDate(dateString) {
+            if(!dateString) return '—';
+            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+        function formatDateStr(dateString) {
+            if(!dateString) return '';
+            const d = new Date(dateString); return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function getTagsHtml(tagsString) {
+            if(!tagsString) return '';
+            const arr = String(tagsString).split(',').map(t => t.trim()).filter(t => t);
+            if(arr.length === 0) return '';
+            return `<div class="mt-3 flex flex-wrap gap-1.5 pointer-events-none">` + arr.map(t => `<span class="bx-tag shadow-sm bg-gray-50 border border-gray-200">#${t}</span>`).join('') + `</div>`;
+        }
+
         function renderData() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allOrders.filter(o => {
@@ -975,13 +949,24 @@
                 sums[status] += price;
                 if(status !== 'Завершен') total += price;
 
+                let btnTxt = "В работу", nextSt = "В работе", btnClass = "text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:text-blue-700";
+                let prevSt = null, prevBtnTxt = "Назад", prevBtnClass = "text-gray-500 bg-gray-50 border border-gray-200 hover:bg-gray-100";
+
+                if (status === 'В работе') { 
+                    btnTxt = "На склад"; nextSt = "На складе"; btnClass = "text-orange-600 bg-orange-50 border border-orange-100 hover:bg-orange-100"; prevSt = "Новый";
+                } else if (status === 'На складе') {
+                    btnTxt = "Успех"; nextSt = "Завершен"; btnClass = "text-emerald-600 bg-emerald-50 border border-emerald-100 hover:bg-emerald-100"; prevSt = "В работе";
+                } else if (status === 'Завершен') {
+                    btnClass = "hidden"; prevSt = "На складе";
+                }
+
                 let supColor = "bg-gray-50 text-gray-500 border border-gray-200";
                 if(item.supplier_status === 'Оплачен') supColor = "bg-emerald-50 text-emerald-600 border border-emerald-100";
                 else if(item.supplier_status === 'Предоплата') supColor = "bg-yellow-50 text-yellow-600 border border-yellow-100";
                 else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 border border-red-100";
 
                 const cleanPhone = item.phone ? String(item.phone).replace(/\D/g, '') : '';
-                let commsHtml = `<div class="flex flex-wrap gap-1.5 pointer-events-auto">`;
+                let commsHtml = `<div class="flex flex-wrap gap-2 pointer-events-auto">`;
                 if (cleanPhone) {
                     commsHtml += `<a href="tel:+${cleanPhone}" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-colors shadow-sm text-lg text-decoration-none" title="Звонок" onclick="event.stopPropagation()">📞</a>
                                   <a href="https://wa.me/${cleanPhone}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-[12px] bg-gray-50 border border-gray-200 text-[#25D366] hover:bg-green-50 transition-colors shadow-sm text-lg text-decoration-none" title="WhatsApp" onclick="event.stopPropagation()">💬</a>
@@ -1014,13 +999,21 @@
                         <td class="px-5 py-4"><div class="font-extrabold text-gray-800 text-sm">${price.toLocaleString()} ₽</div></td>
                         <td class="px-5 py-4"><div class="text-[11px] font-bold text-gray-600 uppercase tracking-wide">${item.supplier_invoice || '—'}</div><span class="text-[9px] px-2 py-1 rounded-md font-bold uppercase ${supColor} inline-block mt-1 shadow-sm">${item.supplier_status || 'Не оплачен'}</span></td>
                         <td class="px-5 py-4 text-[12px] font-bold text-gray-700">${formatDate(item.shipment_date)}</td>
-                        <td class="px-5 py-4 text-right">${fileLink}</td>
+                        <td class="px-5 py-4 text-right pointer-events-auto" onclick="event.stopPropagation()">${fileLink}</td>
                     </tr>`;
                     archiveEl.innerHTML += archiveRow;
                 }
 
+                // НАДЕЖНЫЕ КНОПКИ ДЛЯ КАРТОЧЕК
+                const actionButtons = `
+                    <div class="flex items-center gap-2 pointer-events-auto" onclick="event.stopPropagation()">
+                        ${prevSt ? `<button onclick="changeStatus(${item.id}, '${prevSt}')" class="${prevBtnClass} px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase transition-all shadow-sm">Назад</button>` : ''}
+                        ${status !== 'Завершен' ? `<button onclick="changeStatus(${item.id}, '${nextSt}')" class="${btnClass} px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase transition-all shadow-sm">Вперед</button>` : ''}
+                    </div>
+                `;
+
                 const card = `
-                <div class="bg-white border border-gray-200 rounded-[24px] shadow-sm hover:shadow-md hover:border-blue-300 transition-all p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, ${item.id})" ondragend="dragEnd(event)" onclick="openEditModal(${item.id})">
+                <div class="bg-white border border-gray-200 rounded-[24px] shadow-sm hover:shadow-md hover:border-blue-300 transition-all p-5 mb-5 cursor-pointer flex flex-col gap-3 group relative" onclick="openEditModal(${item.id})">
                     <div class="flex justify-between items-start gap-2">
                         <div class="flex-1 min-w-0 pr-2">
                             <h4 class="font-extrabold text-gray-800 text-[16px] leading-tight group-hover:text-blue-600 transition-colors m-0 break-words mb-2">${item.customer_name}</h4>
@@ -1047,14 +1040,14 @@
                     
                     ${commentHtml}
                     
-                    <div class="flex justify-between items-center pt-4 border-t border-gray-100 mt-3 pointer-events-auto">
-                        <div>${fileLink}</div>
-                        ${getStageBadge(item.id, status)}
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-100 mt-2">
+                        <div class="pointer-events-auto" onclick="event.stopPropagation()">${fileLink}</div>
+                        ${actionButtons}
                     </div>
                 </div>`;
 
                 const list = `
-                <div class="bg-white border border-gray-200 rounded-[24px] shadow-sm hover:shadow-md hover:border-blue-300 transition-all p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer mb-4 group gap-4" onclick="openEditModal(${item.id})">
+                <div class="bg-white border border-gray-200 rounded-[24px] shadow-sm hover:shadow-md hover:border-blue-300 transition-all p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer mb-4 group gap-4 relative" onclick="openEditModal(${item.id})">
                     <div class="flex-1 min-w-0 pr-2">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
                             <div class="font-extrabold text-[16px] text-gray-800 group-hover:text-blue-600 transition-colors break-words">${item.customer_name}</div>
@@ -1072,17 +1065,17 @@
                         ${tagsHtml}
                         ${item.comments ? `<div class="text-[12px] text-gray-500 mt-3 truncate bg-yellow-50/50 px-3 py-1.5 rounded-lg w-max border border-yellow-100">💬 ${item.comments}</div>` : ''}
                     </div>
-                    <div class="text-left sm:text-right flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-4 sm:mt-0 gap-3 border-t sm:border-t-0 border-gray-100 pt-5 sm:pt-0 shrink-0 pointer-events-auto">
+                    <div class="text-left sm:text-right flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center mt-4 sm:mt-0 gap-3 border-t sm:border-t-0 border-gray-100 pt-5 sm:pt-0 shrink-0">
                         <div>
-                            <div class="font-black text-[22px] text-gray-900 pointer-events-none">${price.toLocaleString()} ₽</div>
+                            <div class="font-black text-[22px] text-gray-900">${price.toLocaleString()} ₽</div>
                             ${balHtml}
                         </div>
-                        ${getStageBadge(item.id, status)}
+                        ${actionButtons}
                     </div>
                 </div>`;
 
                 const table = `
-                <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group cursor-pointer" onclick="openEditModal(${item.id})">
+                <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0 group cursor-pointer relative" onclick="openEditModal(${item.id})">
                     <td class="px-5 py-4 font-mono text-[11px] text-gray-400 text-center font-bold">
                         ${displayNum}
                         <div class="text-[10px] mt-1 text-gray-300 font-sans font-medium">${createDate}</div>
@@ -1095,12 +1088,13 @@
                         ${addressHtml}
                     </td>
                     <td class="px-5 py-4"><div class="font-extrabold text-gray-800 text-sm">${price.toLocaleString()} ₽</div>${balHtml}</td>
-                    <td class="px-5 py-4 pointer-events-auto">${getStageBadge(item.id, status)}</td>
+                    <td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold uppercase text-[9px] bg-gray-100 text-gray-600 shadow-sm">${status}</span></td>
                     <td class="px-5 py-4"><div class="text-[11px] font-bold text-gray-600 uppercase tracking-wide">${item.supplier_invoice || '—'}</div><span class="text-[9px] px-2 py-1 rounded-md font-bold uppercase ${supColor} inline-block mt-1 shadow-sm">${item.supplier_status || 'Не оплачен'}</span></td>
                     <td class="px-5 py-4 text-[12px] font-bold text-gray-700">${formatDate(item.shipment_date)}</td>
-                    <td class="px-5 py-4 text-right" onclick="event.stopPropagation()">
+                    <td class="px-5 py-4 text-right">
                         <div class="flex justify-end items-center gap-3">
-                            ${fileLink}
+                            <div class="pointer-events-auto" onclick="event.stopPropagation()">${fileLink}</div>
+                            ${actionButtons}
                         </div>
                     </td>
                 </tr>`;
@@ -1121,6 +1115,38 @@
 
             if(document.getElementById('totalSum')) document.getElementById('totalSum').innerText = "ИТОГО В РАБОТЕ: " + total.toLocaleString() + " ₽";
             if(document.getElementById('archiveTotalSum')) document.getElementById('archiveTotalSum').innerText = "ИТОГО В АРХИВЕ: " + archiveTotal.toLocaleString() + " ₽";
+        }
+
+        function changeAnalyticsMonth(direction) { analyticsDate.setMonth(analyticsDate.getMonth() + direction); renderAnalytics(); }
+        function renderAnalytics() {
+            const year = analyticsDate.getFullYear(); const month = analyticsDate.getMonth();
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            if(document.getElementById('analyticsMonthLabel')) document.getElementById('analyticsMonthLabel').innerText = `${monthNames[month]} ${year}`;
+
+            const monthOrders = allOrders.filter(o => {
+                if(!o.created_at) return false;
+                const d = new Date(o.created_at); return d.getFullYear() === year && d.getMonth() === month;
+            });
+
+            let tCount = monthOrders.length, tSum = 0, sSum = 0, sCount = 0, dSum = 0;
+            let supUnpaid = 0, supPrepay = 0, supPaid = 0;
+
+            monthOrders.forEach(o => {
+                const price = Number(o.total_price) || 0; const prepay = Number(o.prepayment) || 0;
+                tSum += price;
+                if(o.status === 'Завершен') { sSum += price; sCount++; } 
+                else { const diff = price - prepay; if(diff > 0) dSum += diff; }
+                if(o.supplier_status === 'Оплачен') supPaid++; else if(o.supplier_status === 'Предоплата') supPrepay++; else supUnpaid++;
+            });
+
+            if(document.getElementById('stat-total-count')) document.getElementById('stat-total-count').innerText = tCount; 
+            if(document.getElementById('stat-total-sum')) document.getElementById('stat-total-sum').innerText = tSum.toLocaleString() + ' ₽';
+            if(document.getElementById('stat-success-sum')) document.getElementById('stat-success-sum').innerText = sSum.toLocaleString() + ' ₽'; 
+            if(document.getElementById('stat-success-count')) document.getElementById('stat-success-count').innerText = sCount + ' сделок';
+            if(document.getElementById('stat-debt-sum')) document.getElementById('stat-debt-sum').innerText = dSum.toLocaleString() + ' ₽';
+            if(document.getElementById('stat-sup-unpaid')) document.getElementById('stat-sup-unpaid').innerText = supUnpaid; 
+            if(document.getElementById('stat-sup-prepay')) document.getElementById('stat-sup-prepay').innerText = supPrepay;
+            if(document.getElementById('stat-sup-paid')) document.getElementById('stat-sup-paid').innerText = supPaid;
         }
 
         async function saveEdit() {
@@ -1150,15 +1176,7 @@
                 }
                 const { error } = await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 if(error) throw error;
-                
-                // Обновляем кэш
-                const orderIndex = allOrders.findIndex(o => o.id === currentEditId);
-                if (orderIndex !== -1) {
-                    allOrders[orderIndex] = { ...allOrders[orderIndex], ...updates };
-                    localStorage.setItem('crm_orders_cache', JSON.stringify(allOrders));
-                }
-
-                showToast("Сохранено", false); closeEditModal(); renderData(); loadData();
+                showToast("Сохранено", false); closeEditModal(); loadData();
             } catch(e) { showToast("Ошибка сохранения", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
