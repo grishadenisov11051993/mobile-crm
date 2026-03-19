@@ -94,6 +94,7 @@
                         <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Теги (через запятую)</label><input id="editTags" type="text" placeholder="например: авито, tarkett" class="bx-input font-medium text-blue-600 dark:text-blue-400"></div>
                     </div>
                 </div>
+                
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div class="p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-[20px] shadow-sm">
                         <h4 class="font-bold text-blue-800 dark:text-blue-300 uppercase text-[11px] mb-4 tracking-wider">Финансы (Клиент)</h4>
@@ -110,6 +111,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="p-5 border border-yellow-100 dark:border-yellow-900/30 rounded-[20px] bg-yellow-50 dark:bg-yellow-900/10 shadow-sm">
                     <h4 class="font-bold text-yellow-800 dark:text-yellow-500 uppercase text-[11px] mb-4 tracking-wider">Логистика</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -117,19 +119,31 @@
                         <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Адрес доставки</label><input id="editAddress" type="text" class="bx-input bg-white dark:bg-gray-800" placeholder="Город, улица..."></div>
                     </div>
                 </div>
+
+                <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
+                    <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase">Стадия сделки и Комментарий</label>
+                    <select id="editStatus" class="bx-input mb-4"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="На складе">На складе</option><option value="Завершен">Сделка успешна</option></select>
+                    <textarea id="editComments" rows="2" class="bx-input resize-none" placeholder="Заметки по сделке..."></textarea>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
-                        <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase">Стадия сделки</label>
-                        <select id="editStatus" class="bx-input"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="На складе">На складе</option><option value="Завершен">Сделка успешна</option></select>
-                        <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase mt-5">Комментарий</label>
-                        <textarea id="editComments" rows="3" class="bx-input resize-none"></textarea>
-                    </div>
-                    <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-gray-50 dark:bg-gray-800/50 shadow-sm">
-                        <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase">Документ</label>
-                        <div id="currentFileLink" class="mb-4"></div>
+                    <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-gray-50 dark:bg-gray-800/50 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">Главный документ</label>
+                            <div id="currentFileLink" class="mb-4"></div>
+                        </div>
                         <input id="editFile" type="file" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-white dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-full file:font-semibold cursor-pointer hover:file:bg-gray-50 transition">
                     </div>
+                    
+                    <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-gray-50 dark:bg-gray-800/50 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <label class="block text-[12px] font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Галерея (Фото)</label>
+                            <div id="editGalleryPreview" class="flex flex-wrap gap-2 mb-4"></div>
+                        </div>
+                        <input id="editGalleryInput" type="file" multiple accept="image/*" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-white dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-full file:font-semibold cursor-pointer hover:file:bg-gray-50 transition" title="Загрузить новые фото">
+                    </div>
                 </div>
+
             </div>
             <div class="p-5 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col-reverse sm:flex-row justify-end gap-3 shrink-0">
                 <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
@@ -175,7 +189,7 @@
             </div>
         </aside>
 
-        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
+        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative bg-[#f3f4f6] dark:bg-gray-900">
             
             <header class="sticky top-0 z-40 px-6 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
                 <div class="flex items-center justify-between w-full sm:w-auto h-[70px] sm:h-auto">
@@ -281,7 +295,9 @@
                         <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
                         <div class="sm:col-span-3"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Адрес доставки</label><input id="cAddress" type="text" class="bx-input"></div>
                         <div class="lg:col-span-4"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
-                        <div class="lg:col-span-4 p-4 border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 rounded-2xl"><label class="block text-[12px] font-semibold text-gray-500 mb-3 uppercase">Документ</label><input id="cFile" type="file" class="bx-input !p-2 !h-auto"></div>
+                        
+                        <div class="lg:col-span-2 p-4 border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 rounded-2xl"><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">Главный документ</label><input id="cFile" type="file" class="bx-input !p-2 !h-auto"></div>
+                        <div class="lg:col-span-2 p-4 border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 rounded-2xl"><label class="block text-[12px] font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Галерея фото (Несколько)</label><input id="cGallery" type="file" multiple accept="image/*" class="bx-input !p-2 !h-auto"></div>
                     </div>
                     <div class="flex gap-3">
                         <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success h-12 px-8 rounded-full">Создать сделку</button>
@@ -341,7 +357,7 @@
                     <div class="flex gap-3 mb-6 pb-6 border-b border-gray-100 dark:border-gray-700 sm:hidden">
                         <div class="relative flex-1 bg-gray-50 dark:bg-gray-900 rounded-full border border-gray-200 dark:border-gray-700 p-1">
                             <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[44px] text-sm" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
-                            <button onclick="startDictation('newTaskInputBody', this)" class="absolute right-2 top-2">🎤</button>
+                            <button onclick="startDictation('newTaskInputBody', this)" class="absolute right-2 top-1.5">🎤</button>
                         </div>
                         <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-14 h-[52px] !px-0 rounded-full text-xl">+</button>
                     </div>
@@ -428,6 +444,7 @@
         let currentDate = new Date(), analyticsDate = new Date(); 
         let currentSupplierFilter = 'Все';
         let selectedOrders = [];
+        let currentGallery = [];
 
         // --- Темная тема ---
         function applyTheme() {
@@ -645,6 +662,9 @@
                 const tagsHtml = getTagsHtml(item.tags);
                 const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-600 dark:text-blue-400 text-[11px] font-bold pointer-events-auto bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-800/50" onclick="event.stopPropagation()">📎 Файл</a>` : '';
                 
+                let galArr = []; try { galArr = item.gallery ? JSON.parse(item.gallery) : []; } catch(e){}
+                const galleryBadge = galArr.length > 0 ? `<span class="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800/50 px-2 py-1 rounded-md ml-2 pointer-events-auto" title="Фото в галерее">🖼 ${galArr.length}</span>` : '';
+
                 const actionButtons = `<div class="flex gap-2 pointer-events-auto" onclick="event.stopPropagation()">
                     ${prevSt ? `<button onclick="changeStatus('${item.id}', '${prevSt}')" class="${prevBtnClass} px-3 py-2 rounded-xl text-[10px] font-extrabold uppercase transition-all shadow-sm">Назад</button>` : ''}
                     ${status !== 'Завершен' ? `<button onclick="changeStatus('${item.id}', '${nextSt}')" class="${btnClass} px-3 py-2 rounded-xl text-[10px] font-extrabold uppercase transition-all shadow-sm">Вперед</button>` : ''}
@@ -653,25 +673,25 @@
                 // Archive
                 if (status === 'Завершен' && archiveEl) {
                     archiveTotal += price;
-                    archiveEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${tagsHtml}</td><td class="px-5 py-4 font-black">${price.toLocaleString()} ₽</td><td class="px-5 py-4"><span class="${supColor} text-[9px] px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right pointer-events-auto">${fileLink}</td></tr>`;
+                    archiveEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${tagsHtml}</td><td class="px-5 py-4 font-black">${price.toLocaleString()} ₽</td><td class="px-5 py-4"><span class="${supColor} text-[9px] px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
                 }
 
                 // Table
                 if(activeView === 'table' && status !== 'Завершен' && tableEl) {
                     const isChecked = selectedOrders.includes(item.id) ? 'checked' : '';
-                    tableEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}</td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-1">${item.phone}</div>`:''}${tagsHtml}</td><td class="px-5 py-4"><div class="font-black">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">${status}</span></td><td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4"><div class="flex justify-end items-center gap-3">${fileLink}${actionButtons}</div></td></tr>`;
+                    tableEl.innerHTML += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}</td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-1">${item.phone}</div>`:''}${tagsHtml}</td><td class="px-5 py-4"><div class="font-black">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">${status}</span></td><td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4"><div class="flex justify-end items-center gap-2">${fileLink}${galleryBadge}${actionButtons}</div></td></tr>`;
                 }
 
                 // List
                 if(activeView === 'list' && status !== 'Завершен' && listEl) {
-                    listEl.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 flex flex-col sm:flex-row justify-between cursor-pointer mb-4 gap-4" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-3"><div class="font-extrabold text-[16px]">${item.customer_name}</div><div class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</div></div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-2">${item.phone}</div>`:''}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-gray-100 dark:border-gray-700 pt-4 sm:pt-0 shrink-0"><div><div class="font-black text-[22px]">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-4 flex items-center gap-3"><div class="pointer-events-auto">${fileLink}</div>${actionButtons}</div></div></div>`;
+                    listEl.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 flex flex-col sm:flex-row justify-between cursor-pointer mb-4 gap-4" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-3"><div class="font-extrabold text-[16px]">${item.customer_name}</div><div class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</div></div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-2">${item.phone}</div>`:''}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-gray-100 dark:border-gray-700 pt-4 sm:pt-0 shrink-0"><div><div class="font-black text-[22px]">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-4 flex items-center gap-2"><div class="pointer-events-auto">${fileLink}${galleryBadge}</div>${actionButtons}</div></div></div>`;
                 }
 
                 // Kanban
                 if(activeView === 'kanban') {
                     const colMap = { 'Новый': 'col-new', 'В работе': 'col-work', 'На складе': 'col-stock', 'Завершен': 'col-done' };
                     let el = document.getElementById(colMap[status]);
-                    if(el) el.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-extrabold text-[15px]">${item.customer_name}</div><span class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</span></div><div><div class="font-black text-[20px]">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 text-[11px] flex justify-between items-center border border-gray-100 dark:border-gray-700"><span class="${supColor} px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span>📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700 mt-2"><div class="pointer-events-auto">${fileLink}</div>${actionButtons}</div></div>`;
+                    if(el) el.innerHTML += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-extrabold text-[15px]">${item.customer_name}</div><span class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</span></div><div><div class="font-black text-[20px]">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 text-[11px] flex justify-between items-center border border-gray-100 dark:border-gray-700"><span class="${supColor} px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span>📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700 mt-2"><div class="pointer-events-auto flex items-center">${fileLink}${galleryBadge}</div>${actionButtons}</div></div>`;
                 }
             });
 
@@ -693,9 +713,27 @@
             }
         }
 
-        // --- Изменение данных ---
+        // --- Изменение данных и Галерея ---
         async function changeStatus(id, st) { showToast("Обновление...", false); try { await _supabase.from('orders').update({ status: st }).eq('id', id); loadData(); showToast("Статус изменен", false); } catch(e) { showToast("Ошибка", true); } }
         
+        function renderEditGallery() {
+            const container = document.getElementById('editGalleryPreview'); if(!container) return;
+            if(currentGallery.length === 0) { container.innerHTML = '<span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Фотографий нет</span>'; return; }
+            container.innerHTML = currentGallery.map(url => `<div class="relative group w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm shrink-0"><img src="${url}" class="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity" onclick="window.open('${url}', '_blank')"><button type="button" onclick="deleteGalleryImage('${url}')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" title="Удалить фото">&times;</button></div>`).join('');
+        }
+
+        async function deleteGalleryImage(url) {
+            if(!confirm("Удалить это фото?")) return;
+            showToast("Удаление...");
+            try {
+                const fileName = url.split('/').pop(); await _supabase.storage.from('order-files').remove([fileName]);
+                currentGallery = currentGallery.filter(u => u !== url);
+                await _supabase.from('orders').update({ gallery: JSON.stringify(currentGallery) }).eq('id', currentEditId);
+                const o = allOrders.find(x => String(x.id) === String(currentEditId)); if(o) o.gallery = JSON.stringify(currentGallery);
+                renderEditGallery(); showToast("Фото удалено"); renderData();
+            } catch(e) { showToast("Ошибка удаления", true); }
+        }
+
         function openEditModal(id) {
             const o = allOrders.find(x => String(x.id) === String(id)); if(!o) return; currentEditId = o.id;
             ['editOrderNum','editName','editPrice','editPrepayment','editPhone','editTags','editInvoice','editSupplierStatus','editShipDate','editAddress','editComments','editStatus'].forEach(field => {
@@ -705,6 +743,9 @@
             const linkDiv = document.getElementById('currentFileLink');
             if (o.file_url) linkDiv.innerHTML = `<div class="flex gap-3"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-800/50">📎 Открыть</a><button type="button" onclick="deleteAttachedFile('${o.id}', '${o.file_url}')" class="text-[12px] font-bold text-red-500">Удалить</button></div>`;
             else linkDiv.innerHTML = '<span class="text-gray-400 text-xs font-medium">Файл не загружен</span>';
+            
+            try { currentGallery = o.gallery ? JSON.parse(o.gallery) : []; } catch(e) { currentGallery = []; }
+            renderEditGallery(); document.getElementById('editGalleryInput').value = '';
             document.getElementById('editModal').classList.remove('hidden'); checkBodyScroll();
         }
 
@@ -718,12 +759,21 @@
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                     if (!upErr) updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
                 }
+                const galInput = document.getElementById('editGalleryInput');
+                if (galInput.files.length > 0) {
+                    for (let file of galInput.files) {
+                        const ext = file.name.split('.').pop(); const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+                        const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
+                        if (!upErr) currentGallery.push(_supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl);
+                    }
+                }
+                updates.gallery = JSON.stringify(currentGallery);
                 await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 showToast("Сохранено", false); closeEditModal(); loadData();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = "Сохранить"; }
         }
 
-        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editFile').value = ''; checkBodyScroll(); }
+        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editFile').value = ''; document.getElementById('editGalleryInput').value = ''; checkBodyScroll(); }
 
         async function saveOrder() {
             const btn = document.getElementById('saveBtn'); btn.innerText = 'Создание...'; btn.disabled = true;
@@ -736,8 +786,19 @@
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                     if (!upErr) newOrder.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
                 }
+                let galleryUrls = []; const galInput = document.getElementById('cGallery');
+                if (galInput.files.length > 0) {
+                    for (let file of galInput.files) {
+                        const ext = file.name.split('.').pop(); const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+                        const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
+                        if (!upErr) galleryUrls.push(_supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl);
+                    }
+                }
+                if(galleryUrls.length > 0) newOrder.gallery = JSON.stringify(galleryUrls);
+
                 await _supabase.from('orders').insert([newOrder]); toggleForm(); showToast("Сделка создана", false); loadData();
-                ['cOrderNum','cName','cPrice','cPrepayment','cPhone','cTags','cInvoice','cShipDate','cComments','cAddress'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; }); document.getElementById('cFile').value = '';
+                ['cOrderNum','cName','cPrice','cPrepayment','cPhone','cTags','cInvoice','cShipDate','cComments','cAddress'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; }); 
+                document.getElementById('cFile').value = ''; document.getElementById('cGallery').value = '';
             } catch(e) { showToast("Ошибка создания", true); } finally { btn.disabled = false; btn.innerText = "Создать сделку"; }
         }
 
