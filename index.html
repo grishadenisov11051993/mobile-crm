@@ -70,6 +70,20 @@
     
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-lg hidden z-[300] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800 dark:bg-gray-700"></div>
 
+    <div id="installModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[400] flex items-center justify-center p-4 transition-all">
+        <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-sm overflow-hidden flex flex-col p-6 text-center relative">
+            <button onclick="document.getElementById('installModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+            <div class="w-16 h-16 bg-blue-600 rounded-[16px] flex items-center justify-center text-white text-2xl font-bold shadow-md mx-auto mb-4">ХП</div>
+            <h3 class="font-bold text-gray-800 dark:text-white text-lg mb-2">Установка приложения</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Чтобы CRM всегда была под рукой как приложение, сделайте следующее:</p>
+            <div class="text-left bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-sm text-gray-700 dark:text-gray-300 space-y-3">
+                <p>🍏 <b>iPhone (Safari):</b> Нажмите кнопку «Поделиться» (квадрат со стрелочкой) внизу экрана, затем выберите <b>«На экран "Домой"»</b>.</p>
+                <p>🤖 <b>Android (Chrome):</b> Нажмите меню (три точки) в правом верхнем углу и выберите <b>«Добавить на главный экран»</b>.</p>
+            </div>
+            <button onclick="document.getElementById('installModal').classList.add('hidden')" class="bx-btn-success w-full mt-6">Понятно</button>
+        </div>
+    </div>
+
     <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
         <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800 shrink-0">
@@ -190,7 +204,7 @@
                 <div class="sidebar-category mt-6">Отчеты и Настройки</div>
                 <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
                 <button onclick="toggleDarkMode()" class="w-full text-left bx-sidebar-item bg-transparent border-none cursor-pointer"><span class="bx-sidebar-icon" id="themeIcon">🌙</span> Тема</button>
-                <button id="installAppBtn" onclick="installApp()" class="hidden w-full text-left bx-sidebar-item bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-none cursor-pointer mt-4"><span class="bx-sidebar-icon">📲</span> Установить CRM</button>
+                <button id="installAppBtn" onclick="installApp()" class="w-full text-left bx-sidebar-item bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-none cursor-pointer mt-4"><span class="bx-sidebar-icon">📲</span> Установить CRM</button>
             </nav>
             <div class="p-5 border-t border-gray-100 dark:border-gray-700">
                 <button onclick="lockCrm()" class="w-full px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl text-left font-semibold text-sm transition-all cursor-pointer border-none flex items-center gap-2">🚪 Выйти</button>
@@ -449,19 +463,20 @@
         const linkManifest = document.createElement('link'); linkManifest.rel = 'manifest'; linkManifest.href = URL.createObjectURL(manifestBlob);
         document.head.appendChild(linkManifest);
 
-        // --- Установка PWA ---
+        // --- Установка PWA (Универсальная) ---
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e;
-            const btn = document.getElementById('installAppBtn'); if(btn) btn.classList.remove('hidden');
         });
+
         function installApp() {
+            // Если браузер позволяет показать родное окно установки
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') { const btn = document.getElementById('installAppBtn'); if(btn) btn.classList.add('hidden'); }
-                    deferredPrompt = null;
-                });
+                deferredPrompt.userChoice.then((choiceResult) => { deferredPrompt = null; });
+            } else {
+                // Если мы на iOS или браузер блокирует прямую установку с локального файла
+                document.getElementById('installModal').classList.remove('hidden');
             }
         }
 
@@ -511,7 +526,7 @@
         }
 
         function checkBodyScroll() {
-            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden');
+            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('installModal').classList.contains('hidden');
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden');
         }
 
