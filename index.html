@@ -317,7 +317,7 @@
                         <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">✅ Задачи</h3><button onclick="switchSection('tasks')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button></div>
                         <div class="flex gap-2 mb-5 relative bg-gray-50 dark:bg-gray-900 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
                             <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full pl-4 pr-10 text-sm font-medium h-[40px]" onkeypress="if(event.key==='Enter') addTaskFromInput('dashTaskInput')">
-                            <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 top-2">🎤</button>
+                            <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 top-1.5">🎤</button>
                         </div>
                         <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
@@ -689,18 +689,33 @@
             if(tskC) tskC.innerHTML = opTasks.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Всё выполнено!</div>` : opTasks.map(t => `<div class="flex items-center gap-4 p-3 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-xl cursor-pointer" onclick="openTaskModal('${t.id}')"><div class="w-5 h-5 border-2 border-gray-300 rounded-md flex-shrink-0" onclick="event.stopPropagation(); toggleTask('${t.id}', true)"></div><div class="text-sm font-medium">${t.title}</div></div>`).join('');
         }
 
+        // НОВЫЙ "УМНЫЙ" ПОИСК
         function renderData() {
             document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
             document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
             document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
 
-            const search = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase().trim() : '';
+            // 1. Берем строку поиска как есть
+            const searchRaw = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase().trim() : '';
+            
+            // 2. Очищаем её от всего, кроме цифр (для поиска по телефону)
+            let searchPhone = searchRaw.replace(/\D/g, '');
+            // Если номер начинается с 8, приравниваем его к 7
+            if (searchPhone.startsWith('8')) searchPhone = '7' + searchPhone.substring(1);
+
             const filtered = allOrders.filter(o => {
-                const ms = String(o.customer_name||'').toLowerCase().includes(search) || 
-                           String(o.phone||'').includes(search) || 
-                           String(o.order_number||'').toLowerCase().includes(search) || 
-                           String(o.tags||'').toLowerCase().includes(search) ||
-                           String(o.id).toLowerCase().includes(search);
+                // 3. Очищаем телефон из базы
+                let orderPhone = String(o.phone || '').replace(/\D/g, '');
+                if (orderPhone.startsWith('8')) orderPhone = '7' + orderPhone.substring(1);
+
+                // 4. Сравниваем
+                const ms = String(o.customer_name||'').toLowerCase().includes(searchRaw) || 
+                           String(o.order_number||'').toLowerCase().includes(searchRaw) || 
+                           String(o.tags||'').toLowerCase().includes(searchRaw) ||
+                           String(o.id).toLowerCase().includes(searchRaw) ||
+                           (searchRaw !== '' && String(o.phone||'').toLowerCase().includes(searchRaw)) || // Обычный поиск
+                           (searchPhone !== '' && orderPhone.includes(searchPhone)); // "Умный" поиск по номеру
+                           
                 const tag = currentSupplierFilter === 'Все' || (o.supplier_status || 'Не оплачен') === currentSupplierFilter;
                 return ms && tag;
             });
@@ -750,9 +765,9 @@
                         
                         contactLinksHtml = `
                             <div class="flex gap-1 mt-1.5 pointer-events-auto" onclick="event.stopPropagation()">
-                                <a href="tel:+${linkPhone}" class="flex-1 flex items-center justify-center gap-1 bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 py-1 rounded-md text-[10px] font-bold no-underline hover:bg-green-100 transition-colors" title="Позвонить">📞 Звонок</a>
-                                <a href="https://wa.me/${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-1 rounded-md text-[10px] font-bold no-underline hover:bg-emerald-100 transition-colors" title="WhatsApp">💬 WhatsApp</a>
-                                <a href="https://t.me/+${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-1 rounded-md text-[10px] font-bold no-underline hover:bg-blue-100 transition-colors" title="Telegram">✈️ Telegram</a>
+                                <a href="tel:+${linkPhone}" class="flex-1 flex items-center justify-center gap-1 bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 py-1.5 rounded-md text-[10px] font-bold no-underline hover:bg-green-100 transition-colors" title="Позвонить">📞 Звонок</a>
+                                <a href="https://wa.me/${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-1.5 rounded-md text-[10px] font-bold no-underline hover:bg-emerald-100 transition-colors" title="WhatsApp">💬 WhatsApp</a>
+                                <a href="https://t.me/+${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-1.5 rounded-md text-[10px] font-bold no-underline hover:bg-blue-100 transition-colors" title="Telegram">✈️ Telegram</a>
                             </div>
                         `;
                     } else {
