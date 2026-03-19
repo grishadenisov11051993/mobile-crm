@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM</title>
+    <title>Хорошие полы - CRM (Glass)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,162 +14,195 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; }
+        /* ГЛОБАЛЬНЫЙ ФОН (Градиенты) */
+        body { 
+            font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; transition: background 0.5s, color 0.3s; 
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 50%, #bae6fd 100%);
+            background-attachment: fixed; color: #1e1b4b;
+        }
+        .dark body { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #172554 100%);
+            background-attachment: fixed; color: #f1f5f9;
+        }
         
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        .bx-sidebar-item { border-radius: 12px; transition: all 0.2s ease; font-size: 15px; font-weight: 600; text-decoration: none; margin: 6px 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; color: #6b7280; }
-        .dark .bx-sidebar-item { color: #9ca3af; }
-        .bx-sidebar-item:hover { background-color: rgba(59, 130, 246, 0.05); color: #1f2937; }
-        .dark .bx-sidebar-item:hover { background-color: rgba(59, 130, 246, 0.1); color: #f3f4f6; }
-        .bx-sidebar-item.active { background-color: rgba(59, 130, 246, 0.1); color: #2563eb; font-weight: 700; }
-        .dark .bx-sidebar-item.active { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-        .bx-sidebar-icon { font-size: 18px; width: 24px; text-align: center; } 
-        .sidebar-category { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; font-weight: 700; padding: 20px 28px 8px; }
+        /* GLASSMORPHISM КЛАССЫ */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .dark .glass-panel { background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); }
 
-        .bx-input { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: #1f2937; }
-        .dark .bx-input { background-color: #1f2937; border-color: #374151; color: #f3f4f6; }
-        .bx-input:focus { border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-        .dark .bx-input:focus { background-color: #111827; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px; box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05); transition: all 0.3s;
+        }
+        .dark .glass-card { background: rgba(30, 41, 59, 0.4); border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        .glass-card:hover { border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15); transform: translateY(-2px); }
+        .dark .glass-card:hover { border-color: rgba(96, 165, 250, 0.5); }
+
+        .glass-inner { background: rgba(255, 255, 255, 0.3); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 16px; }
+        .dark .glass-inner { background: rgba(0, 0, 0, 0.2); border-color: rgba(255, 255, 255, 0.05); }
+
+        /* UI ЭЛЕМЕНТЫ */
+        .bx-sidebar-item { border-radius: 12px; transition: all 0.2s ease; font-size: 15px; font-weight: 600; text-decoration: none; margin: 6px 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; color: #3730a3; }
+        .dark .bx-sidebar-item { color: #cbd5e1; }
+        .bx-sidebar-item:hover { background: rgba(255,255,255,0.4); }
+        .dark .bx-sidebar-item:hover { background: rgba(255,255,255,0.05); }
+        .bx-sidebar-item.active { background: rgba(59, 130, 246, 0.2); color: #2563eb; font-weight: 700; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .dark .bx-sidebar-item.active { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+        .bx-sidebar-icon { font-size: 18px; width: 24px; text-align: center; } 
+        .sidebar-category { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1; font-weight: 700; padding: 20px 28px 8px; opacity: 0.8;}
+        .dark .sidebar-category { color: #94a3b8; }
+
+        .bx-input { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.6); border-radius: 12px; padding: 0 16px; height: 44px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: #1e1b4b; backdrop-filter: blur(4px); }
+        .dark .bx-input { background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: #f1f5f9; }
+        .bx-input:focus { background: rgba(255,255,255,0.8); border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        .dark .bx-input:focus { background: rgba(15,23,42,0.6); box-shadow: 0 0 0 3px rgba(59,130,246,0.3); }
         textarea.bx-input { height: auto; padding: 12px 16px; }
         
-        .bx-btn-success { background-color: #2563eb; color: #ffffff; font-weight: 600; font-size: 13px; border-radius: 12px; padding: 0 24px; height: 44px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
-        .bx-btn-success:hover { background-color: #1d4ed8; }
+        .bx-btn-success { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #ffffff; font-weight: 600; font-size: 13px; border-radius: 12px; padding: 0 24px; height: 44px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); text-shadow: 0 1px 2px rgba(0,0,0,0.2);}
+        .bx-btn-success:hover { box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6); transform: translateY(-1px); }
         
-        .bx-btn-default { background-color: transparent; border: 1px solid #d1d5db; color: #374151; border-radius: 12px; font-weight: 600; font-size: 13px; padding: 0 20px; height: 44px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
-        .dark .bx-btn-default { border-color: #4b5563; color: #d1d5db; }
-        .bx-btn-default:hover { border-color: #9ca3af; background-color: rgba(0,0,0,0.05); }
-        .dark .bx-btn-default:hover { border-color: #6b7280; background-color: rgba(255,255,255,0.05); }
+        .bx-btn-default { background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); color: #312e81; border-radius: 12px; font-weight: 600; font-size: 13px; padding: 0 20px; height: 44px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);}
+        .dark .bx-btn-default { background: rgba(30,41,59,0.4); border-color: rgba(255,255,255,0.1); color: #cbd5e1; }
+        .bx-btn-default:hover { background: rgba(255,255,255,0.6); border-color: #818cf8; }
+        .dark .bx-btn-default:hover { background: rgba(255,255,255,0.1); border-color: #475569; }
 
-        .bx-tab { font-size: 14px; font-weight: 600; color: #6b7280; padding: 8px 16px; margin-right: 8px; transition: 0.2s; cursor: pointer; border-radius: 999px; border: 1px solid transparent; }
-        .bx-tab.active { color: #111827; background: #ffffff; border-color: #e5e7eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .dark .bx-tab { color: #9ca3af; }
-        .dark .bx-tab.active { color: #f3f4f6; background: #1f2937; border-color: #374151; }
+        .bx-tab { font-size: 14px; font-weight: 600; color: #4f46e5; padding: 8px 16px; margin-right: 8px; transition: 0.2s; cursor: pointer; border-radius: 999px; border: 1px solid transparent; }
+        .dark .bx-tab { color: #94a3b8; }
+        .bx-tab.active { color: #1e1b4b; background: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.8); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .dark .bx-tab.active { color: #f8fafc; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.1); }
         
-        .bx-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; display: inline-block;}
+        .bx-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; display: inline-block; backdrop-filter: blur(4px);}
 
         .cursor-grab { cursor: grab; }
         .cursor-grab:active { cursor: grabbing; }
-        .drag-over { background-color: rgba(59, 130, 246, 0.1) !important; border-radius: 16px; border: 2px dashed #3b82f6 !important; }
+        .drag-over { background-color: rgba(59, 130, 246, 0.2) !important; border-radius: 24px; border: 2px dashed #3b82f6 !important; }
         .dragging { opacity: 0.5; transform: scale(0.95); }
 
         .mass-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: #2563eb; }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-all duration-300">
+<body class="transition-all duration-300">
     
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-lg hidden z-[300] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800 dark:bg-gray-700"></div>
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-lg hidden z-[300] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm glass-panel bg-gray-800/80 dark:bg-gray-800/80 border-none"></div>
 
-    <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
-        <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800 shrink-0">
-                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
-                <h3 id="dayModalTitle" class="font-bold text-gray-800 dark:text-white text-base m-0 text-center flex-1">Планы на день</h3>
-                <button onclick="closeDayModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+    <div id="dayModal" class="fixed inset-0 bg-gray-900/40 dark:bg-black/60 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
+        <div class="glass-panel rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-5 border-b border-white/30 dark:border-white/10 flex justify-between items-center shrink-0">
+                <button onclick="closeDayModal()" class="text-indigo-900/50 hover:text-indigo-900 dark:text-gray-400 dark:hover:text-white text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
+                <h3 id="dayModalTitle" class="font-bold text-lg m-0 text-center flex-1">Планы на день</h3>
+                <button onclick="closeDayModal()" class="text-indigo-900/50 hover:text-red-500 dark:text-gray-400 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
             </div>
-            <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-gray-50/50 dark:bg-gray-900/50"></div>
-            <div class="p-4 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 flex justify-center shrink-0">
+            <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 glass-inner m-4"></div>
+            <div class="p-4 border-t border-white/30 dark:border-white/10 flex justify-center shrink-0">
                 <button onclick="closeDayModal()" class="bx-btn-default w-full">Закрыть</button>
             </div>
         </div>
     </div>
 
-    <div id="editModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[160] flex items-center justify-center p-3 sm:p-5 transition-all">
-        <div class="bg-white dark:bg-gray-800 rounded-[24px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
-            <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800 shrink-0">
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
-                <h3 class="font-bold text-gray-800 dark:text-white text-lg m-0 text-center flex-1">Карточка сделки</h3>
-                <button onclick="closeEditModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+    <div id="editModal" class="fixed inset-0 bg-gray-900/40 dark:bg-black/60 backdrop-blur-sm hidden z-[160] flex items-center justify-center p-3 sm:p-5 transition-all">
+        <div class="glass-panel rounded-[24px] shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
+            <div class="p-5 border-b border-white/30 dark:border-white/10 flex justify-between items-center shrink-0">
+                <button onclick="closeEditModal()" class="text-indigo-900/50 hover:text-indigo-900 dark:text-gray-400 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
+                <h3 class="font-bold text-lg m-0 text-center flex-1">Карточка сделки</h3>
+                <button onclick="closeEditModal()" class="text-indigo-900/50 hover:text-red-500 dark:text-gray-400 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
             </div>
-            <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-6 flex-1 bg-gray-50 dark:bg-gray-900 text-sm">
-                <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
-                    <h4 class="font-bold text-gray-800 dark:text-gray-200 uppercase text-[11px] mb-4 tracking-wider">Основная информация</h4>
+            <div class="p-5 sm:p-6 overflow-y-auto overscroll-contain space-y-6 flex-1 text-sm">
+                
+                <div class="p-5 glass-inner shadow-sm">
+                    <h4 class="font-bold uppercase text-[11px] mb-4 tracking-wider opacity-70">Основная информация</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">№ Заказа</label><input id="editOrderNum" type="text" class="bx-input"></div>
-                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Имя клиента *</label><input id="editName" type="text" class="bx-input"></div>
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
-                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Теги (через запятую)</label><input id="editTags" type="text" placeholder="например: авито, tarkett" class="bx-input font-medium text-blue-600 dark:text-blue-400"></div>
+                        <div><label class="block text-[12px] font-semibold mb-1.5 opacity-80">№ Заказа</label><input id="editOrderNum" type="text" class="bx-input"></div>
+                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Имя клиента *</label><input id="editName" type="text" class="bx-input"></div>
+                        <div><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Телефон</label><input id="editPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
+                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Теги (через запятую)</label><input id="editTags" type="text" placeholder="например: авито, tarkett" class="bx-input font-medium text-blue-600 dark:text-blue-400"></div>
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div class="p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-[20px] shadow-sm">
+                    <div class="p-5 glass-inner shadow-sm border-blue-200 dark:border-blue-900/50 bg-blue-50/30 dark:bg-blue-900/20">
                         <h4 class="font-bold text-blue-800 dark:text-blue-300 uppercase text-[11px] mb-4 tracking-wider">Финансы (Клиент)</h4>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-[12px] font-semibold text-gray-600 dark:text-gray-400 mb-1.5">Сумма (₽)</label><input id="editPrice" type="number" class="bx-input bg-white dark:bg-gray-800"></div>
-                            <div><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-1.5">Предоплата (₽)</label><input id="editPrepayment" type="number" class="bx-input bg-white dark:bg-gray-800 border-blue-200 dark:border-blue-700"></div>
+                            <div><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Сумма (₽)</label><input id="editPrice" type="number" class="bx-input"></div>
+                            <div><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-1.5">Предоплата (₽)</label><input id="editPrepayment" type="number" class="bx-input border-blue-300/50"></div>
                         </div>
                     </div>
-                    <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
-                        <h4 class="font-bold text-gray-800 dark:text-gray-200 uppercase text-[11px] mb-4 tracking-wider">Поставщик</h4>
+                    <div class="p-5 glass-inner shadow-sm">
+                        <h4 class="font-bold uppercase text-[11px] mb-4 tracking-wider opacity-70">Поставщик</h4>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Счет</label><input id="editInvoice" type="text" class="bx-input"></div>
-                            <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Оплата</label><select id="editSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
+                            <div><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Счет</label><input id="editInvoice" type="text" class="bx-input"></div>
+                            <div><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Оплата</label><select id="editSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="p-5 border border-yellow-100 dark:border-yellow-900/30 rounded-[20px] bg-yellow-50 dark:bg-yellow-900/10 shadow-sm">
-                    <h4 class="font-bold text-yellow-800 dark:text-yellow-500 uppercase text-[11px] mb-4 tracking-wider">Логистика</h4>
+                <div class="p-5 glass-inner shadow-sm border-amber-200/50 bg-amber-50/20 dark:bg-amber-900/10">
+                    <h4 class="font-bold text-amber-700 dark:text-amber-500 uppercase text-[11px] mb-4 tracking-wider">Логистика</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                        <div><label class="block text-[12px] font-semibold text-gray-700 dark:text-gray-400 mb-1.5">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input bg-white dark:bg-gray-800"></div>
-                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Адрес доставки</label><input id="editAddress" type="text" class="bx-input bg-white dark:bg-gray-800" placeholder="Город, улица..."></div>
+                        <div><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Дата отгрузки</label><input id="editShipDate" type="date" class="bx-input"></div>
+                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold mb-1.5 opacity-80">Адрес доставки</label><input id="editAddress" type="text" class="bx-input" placeholder="Город, улица..."></div>
                     </div>
                 </div>
 
-                <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-white dark:bg-gray-800 shadow-sm">
-                    <label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase">Стадия сделки и Комментарий</label>
+                <div class="p-5 glass-inner shadow-sm">
+                    <label class="block text-[12px] font-semibold mb-1.5 uppercase opacity-80">Стадия сделки и Комментарий</label>
                     <select id="editStatus" class="bx-input mb-4"><option value="Новый">Новые</option><option value="В работе">В работе</option><option value="На складе">На складе</option><option value="Завершен">Сделка успешна</option></select>
                     <textarea id="editComments" rows="2" class="bx-input resize-none" placeholder="Заметки по сделке..."></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-gray-50 dark:bg-gray-800/50 shadow-sm flex flex-col justify-between">
+                    <div class="p-5 glass-inner border-dashed border-2 flex flex-col justify-between">
                         <div>
                             <label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">Главный документ</label>
                             <div id="currentFileLink" class="mb-4"></div>
                         </div>
-                        <input id="editFile" type="file" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-white dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-full file:font-semibold cursor-pointer hover:file:bg-gray-50 transition">
+                        <input id="editFile" type="file" class="bx-input !p-2 !h-auto !bg-white/20 dark:!bg-black/20 cursor-pointer">
                     </div>
                     
-                    <div class="p-5 border border-gray-200 dark:border-gray-700 rounded-[20px] bg-gray-50 dark:bg-gray-800/50 shadow-sm flex flex-col justify-between">
+                    <div class="p-5 glass-inner border-dashed border-2 flex flex-col justify-between">
                         <div>
-                            <label class="block text-[12px] font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Галерея (Фото)</label>
+                            <label class="block text-[12px] font-bold mb-3 uppercase tracking-wider opacity-80">Галерея (Фото)</label>
                             <div id="editGalleryPreview" class="flex flex-wrap gap-2 mb-4"></div>
                         </div>
-                        <input id="editGalleryInput" type="file" multiple accept="image/*" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:bg-white dark:file:bg-gray-700 file:border file:border-gray-300 dark:file:border-gray-600 file:rounded-full file:font-semibold cursor-pointer hover:file:bg-gray-50 transition" title="Загрузить новые фото">
+                        <input id="editGalleryInput" type="file" multiple accept="image/*" class="bx-input !p-2 !h-auto !bg-white/20 dark:!bg-black/20 cursor-pointer" title="Загрузить новые фото">
                     </div>
                 </div>
 
             </div>
-            <div class="p-5 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col-reverse sm:flex-row justify-end gap-3 shrink-0">
+            <div class="p-5 border-t border-white/30 dark:border-white/10 flex flex-col-reverse sm:flex-row justify-end gap-3 shrink-0">
                 <button onclick="closeEditModal()" class="w-full sm:w-auto bx-btn-default">Отмена</button>
-                <button onclick="shareOrder(currentEditId)" class="w-full sm:w-auto bx-btn-default text-blue-600 border-blue-200 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-gray-700">📤 Поделиться</button>
+                <button onclick="shareOrder(currentEditId)" class="w-full sm:w-auto bx-btn-default text-blue-600 dark:text-blue-400">📤 Поделиться</button>
                 <button onclick="saveEdit()" id="saveEditBtn" class="w-full sm:w-auto bx-btn-success">Сохранить</button>
             </div>
         </div>
     </div>
 
-    <div id="authScreen" class="fixed inset-0 bg-gray-900 z-[150] flex flex-col items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 p-8 sm:p-12 rounded-[32px] shadow-2xl w-full max-w-sm text-center">
-            <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-[24px] flex items-center justify-center mx-auto mb-8 text-4xl shadow-sm">🔒</div>
-            <h2 class="text-2xl font-extrabold text-gray-800 dark:text-white mb-8 tracking-tight">Хорошие полы</h2>
-            <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="bx-input text-center text-3xl tracking-[0.5em] mb-8 h-[60px] rounded-2xl bg-gray-50 dark:bg-gray-900">
+    <div id="authScreen" class="fixed inset-0 bg-indigo-900/90 dark:bg-black/90 backdrop-blur-md z-[150] flex flex-col items-center justify-center p-4">
+        <div class="glass-panel p-8 sm:p-12 rounded-[32px] shadow-2xl w-full max-w-sm text-center border border-white/20">
+            <div class="w-20 h-20 bg-white/20 dark:bg-white/10 text-white rounded-[24px] flex items-center justify-center mx-auto mb-8 text-4xl shadow-lg backdrop-blur-sm border border-white/30">🔒</div>
+            <h2 class="text-2xl font-extrabold text-white mb-8 tracking-tight">Хорошие полы</h2>
+            <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="bx-input !bg-white/20 !border-white/30 !text-white text-center text-3xl tracking-[0.5em] mb-8 h-[60px] rounded-2xl placeholder-white/50">
             <button onclick="checkPin()" class="bx-btn-success w-full h-[54px] text-[15px] rounded-xl">Войти в систему</button>
         </div>
     </div>
 
     <div id="mainCrm" class="hidden opacity-0 transition-opacity duration-500 flex min-h-screen w-full overflow-hidden">
         
-        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-[90] hidden md:hidden"></div>
-        <aside id="sidebar" class="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 fixed inset-y-0 left-0 w-[260px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-xl md:shadow-none">
-            <div class="p-6 text-xl font-extrabold flex justify-between items-center text-gray-800 dark:text-white border-b border-gray-100 dark:border-gray-700">
-                <span class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-600 rounded-[12px] flex items-center justify-center text-white text-sm shadow-md">ХП</div> CRM</span>
-                <button onclick="toggleSidebar()" class="md:hidden text-gray-400 text-3xl bg-transparent border-none cursor-pointer leading-none">&times;</button>
+        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-indigo-900/40 dark:bg-black/60 backdrop-blur-sm z-[90] hidden md:hidden"></div>
+        <aside id="sidebar" class="glass-panel border-r-0 border-r border-white/30 dark:border-white/10 fixed inset-y-0 left-0 w-[260px] transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-[100] flex flex-col shadow-[4px_0_24px_rgba(31,38,135,0.05)]">
+            <div class="p-6 text-xl font-extrabold flex justify-between items-center border-b border-white/30 dark:border-white/10">
+                <span class="flex items-center gap-3"><div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-[12px] flex items-center justify-center text-white text-sm shadow-md border border-white/20">ХП</div> CRM</span>
+                <button onclick="toggleSidebar()" class="md:hidden text-indigo-900/50 dark:text-gray-400 text-3xl bg-transparent border-none cursor-pointer leading-none">&times;</button>
             </div>
             
             <nav class="flex-1 py-4 space-y-1.5 overflow-y-auto px-2">
@@ -185,120 +218,120 @@
                 <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="bx-sidebar-item"><span class="bx-sidebar-icon">📊</span> Аналитика</a>
                 <button onclick="toggleDarkMode()" class="w-full text-left bx-sidebar-item bg-transparent border-none cursor-pointer"><span class="bx-sidebar-icon" id="themeIcon">🌙</span> Тема</button>
             </nav>
-            <div class="p-5 border-t border-gray-100 dark:border-gray-700">
-                <button onclick="lockCrm()" class="w-full px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl text-left font-semibold text-sm transition-all cursor-pointer border-none flex items-center gap-2">🚪 Выйти</button>
+            <div class="p-5 border-t border-white/30 dark:border-white/10">
+                <button onclick="lockCrm()" class="w-full px-4 py-3 opacity-70 hover:opacity-100 hover:bg-white/20 dark:hover:bg-white/10 rounded-xl text-left font-semibold text-sm transition-all cursor-pointer border-none flex items-center gap-2">🚪 Выйти</button>
             </div>
         </aside>
 
-        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative bg-[#f3f4f6] dark:bg-gray-900">
+        <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
             
-            <header class="sticky top-0 z-40 px-6 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full bg-[#f3f4f6]/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
+            <header class="sticky top-0 z-40 px-6 h-auto sm:h-[80px] flex flex-col sm:flex-row items-center justify-between w-full glass-panel border-l-0 border-t-0 border-r-0 !rounded-none">
                 <div class="flex items-center justify-between w-full sm:w-auto h-[70px] sm:h-auto">
-                    <div class="flex items-center gap-4 text-gray-800 dark:text-white">
-                        <button onclick="toggleSidebar()" class="md:hidden text-gray-600 dark:text-gray-300 text-2xl bg-white dark:bg-gray-800 shadow-sm w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700">☰</button>
-                        <h1 id="headerTitle" class="text-2xl font-extrabold m-0 tracking-tight">Дашборд</h1>
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleSidebar()" class="md:hidden opacity-70 text-2xl glass-inner w-10 h-10 rounded-full flex items-center justify-center border border-white/40">☰</button>
+                        <h1 id="headerTitle" class="text-2xl font-extrabold m-0 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-900 dark:from-blue-300 dark:to-indigo-300 drop-shadow-sm">Дашборд</h1>
                     </div>
-                    <button onclick="toggleForm()" class="sm:hidden bg-blue-600 w-11 h-11 p-0 text-white font-bold rounded-full shadow-md text-2xl flex items-center justify-center pb-1">+</button>
+                    <button onclick="toggleForm()" class="sm:hidden bx-btn-success !w-11 !h-11 !p-0 !rounded-full text-2xl flex items-center justify-center pb-1">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-between sm:justify-end gap-3 sm:gap-5 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
-                    <div class="flex bg-white dark:bg-gray-800 rounded-full p-1 shadow-sm border border-gray-200 dark:border-gray-700 shrink-0">
+                <div id="dealsToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-between sm:justify-end gap-3 sm:gap-5 py-3 sm:py-0 border-t border-white/20 sm:border-none">
+                    <div class="flex glass-inner rounded-full p-1 shrink-0">
                         <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !mr-0 !px-5 !py-2">Канбан</div>
-                        <div onclick="setView('list')" id="v-list" class="bx-tab !mr-0 !px-5 !py-2 text-gray-500">Список</div>
-                        <div onclick="setView('table')" id="v-table" class="bx-tab !mr-0 !px-5 !py-2 text-gray-500 hidden md:block">Таблица</div>
+                        <div onclick="setView('list')" id="v-list" class="bx-tab !mr-0 !px-5 !py-2 opacity-70">Список</div>
+                        <div onclick="setView('table')" id="v-table" class="bx-tab !mr-0 !px-5 !py-2 opacity-70 hidden md:block">Таблица</div>
                     </div>
                     <div class="hidden sm:flex gap-3 items-center shrink-0">
                         <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск..." class="bx-input w-56 rounded-full shadow-sm">
                         <button onclick="exportToCSV()" class="bx-btn-default rounded-full px-5">Excel</button>
-                        <button onclick="toggleForm()" class="bx-btn-success rounded-full shadow-md">+ Сделка</button>
+                        <button onclick="toggleForm()" class="bx-btn-success rounded-full">+ Сделка</button>
                     </div>
                 </div>
 
-                <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
-                    <div class="hidden sm:flex gap-2 items-center relative bg-white dark:bg-gray-800 rounded-full shadow-sm p-1 pr-2 border border-gray-200 dark:border-gray-700">
+                <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t border-white/20 sm:border-none">
+                    <div class="hidden sm:flex gap-2 items-center relative glass-inner rounded-full p-1 pr-2">
                         <input id="newTaskInputHead" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none pl-4 pr-10 h-[38px] w-64 text-sm font-medium" onkeypress="if(event.key==='Enter') addTask('newTaskInputHead')">
-                        <button onclick="startDictation('newTaskInputHead', this)" class="absolute right-2 top-1.5">🎤</button>
+                        <button onclick="startDictation('newTaskInputHead', this)" class="absolute right-2 top-1.5 opacity-60 hover:opacity-100">🎤</button>
                     </div>
                     <button onclick="addTask('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex rounded-full">Добавить</button>
                 </div>
 
-                <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t sm:border-none border-gray-200/50 dark:border-gray-700">
+                <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-3 py-3 sm:py-0 border-t border-white/20 sm:border-none">
                     <button onclick="createFolder()" class="bx-btn-default rounded-full">📁 Папка</button>
                     <input type="file" id="crmFileInput" class="hidden" multiple onchange="uploadCrmFile(event)">
-                    <button onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success rounded-full shadow-md">📤 Загрузить</button>
+                    <button onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success rounded-full">📤 Загрузить</button>
                 </div>
             </header>
 
-            <div id="massActionToolbar" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 md:ml-[130px] bg-gray-800 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-4 z-50 transition-all duration-300 translate-y-24 opacity-0 pointer-events-none">
-                <div class="font-bold text-sm border-r border-gray-600 pr-4">Выбрано: <span id="massCount" class="text-blue-400">0</span></div>
-                <button onclick="massChangeStatus('В работе')" class="text-xs font-bold hover:text-blue-300">В работу</button>
+            <div id="massActionToolbar" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 md:ml-[130px] glass-panel !bg-indigo-900/80 dark:!bg-black/80 !border-white/20 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-4 z-50 transition-all duration-300 translate-y-24 opacity-0 pointer-events-none">
+                <div class="font-bold text-sm border-r border-white/30 pr-4">Выбрано: <span id="massCount" class="text-blue-300">0</span></div>
+                <button onclick="massChangeStatus('В работе')" class="text-xs font-bold hover:text-blue-200">В работу</button>
                 <button onclick="massChangeStatus('На складе')" class="text-xs font-bold hover:text-orange-300">На склад</button>
                 <button onclick="massChangeStatus('Завершен')" class="text-xs font-bold hover:text-emerald-300">Завершить</button>
-                <div class="border-r border-gray-600 h-4 mx-1"></div>
+                <div class="border-r border-white/30 h-4 mx-1"></div>
                 <button onclick="massDelete()" class="text-xs font-bold text-red-400 hover:text-red-300">Удалить</button>
-                <button onclick="clearSelection()" class="ml-2 w-6 h-6 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-lg leading-none">&times;</button>
+                <button onclick="clearSelection()" class="ml-2 w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-lg leading-none">&times;</button>
             </div>
 
             <div id="section-dashboard" class="p-4 sm:p-8 mx-auto w-full max-w-[1400px]">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
                     <div>
-                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Доброе утро 👋</h2>
-                        <p class="text-gray-500 dark:text-gray-400 font-medium mt-1 text-sm sm:text-base" id="dash-date">Сегодня: ...</p>
+                        <h2 class="text-3xl font-black tracking-tight drop-shadow-sm">Доброе утро 👋</h2>
+                        <p class="font-medium mt-1 text-sm sm:text-base opacity-70" id="dash-date">Сегодня: ...</p>
                     </div>
                     <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-12 px-8 hidden sm:inline-flex text-sm">+ Создать сделку</button>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm flex flex-col">
-                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">🚚 Отгрузки сегодня</h3><button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
+                    <div class="glass-card p-6 flex flex-col">
+                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-sm uppercase opacity-80">🚚 Отгрузки сегодня</h3><button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
                         <div id="dash-todays-shipments" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm flex flex-col">
-                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">🔜 Ближайшие</h3><button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
+                    <div class="glass-card p-6 flex flex-col">
+                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-sm uppercase opacity-80">🔜 Ближайшие</h3><button onclick="switchSection('calendar')" class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
                         <div id="dash-upcoming-shipments" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm flex flex-col">
-                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-gray-800 dark:text-gray-200 text-sm uppercase">✅ Задачи</h3><button onclick="switchSection('tasks')" class="text-[12px] font-semibold text-blue-600 bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button></div>
-                        <div class="flex gap-2 mb-5 relative bg-gray-50 dark:bg-gray-900 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
+                    <div class="glass-card p-6 flex flex-col">
+                        <div class="flex justify-between items-center mb-5"><h3 class="font-extrabold text-sm uppercase opacity-80">✅ Задачи</h3><button onclick="switchSection('tasks')" class="text-[12px] font-semibold text-blue-600 dark:text-blue-400 bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button></div>
+                        <div class="flex gap-2 mb-5 relative glass-inner p-1">
                             <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full pl-4 pr-10 text-sm font-medium h-[40px]" onkeypress="if(event.key==='Enter') addTask('dashTaskInput')">
-                            <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 top-2">🎤</button>
+                            <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 top-2 opacity-60">🎤</button>
                         </div>
                         <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm border-b-4 border-b-blue-500"><div class="text-[12px] font-bold text-gray-400 uppercase">Сделок в работе</div><div class="text-4xl font-black text-gray-800 dark:text-white mt-2" id="dash-active-deals">0</div></div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm border-b-4 border-b-green-500"><div class="text-[12px] font-bold text-gray-400 uppercase">Сумма в работе</div><div class="text-4xl font-black text-gray-800 dark:text-white mt-2" id="dash-active-sum">0</div></div>
-                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm border-b-4 border-b-orange-500"><div class="text-[12px] font-bold text-gray-400 uppercase">Открытых задач</div><div class="text-4xl font-black text-gray-800 dark:text-white mt-2" id="dash-active-tasks">0</div></div>
+                    <div class="glass-card p-6 border-b-4 border-b-blue-500"><div class="text-[12px] font-bold uppercase opacity-70">Сделок в работе</div><div class="text-4xl font-black mt-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400" id="dash-active-deals">0</div></div>
+                    <div class="glass-card p-6 border-b-4 border-b-emerald-500"><div class="text-[12px] font-bold uppercase opacity-70">Сумма в работе</div><div class="text-4xl font-black mt-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400" id="dash-active-sum">0</div></div>
+                    <div class="glass-card p-6 border-b-4 border-b-amber-500"><div class="text-[12px] font-bold uppercase opacity-70">Открытых задач</div><div class="text-4xl font-black mt-2 text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600 dark:from-amber-400 dark:to-orange-400" id="dash-active-tasks">0</div></div>
                 </div>
             </div>
 
             <div id="section-deals" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1600px]">
                 <div class="flex gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
-                    <button onclick="setFilter('Все')" id="filter-Все" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-blue-600 text-white shadow-md border-none cursor-pointer">Все</button>
-                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer shadow-sm">Не оплачен</button>
-                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer shadow-sm">Предоплата</button>
-                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer shadow-sm">Оплачен</button>
+                    <button onclick="setFilter('Все')" id="filter-Все" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-blue-600 text-white shadow-lg shadow-blue-500/30 border-none cursor-pointer">Все</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase glass-inner opacity-70 hover:opacity-100 cursor-pointer shadow-sm">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase glass-inner opacity-70 hover:opacity-100 cursor-pointer shadow-sm">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase glass-inner opacity-70 hover:opacity-100 cursor-pointer shadow-sm">Оплачен</button>
                 </div>
 
-                <div id="formSection" class="hidden bg-white dark:bg-gray-800 p-6 sm:p-8 border border-gray-100 dark:border-gray-700 rounded-[24px] mb-8 shadow-lg">
-                    <h2 class="text-lg font-extrabold mb-6 uppercase text-gray-800 dark:text-white tracking-tight border-b border-gray-100 dark:border-gray-700 pb-4">Новая сделка</h2>
+                <div id="formSection" class="hidden glass-card p-6 sm:p-8 mb-8">
+                    <h2 class="text-lg font-black mb-6 uppercase tracking-tight border-b border-white/20 pb-4">Новая сделка</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 text-sm">
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">№ Заказа</label><input id="cOrderNum" type="text" class="bx-input"></div>
-                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
-                        <div class="sm:col-span-4 lg:col-span-4"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Теги (через запятую)</label><input id="cTags" type="text" placeholder="сайт, tarkett, акция..." class="bx-input font-medium text-blue-600 dark:text-blue-400"></div>
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
-                        <div><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-2 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-blue-200 dark:border-blue-700 bg-blue-50/50 dark:bg-blue-900/20"></div>
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
-                        <div><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
-                        <div class="sm:col-span-3"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Адрес доставки</label><input id="cAddress" type="text" class="bx-input"></div>
-                        <div class="lg:col-span-4"><label class="block text-[12px] font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
+                        <div><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">№ Заказа</label><input id="cOrderNum" type="text" class="bx-input"></div>
+                        <div class="sm:col-span-2"><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
+                        <div><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Телефон</label><input id="cPhone" type="tel" oninput="formatPhoneInput(event)" class="bx-input font-mono"></div>
+                        <div class="sm:col-span-4 lg:col-span-4"><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Теги (через запятую)</label><input id="cTags" type="text" placeholder="сайт, tarkett, акция..." class="bx-input font-medium text-blue-600 dark:text-blue-300"></div>
+                        <div><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
+                        <div><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-2 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input !bg-blue-50/50 dark:!bg-blue-900/30 !border-blue-300/50"></div>
+                        <div><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
+                        <div><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
+                        <div><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
+                        <div class="sm:col-span-3"><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Адрес доставки</label><input id="cAddress" type="text" class="bx-input"></div>
+                        <div class="lg:col-span-4"><label class="block text-[12px] font-semibold mb-2 uppercase opacity-80">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
                         
-                        <div class="lg:col-span-2 p-4 border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 rounded-2xl"><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">Главный документ</label><input id="cFile" type="file" class="bx-input !p-2 !h-auto"></div>
-                        <div class="lg:col-span-2 p-4 border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 rounded-2xl"><label class="block text-[12px] font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Галерея фото (Несколько)</label><input id="cGallery" type="file" multiple accept="image/*" class="bx-input !p-2 !h-auto"></div>
+                        <div class="lg:col-span-2 p-4 glass-inner border-dashed border-2"><label class="block text-[12px] font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">Главный документ</label><input id="cFile" type="file" class="bx-input !p-2 !h-auto !bg-white/20 dark:!bg-black/20"></div>
+                        <div class="lg:col-span-2 p-4 glass-inner border-dashed border-2"><label class="block text-[12px] font-bold mb-3 uppercase tracking-wider opacity-80">Галерея фото (Несколько)</label><input id="cGallery" type="file" multiple accept="image/*" class="bx-input !p-2 !h-auto !bg-white/20 dark:!bg-black/20"></div>
                     </div>
                     <div class="flex gap-3">
                         <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success h-12 px-8 rounded-full">Создать сделку</button>
@@ -307,20 +340,20 @@
                 </div>
 
                 <div id="view-kanban-container" class="flex overflow-x-auto xl:grid xl:grid-cols-4 gap-4 pb-6 snap-x snap-mandatory no-scrollbar w-full">
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-purple-700 dark:text-purple-400 uppercase m-0">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-500">0</span></div><div class="text-[18px] font-black text-purple-900 dark:text-purple-300" id="cnt-new-sum">0 ₽</div></div><div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div></div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-blue-700 dark:text-blue-400 uppercase m-0">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-500">0</span></div><div class="text-[18px] font-black text-blue-900 dark:text-blue-300" id="cnt-work-sum">0 ₽</div></div><div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div></div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-orange-700 dark:text-orange-400 uppercase m-0">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-500">0</span></div><div class="text-[18px] font-black text-orange-900 dark:text-orange-300" id="cnt-stock-sum">0 ₽</div></div><div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div></div>
-                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-2xl p-4 mb-4 shadow-sm flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-extrabold text-emerald-700 dark:text-emerald-400 uppercase m-0">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-500">0</span></div><div class="text-[18px] font-black text-emerald-900 dark:text-emerald-300" id="cnt-done-sum">0 ₽</div></div><div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div></div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="glass-inner bg-purple-50/30 dark:bg-purple-900/20 border-purple-200/50 p-4 mb-4 flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-black text-purple-700 dark:text-purple-300 uppercase m-0 tracking-widest drop-shadow-sm">Новые</h3><span id="cnt-new-count" class="text-[10px] font-bold text-purple-600 dark:text-purple-400">0</span></div><div class="text-[18px] font-black text-purple-900 dark:text-purple-100" id="cnt-new-sum">0 ₽</div></div><div id="col-new" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div></div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="glass-inner bg-blue-50/30 dark:bg-blue-900/20 border-blue-200/50 p-4 mb-4 flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-black text-blue-700 dark:text-blue-300 uppercase m-0 tracking-widest drop-shadow-sm">В работе</h3><span id="cnt-work-count" class="text-[10px] font-bold text-blue-600 dark:text-blue-400">0</span></div><div class="text-[18px] font-black text-blue-900 dark:text-blue-100" id="cnt-work-sum">0 ₽</div></div><div id="col-work" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div></div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="glass-inner bg-orange-50/30 dark:bg-orange-900/20 border-orange-200/50 p-4 mb-4 flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-black text-orange-700 dark:text-orange-300 uppercase m-0 tracking-widest drop-shadow-sm">На складе</h3><span id="cnt-stock-count" class="text-[10px] font-bold text-orange-600 dark:text-orange-400">0</span></div><div class="text-[18px] font-black text-orange-900 dark:text-orange-100" id="cnt-stock-sum">0 ₽</div></div><div id="col-stock" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div></div>
+                    <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[340px] xl:w-auto flex flex-col h-full"><div class="glass-inner bg-emerald-50/30 dark:bg-emerald-900/20 border-emerald-200/50 p-4 mb-4 flex flex-col gap-1"><div class="flex justify-between items-center"><h3 class="text-[12px] font-black text-emerald-700 dark:text-emerald-300 uppercase m-0 tracking-widest drop-shadow-sm">Успешно</h3><span id="cnt-done-count" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">0</span></div><div class="text-[18px] font-black text-emerald-900 dark:text-emerald-100" id="cnt-done-sum">0 ₽</div></div><div id="col-done" class="space-y-4 flex-1 min-h-[50px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div></div>
                 </div>
 
                 <div id="view-list-container" class="hidden space-y-4"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></div>
 
                 <div id="view-table-container" class="hidden">
-                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] overflow-hidden w-full shadow-sm">
+                    <div class="glass-card overflow-hidden w-full !rounded-[24px]">
                         <div class="overflow-x-auto no-scrollbar w-full">
                             <table class="w-full text-left border-collapse min-w-[1000px]">
                                 <thead>
-                                    <tr class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <tr class="bg-white/20 dark:bg-black/20 border-b border-white/30 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider opacity-80">
                                         <th class="px-5 py-4 w-12 text-center"><input type="checkbox" id="selectAllCheckbox" class="mass-checkbox" onclick="toggleAllSelections(this)"></th>
                                         <th class="px-5 py-4 w-24 text-center">№ / Дата</th>
                                         <th class="px-5 py-4">Клиент / Связь</th>
@@ -331,61 +364,61 @@
                                         <th class="px-5 py-4 text-right">Действия</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-items-content" class="divide-y divide-gray-100 dark:divide-gray-700 text-[13px] bg-white dark:bg-gray-800"></tbody>
+                                <tbody id="table-items-content" class="divide-y divide-white/20 dark:divide-white/5 text-[13px] bg-transparent"></tbody>
                             </table>
                         </div>
-                        <div id="totalSum" class="bg-white dark:bg-gray-800 px-6 py-5 text-right text-gray-800 dark:text-white font-black text-lg border-t border-gray-200 dark:border-gray-700"></div>
+                        <div id="totalSum" class="bg-white/30 dark:bg-black/30 px-6 py-5 text-right font-black text-lg border-t border-white/30 dark:border-white/10"></div>
                     </div>
                 </div>
             </div>
 
             <div id="section-files" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 shadow-sm min-h-[500px] flex flex-col">
-                    <div class="flex items-center gap-2 mb-8 pb-4 border-b border-gray-100 dark:border-gray-700 text-sm">
-                        <span onclick="openFolder(null)" class="cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold text-xl transition-colors">📁 Общий диск</span>
-                        <span id="currentFolderBreadcrumb" class="text-gray-300 dark:text-gray-600 font-bold text-xl hidden"> / </span>
+                <div class="glass-card p-6 min-h-[500px] flex flex-col">
+                    <div class="flex items-center gap-2 mb-8 pb-4 border-b border-white/20 dark:border-white/10 text-sm">
+                        <span onclick="openFolder(null)" class="cursor-pointer opacity-70 hover:opacity-100 font-bold text-xl transition-colors">📁 Общий диск</span>
+                        <span id="currentFolderBreadcrumb" class="font-bold text-xl hidden opacity-50"> / </span>
                     </div>
                     <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6"></div>
                 </div>
             </div>
 
             <div id="section-tasks" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[800px]">
-                <div class="flex gap-2 mb-6 bg-white dark:bg-gray-800 p-1 rounded-full shadow-sm border border-gray-100 dark:border-gray-700 w-max">
+                <div class="flex gap-2 mb-6 glass-inner p-1 w-max">
                     <div onclick="setTaskView('active')" id="t-active" class="bx-tab active !m-0 !px-6">Текущие</div>
-                    <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab !m-0 !px-6 text-gray-500">Архив</div>
+                    <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab !m-0 !px-6 opacity-60">Архив</div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-4 sm:p-6 shadow-sm min-h-[500px] flex flex-col">
-                    <div class="flex gap-3 mb-6 pb-6 border-b border-gray-100 dark:border-gray-700 sm:hidden">
-                        <div class="relative flex-1 bg-gray-50 dark:bg-gray-900 rounded-full border border-gray-200 dark:border-gray-700 p-1">
+                <div class="glass-card p-4 sm:p-6 min-h-[500px] flex flex-col">
+                    <div class="flex gap-3 mb-6 pb-6 border-b border-white/20 sm:hidden">
+                        <div class="relative flex-1 glass-inner p-1">
                             <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bg-transparent border-none w-full outline-none pl-4 pr-12 h-[44px] text-sm" onkeypress="if(event.key==='Enter') addTask('newTaskInputBody')">
-                            <button onclick="startDictation('newTaskInputBody', this)" class="absolute right-2 top-1.5">🎤</button>
+                            <button onclick="startDictation('newTaskInputBody', this)" class="absolute right-2 top-2 opacity-60">🎤</button>
                         </div>
-                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-14 h-[52px] !px-0 rounded-full text-xl">+</button>
+                        <button onclick="addTask('newTaskInputBody')" class="bx-btn-success shrink-0 w-14 h-[52px] !px-0 rounded-xl text-xl">+</button>
                     </div>
                     <div id="tasks-list-content" class="space-y-4 flex-1 overflow-y-auto pr-2"></div>
                 </div>
             </div>
 
             <div id="section-calendar" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="bg-white dark:bg-gray-800 p-6 sm:p-8 border border-gray-100 dark:border-gray-700 rounded-[24px] shadow-sm">
+                <div class="glass-card p-6 sm:p-8">
                     <div class="flex justify-between items-center mb-8">
-                        <button onclick="changeMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
-                        <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-extrabold text-gray-800 dark:text-white uppercase tracking-tight"></h2>
-                        <button onclick="changeMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
+                        <button onclick="changeMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full">◀</button>
+                        <h2 id="calendarMonthLabel" class="text-xl sm:text-2xl font-black uppercase tracking-widest drop-shadow-sm"></h2>
+                        <button onclick="changeMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full">▶</button>
                     </div>
-                    <div class="grid grid-cols-7 gap-2 text-center text-[12px] font-bold text-gray-400 uppercase mb-4 tracking-wider">
-                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-400">Сб</div><div class="text-red-400">Вс</div>
+                    <div class="grid grid-cols-7 gap-2 text-center text-[12px] font-bold uppercase mb-4 tracking-wider opacity-70">
+                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-500">Сб</div><div class="text-red-500">Вс</div>
                     </div>
                     <div id="calendarGrid" class="grid grid-cols-7 gap-2 md:gap-3"></div>
                 </div>
             </div>
 
             <div id="section-archive" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] overflow-hidden w-full shadow-sm">
+                <div class="glass-card overflow-hidden w-full !rounded-[24px]">
                     <div class="overflow-x-auto no-scrollbar w-full">
                         <table class="w-full text-left border-collapse min-w-[1000px]">
                             <thead>
-                                <tr class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <tr class="bg-white/20 dark:bg-black/20 border-b border-white/30 dark:border-white/10 text-[11px] font-bold uppercase tracking-wider opacity-80">
                                     <th class="px-5 py-4 w-24 text-center">№ / Дата</th>
                                     <th class="px-5 py-4">Имя клиента / Связь</th>
                                     <th class="px-5 py-4">Итоговая сумма</th>
@@ -394,36 +427,36 @@
                                     <th class="px-5 py-4 text-right">Файл</th>
                                 </tr>
                             </thead>
-                            <tbody id="archive-items-content" class="divide-y divide-gray-100 dark:divide-gray-700 text-[13px] bg-white dark:bg-gray-800"></tbody>
+                            <tbody id="archive-items-content" class="divide-y divide-white/20 dark:divide-white/5 text-[13px] bg-transparent"></tbody>
                         </table>
                     </div>
-                    <div id="archiveTotalSum" class="bg-emerald-50 dark:bg-emerald-900/20 px-6 py-5 text-right text-emerald-700 dark:text-emerald-400 font-black text-lg border-t border-emerald-100 dark:border-emerald-800/50"></div>
+                    <div id="archiveTotalSum" class="bg-emerald-500/20 dark:bg-emerald-900/40 px-6 py-5 text-right text-emerald-800 dark:text-emerald-300 font-black text-lg border-t border-white/30 dark:border-white/10"></div>
                 </div>
             </div>
             
             <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[24px] p-6 sm:p-8 shadow-sm">
-                    <div class="flex justify-between items-center mb-8 border-b border-gray-100 dark:border-gray-700 pb-5">
+                <div class="glass-card p-6 sm:p-8">
+                    <div class="flex justify-between items-center mb-8 border-b border-white/20 pb-5">
                         <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">◀</button>
-                        <h2 id="analyticsMonthLabel" class="text-2xl font-extrabold text-gray-800 dark:text-white uppercase tracking-tight m-0"></h2>
+                        <h2 id="analyticsMonthLabel" class="text-2xl font-black uppercase tracking-widest drop-shadow-sm m-0"></h2>
                         <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default h-12 px-6 text-sm font-bold rounded-full shadow-sm">▶</button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                        <div class="p-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700 rounded-[20px]">
-                            <div class="text-[12px] text-gray-500 dark:text-gray-400 font-bold uppercase mb-2">Создано сделок</div>
-                            <div class="text-4xl font-black text-gray-800 dark:text-white" id="stat-total-count">0</div>
+                        <div class="p-6 glass-inner">
+                            <div class="text-[12px] font-bold uppercase mb-2 opacity-70">Создано сделок</div>
+                            <div class="text-4xl font-black" id="stat-total-count">0</div>
                         </div>
-                        <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-[20px]">
-                            <div class="text-[12px] text-blue-600 dark:text-blue-400 font-bold uppercase mb-2">Общая сумма</div>
-                            <div class="text-4xl font-black text-blue-700 dark:text-blue-300" id="stat-total-sum">0 ₽</div>
+                        <div class="p-6 glass-inner border-blue-300/50 bg-blue-500/10">
+                            <div class="text-[12px] text-blue-700 dark:text-blue-300 font-bold uppercase mb-2">Общая сумма</div>
+                            <div class="text-4xl font-black text-blue-800 dark:text-blue-200" id="stat-total-sum">0 ₽</div>
                         </div>
-                        <div class="p-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-[20px]">
-                            <div class="text-[12px] text-emerald-600 dark:text-emerald-400 font-bold uppercase mb-2">Завершено (Успех)</div>
-                            <div class="text-4xl font-black text-emerald-700 dark:text-emerald-300" id="stat-success-sum">0 ₽</div>
+                        <div class="p-6 glass-inner border-emerald-300/50 bg-emerald-500/10">
+                            <div class="text-[12px] text-emerald-700 dark:text-emerald-300 font-bold uppercase mb-2">Завершено (Успех)</div>
+                            <div class="text-4xl font-black text-emerald-800 dark:text-emerald-200" id="stat-success-sum">0 ₽</div>
                         </div>
-                        <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/50 rounded-[20px]">
-                            <div class="text-[12px] text-red-500 dark:text-red-400 font-bold uppercase mb-2">Остаток долга</div>
-                            <div class="text-4xl font-black text-red-600 dark:text-red-300" id="stat-debt-sum">0 ₽</div>
+                        <div class="p-6 glass-inner border-red-300/50 bg-red-500/10">
+                            <div class="text-[12px] text-red-700 dark:text-red-300 font-bold uppercase mb-2">Остаток долга</div>
+                            <div class="text-4xl font-black text-red-800 dark:text-red-200" id="stat-debt-sum">0 ₽</div>
                         </div>
                     </div>
                 </div>
@@ -447,32 +480,11 @@
         let selectedOrders = [];
         let currentGallery = [];
 
-        // --- Темная тема ---
-        function applyTheme() {
-            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '☀️';
-            } else {
-                document.documentElement.classList.remove('dark');
-                if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '🌙';
-            }
-        }
-        function toggleDarkMode() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark'); localStorage.setItem('theme', 'light');
-                document.getElementById('themeIcon').innerText = '🌙';
-            } else {
-                document.documentElement.classList.add('dark'); localStorage.setItem('theme', 'dark');
-                document.getElementById('themeIcon').innerText = '☀️';
-            }
-        }
-        applyTheme();
-
         // --- Вспомогательные функции ---
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
-            toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-lg z-[300] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm ${isError ? 'bg-red-500' : 'bg-gray-800 dark:bg-gray-700'}`;
+            toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full shadow-2xl z-[300] text-sm font-semibold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm glass-panel border-none ${isError ? 'bg-red-500/90' : 'bg-gray-900/90'}`;
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.add('hidden'), 3000);
         }
@@ -503,15 +515,15 @@
             recognition.onend = () => { btn.innerText = '🎤'; }; recognition.start();
         }
 
-        // --- Умные теги ---
+        // --- Умные теги (Glass style) ---
         function getTagColorClass(tag) {
             const t = tag.toLowerCase().trim();
-            if(['авито', 'vk', 'вк', 'сайт', 'инста', 'телеграм'].includes(t)) return 'bg-blue-100 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800/50';
-            if(['tarkett', 'classen', 'kronopol', 'aberhof', 'my floor', 'first floor'].includes(t)) return 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800/50';
-            if(['karelia', 'kahrs', 'wood bee', 'antic wood', 'steinholz', 'паркет'].includes(t)) return 'bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50';
-            if(['дизайнер', 'прораб', 'архитектор'].includes(t)) return 'bg-purple-100 text-purple-700 border border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800/50';
-            if(['важно', 'акция', 'срочно', 'доставка'].includes(t)) return 'bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800/50';
-            return 'bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
+            if(['авито', 'vk', 'вк', 'сайт', 'инста', 'телеграм'].includes(t)) return 'bg-blue-500/20 text-blue-800 dark:text-blue-300 border border-blue-400/50';
+            if(['tarkett', 'classen', 'kronopol', 'aberhof', 'my floor', 'first floor'].includes(t)) return 'bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-400/50';
+            if(['karelia', 'kahrs', 'wood bee', 'antic wood', 'steinholz', 'паркет'].includes(t)) return 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-400/50';
+            if(['дизайнер', 'прораб', 'архитектор'].includes(t)) return 'bg-purple-500/20 text-purple-800 dark:text-purple-300 border border-purple-400/50';
+            if(['важно', 'акция', 'срочно', 'доставка'].includes(t)) return 'bg-red-500/20 text-red-800 dark:text-red-300 border border-red-400/50';
+            return 'bg-white/30 dark:bg-white/10 text-gray-800 dark:text-gray-200 border border-white/40 dark:border-white/20';
         }
         function getTagsHtml(tagsStr) {
             if(!tagsStr) return '';
@@ -571,7 +583,7 @@
 
         function setView(mode) { 
             activeView = mode; localStorage.setItem('crm_view_mode', mode); 
-            ['kanban', 'list', 'table'].forEach(m => { const el = document.getElementById('v-' + m); if(el) { if (mode === m) { el.classList.add('active'); el.classList.remove('text-gray-500'); } else { el.classList.remove('active'); el.classList.add('text-gray-500'); } } });
+            ['kanban', 'list', 'table'].forEach(m => { const el = document.getElementById('v-' + m); if(el) { if (mode === m) { el.classList.add('active'); el.classList.remove('opacity-70'); } else { el.classList.remove('active'); el.classList.add('opacity-70'); } } });
             renderData(); 
         }
 
@@ -580,8 +592,8 @@
             ['Все', 'Не оплачен', 'Предоплата', 'Оплачен'].forEach(f => {
                 const btn = document.getElementById('filter-' + f);
                 if (btn) {
-                    if (f === val) btn.className = "snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-blue-600 text-white shadow-md border-none cursor-pointer transition-transform";
-                    else btn.className = "snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer shadow-sm transition-transform";
+                    if (f === val) btn.className = "snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase bx-btn-success border-none cursor-pointer transition-transform";
+                    else btn.className = "snap-start shrink-0 px-6 py-2.5 rounded-full text-[12px] font-extrabold uppercase glass-inner opacity-70 hover:opacity-100 cursor-pointer shadow-sm transition-transform";
                 }
             });
             renderData();
@@ -635,13 +647,13 @@
             document.getElementById('dash-active-tasks').innerText = allTasks.filter(t => !t.is_completed).length;
 
             const shipC = document.getElementById('dash-todays-shipments'); const todays = allOrders.filter(o => o.shipment_date === todayStr);
-            if(shipC) shipC.innerHTML = todays.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Нет отгрузок</div>` : todays.map(o => `<div class="p-4 border border-gray-100 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-200 cursor-pointer" onclick="openEditModal('${o.id}')"><div class="font-bold text-sm">${o.customer_name}</div><div class="text-[11px] text-gray-500 mt-1">📍 ${o.delivery_address || '—'}</div></div>`).join('');
+            if(shipC) shipC.innerHTML = todays.length===0 ? `<div class="opacity-50 text-sm text-center py-6">Нет отгрузок</div>` : todays.map(o => `<div class="p-4 glass-inner hover:bg-white/40 dark:hover:bg-white/10 cursor-pointer" onclick="openEditModal('${o.id}')"><div class="font-bold text-sm">${o.customer_name}</div><div class="text-[11px] opacity-70 mt-1">📍 ${o.delivery_address || '—'}</div></div>`).join('');
 
             const upC = document.getElementById('dash-upcoming-shipments'); const upcoming = allOrders.filter(o => o.shipment_date > todayStr && o.status !== 'Завершен').sort((a, b) => new Date(a.shipment_date) - new Date(b.shipment_date)).slice(0, 5);
-            if(upC) upC.innerHTML = upcoming.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Нет будущих отгрузок</div>` : upcoming.map(o => `<div class="p-4 border border-gray-100 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-200 cursor-pointer" onclick="openEditModal('${o.id}')"><div class="font-bold text-sm">${o.customer_name}</div><div class="text-[11px] font-bold text-orange-500 mt-1">📅 ${formatDate(o.shipment_date)}</div></div>`).join('');
+            if(upC) upC.innerHTML = upcoming.length===0 ? `<div class="opacity-50 text-sm text-center py-6">Нет будущих отгрузок</div>` : upcoming.map(o => `<div class="p-4 glass-inner hover:bg-white/40 dark:hover:bg-white/10 cursor-pointer" onclick="openEditModal('${o.id}')"><div class="font-bold text-sm">${o.customer_name}</div><div class="text-[11px] font-bold text-orange-500 mt-1">📅 ${formatDate(o.shipment_date)}</div></div>`).join('');
 
             const tskC = document.getElementById('dash-recent-tasks'); const opTasks = allTasks.filter(t => !t.is_completed).slice(0,5);
-            if(tskC) tskC.innerHTML = opTasks.length===0 ? `<div class="text-gray-400 text-sm text-center py-6">Всё выполнено!</div>` : opTasks.map(t => `<div class="flex items-center gap-4 p-3 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-xl cursor-pointer" onclick="toggleTask(${t.id}, true)"><div class="w-5 h-5 border-2 border-gray-300 rounded-md"></div><div class="text-sm font-medium">${t.title}</div></div>`).join('');
+            if(tskC) tskC.innerHTML = opTasks.length===0 ? `<div class="opacity-50 text-sm text-center py-6">Всё выполнено!</div>` : opTasks.map(t => `<div class="flex items-center gap-4 p-3 hover:bg-white/30 dark:hover:bg-white/10 rounded-xl cursor-pointer" onclick="toggleTask(${t.id}, true)"><div class="w-5 h-5 border-2 border-white/50 rounded-md"></div><div class="text-sm font-medium">${t.title}</div></div>`).join('');
         }
 
         // --- Главный Рендер (Сделки) - Оптимизированный ---
@@ -670,25 +682,25 @@
                 const price = Number(item.total_price || 0); sums[status] += price;
                 if(status !== 'Завершен') total += price;
 
-                let nextSt = "В работе", btnClass = "text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800";
-                let prevSt = null, prevBtnClass = "text-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700";
+                let nextSt = "В работе", btnClass = "text-blue-600 bg-blue-400/20 hover:bg-blue-400/40 dark:text-blue-300";
+                let prevSt = null, prevBtnClass = "opacity-70 hover:opacity-100 bg-white/20 hover:bg-white/40 dark:bg-black/20 dark:hover:bg-black/40";
 
-                if (status === 'В работе') { nextSt = "На складе"; btnClass = "text-orange-600 bg-orange-50 dark:bg-orange-900/30 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800"; prevSt = "Новый"; } 
-                else if (status === 'На складе') { nextSt = "Завершен"; btnClass = "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-800"; prevSt = "В работе"; } 
+                if (status === 'В работе') { nextSt = "На складе"; btnClass = "text-orange-600 bg-orange-400/20 hover:bg-orange-400/40 dark:text-orange-300"; prevSt = "Новый"; } 
+                else if (status === 'На складе') { nextSt = "Завершен"; btnClass = "text-emerald-600 bg-emerald-400/20 hover:bg-emerald-400/40 dark:text-emerald-300"; prevSt = "В работе"; } 
                 else if (status === 'Завершен') { btnClass = "hidden"; prevSt = "На складе"; }
 
-                let supColor = "bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400";
-                if(item.supplier_status === 'Оплачен') supColor = "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400";
-                else if(item.supplier_status === 'Предоплата') supColor = "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400";
-                else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400";
+                let supColor = "bg-white/40 dark:bg-black/40 opacity-80";
+                if(item.supplier_status === 'Оплачен') supColor = "bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-400/50";
+                else if(item.supplier_status === 'Предоплата') supColor = "bg-yellow-500/20 text-yellow-800 dark:text-yellow-300 border border-yellow-400/50";
+                else if(item.supplier_status === 'Не оплачен') supColor = "bg-red-500/20 text-red-800 dark:text-red-300 border border-red-400/50";
 
                 let bal = price - Number(item.prepayment || 0);
-                let balHtml = item.prepayment ? `<div class="text-[11px] font-bold mt-1 ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'}">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
+                let balHtml = item.prepayment ? `<div class="text-[11px] font-bold mt-1 ${bal <= 0 ? 'text-emerald-500' : 'text-red-500'} drop-shadow-sm">Остаток: ${bal.toLocaleString()} ₽</div>` : '';
                 const tagsHtml = getTagsHtml(item.tags);
-                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-600 dark:text-blue-400 text-[11px] font-bold pointer-events-auto bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-800/50" onclick="event.stopPropagation()">📎 Файл</a>` : '';
+                const fileLink = item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-blue-700 dark:text-blue-300 text-[11px] font-bold pointer-events-auto bg-white/40 dark:bg-black/40 px-3 py-1.5 rounded-lg border border-white/40" onclick="event.stopPropagation()">📎 Файл</a>` : '';
                 
                 let galArr = []; try { galArr = item.gallery ? JSON.parse(item.gallery) : []; } catch(e){}
-                const galleryBadge = galArr.length > 0 ? `<span class="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800/50 px-2 py-1 rounded-md ml-2 pointer-events-auto" title="Фото в галерее">🖼 ${galArr.length}</span>` : '';
+                const galleryBadge = galArr.length > 0 ? `<span class="text-[10px] font-bold text-blue-700 dark:text-blue-300 bg-white/40 dark:bg-black/40 border border-white/40 px-2 py-1 rounded-md ml-2 pointer-events-auto" title="Фото в галерее">🖼 ${galArr.length}</span>` : '';
 
                 const actionButtons = `<div class="flex gap-2 pointer-events-auto" onclick="event.stopPropagation()">
                     ${prevSt ? `<button onclick="changeStatus('${item.id}', '${prevSt}')" class="${prevBtnClass} px-3 py-2 rounded-xl text-[10px] font-extrabold uppercase transition-all shadow-sm">Назад</button>` : ''}
@@ -698,23 +710,23 @@
                 // Archive
                 if (status === 'Завершен' && document.getElementById('archive-items-content')) {
                     archiveTotal += price;
-                    htmlArchive += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${tagsHtml}</td><td class="px-5 py-4 font-black">${price.toLocaleString()} ₽</td><td class="px-5 py-4"><span class="${supColor} text-[9px] px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
+                    htmlArchive += `<tr class="hover:bg-white/30 dark:hover:bg-black/30 border-b border-white/20 dark:border-white/5 cursor-pointer transition-colors" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 font-mono text-[11px] font-bold opacity-70 text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-5 py-4"><div class="font-bold">${item.customer_name}</div>${tagsHtml}</td><td class="px-5 py-4 font-black">${price.toLocaleString()} ₽</td><td class="px-5 py-4"><span class="${supColor} text-[9px] px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
                 }
 
                 // Table
                 if(activeView === 'table' && status !== 'Завершен' && document.getElementById('table-items-content')) {
                     const isChecked = selectedOrders.includes(item.id) ? 'checked' : '';
-                    htmlTable += `<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-5 py-4 font-mono text-[11px] font-bold text-gray-400 text-center">${item.order_number||item.id}</td><td class="px-5 py-4"><div class="font-bold text-gray-800 dark:text-white">${item.customer_name}</div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-1">${item.phone}</div>`:''}${tagsHtml}</td><td class="px-5 py-4"><div class="font-black">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">${status}</span></td><td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-5 py-4"><div class="flex justify-end items-center gap-2">${fileLink}${galleryBadge}${actionButtons}</div></td></tr>`;
+                    htmlTable += `<tr class="hover:bg-white/30 dark:hover:bg-black/30 border-b border-white/20 dark:border-white/5 cursor-pointer transition-colors" onclick="openEditModal('${item.id}')"><td class="px-5 py-4 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-5 py-4 font-mono text-[11px] font-bold opacity-70 text-center">${item.order_number||item.id}</td><td class="px-5 py-4"><div class="font-bold">${item.customer_name}</div>${item.phone?`<div class="text-xs opacity-70 font-mono mt-1">${item.phone}</div>`:''}${tagsHtml}</td><td class="px-5 py-4"><div class="font-black drop-shadow-sm">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-5 py-4"><span class="px-3 py-1.5 rounded-lg font-bold text-[9px] uppercase glass-inner opacity-80">${status}</span></td><td class="px-5 py-4"><span class="px-2 py-1 rounded-md font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-5 py-4 text-xs font-bold opacity-80">${formatDate(item.shipment_date)}</td><td class="px-5 py-4"><div class="flex justify-end items-center gap-2">${fileLink}${galleryBadge}${actionButtons}</div></td></tr>`;
                 }
 
                 // List
                 if(activeView === 'list' && status !== 'Завершен' && document.getElementById('list-items-content')) {
-                    htmlList += `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 flex flex-col sm:flex-row justify-between cursor-pointer mb-4 gap-4" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-3"><div class="font-extrabold text-[16px]">${item.customer_name}</div><div class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</div></div>${item.phone?`<div class="text-xs text-gray-500 font-mono mt-2">${item.phone}</div>`:''}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-gray-100 dark:border-gray-700 pt-4 sm:pt-0 shrink-0"><div><div class="font-black text-[22px]">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-4 flex items-center gap-2"><div class="pointer-events-auto">${fileLink}${galleryBadge}</div>${actionButtons}</div></div></div>`;
+                    htmlList += `<div class="glass-card p-5 flex flex-col sm:flex-row justify-between cursor-pointer mb-4 gap-4" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-3"><div class="font-extrabold text-[16px]">${item.customer_name}</div><div class="text-[11px] font-bold glass-inner px-2 py-1">#${item.order_number||item.id}</div></div>${item.phone?`<div class="text-xs opacity-70 font-mono mt-2">${item.phone}</div>`:''}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-white/20 pt-4 sm:pt-0 shrink-0"><div><div class="font-black text-[22px] drop-shadow-sm">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-4 flex items-center gap-2"><div class="pointer-events-auto">${fileLink}${galleryBadge}</div>${actionButtons}</div></div></div>`;
                 }
 
                 // Kanban
                 if(activeView === 'kanban') {
-                    const cardStr = `<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-[24px] shadow-sm hover:shadow-md p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-extrabold text-[15px]">${item.customer_name}</div><span class="text-[11px] font-bold text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg">#${item.order_number||item.id}</span></div><div><div class="font-black text-[20px]">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-3 text-[11px] flex justify-between items-center border border-gray-100 dark:border-gray-700"><span class="${supColor} px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span>📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700 mt-2"><div class="pointer-events-auto flex items-center">${fileLink}${galleryBadge}</div>${actionButtons}</div></div>`;
+                    const cardStr = `<div class="glass-card p-5 mb-5 cursor-grab flex flex-col gap-3 group" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-extrabold text-[15px]">${item.customer_name}</div><span class="text-[11px] font-bold glass-inner px-2 py-1">#${item.order_number||item.id}</span></div><div><div class="font-black text-[20px] drop-shadow-sm">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="glass-inner !bg-white/20 p-3 text-[11px] flex justify-between items-center"><span class="${supColor} px-2 py-1 rounded-md font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span class="font-medium opacity-80">📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-3 border-t border-white/20 mt-2"><div class="pointer-events-auto flex items-center">${fileLink}${galleryBadge}</div>${actionButtons}</div></div>`;
                     
                     if (status === 'Новый') htmlNew += cardStr;
                     else if (status === 'В работе') htmlWork += cardStr;
@@ -723,7 +735,7 @@
                 }
             });
 
-            // Массовая вставка в DOM (в 10 раз быстрее)
+            // Массовая вставка в DOM
             if(document.getElementById('col-new')) document.getElementById('col-new').innerHTML = htmlNew;
             if(document.getElementById('col-work')) document.getElementById('col-work').innerHTML = htmlWork;
             if(document.getElementById('col-stock')) document.getElementById('col-stock').innerHTML = htmlStock;
@@ -755,8 +767,8 @@
         
         function renderEditGallery() {
             const container = document.getElementById('editGalleryPreview'); if(!container) return;
-            if(currentGallery.length === 0) { container.innerHTML = '<span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Фотографий нет</span>'; return; }
-            container.innerHTML = currentGallery.map(url => `<div class="relative group w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm shrink-0"><img src="${url}" class="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity" onclick="window.open('${url}', '_blank')"><button type="button" onclick="deleteGalleryImage('${url}')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" title="Удалить фото">&times;</button></div>`).join('');
+            if(currentGallery.length === 0) { container.innerHTML = '<span class="text-xs opacity-50 font-medium">Фотографий нет</span>'; return; }
+            container.innerHTML = currentGallery.map(url => `<div class="relative group w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] rounded-xl overflow-hidden border border-white/40 shadow-sm shrink-0"><img src="${url}" class="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity" onclick="window.open('${url}', '_blank')"><button type="button" onclick="deleteGalleryImage('${url}')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" title="Удалить фото">&times;</button></div>`).join('');
         }
 
         async function deleteGalleryImage(url) {
@@ -778,8 +790,8 @@
                 if(document.getElementById(field)) document.getElementById(field).value = map[field] || '';
             });
             const linkDiv = document.getElementById('currentFileLink');
-            if (o.file_url) linkDiv.innerHTML = `<div class="flex gap-3"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-800/50">📎 Открыть</a><button type="button" onclick="deleteAttachedFile('${o.id}', '${o.file_url}')" class="text-[12px] font-bold text-red-500">Удалить</button></div>`;
-            else linkDiv.innerHTML = '<span class="text-gray-400 text-xs font-medium">Файл не загружен</span>';
+            if (o.file_url) linkDiv.innerHTML = `<div class="flex gap-3"><a href="${o.file_url}" target="_blank" class="text-[12px] font-bold text-blue-600 dark:text-blue-300 bg-white/40 dark:bg-black/40 px-4 py-2 rounded-xl border border-white/40">📎 Открыть</a><button type="button" onclick="deleteAttachedFile('${o.id}', '${o.file_url}')" class="text-[12px] font-bold text-red-500">Удалить</button></div>`;
+            else linkDiv.innerHTML = '<span class="opacity-50 text-xs font-medium">Файл не загружен</span>';
             
             try { currentGallery = o.gallery ? JSON.parse(o.gallery) : []; } catch(e) { currentGallery = []; }
             renderEditGallery(); document.getElementById('editGalleryInput').value = '';
@@ -853,16 +865,16 @@
         }
         async function deleteAttachedFile(id, url) {
             if(!confirm("Удалить файл?")) return;
-            try { await _supabase.storage.from('order-files').remove([url.split('/').pop()]); await _supabase.from('orders').update({ file_url: null }).eq('id', id); document.getElementById('currentFileLink').innerHTML = '<span class="text-gray-400 text-xs">Удален</span>'; const o = allOrders.find(x => String(x.id) === String(id)); if(o) o.file_url = null; loadData(); } catch (err) { showToast("Ошибка", true); }
+            try { await _supabase.storage.from('order-files').remove([url.split('/').pop()]); await _supabase.from('orders').update({ file_url: null }).eq('id', id); document.getElementById('currentFileLink').innerHTML = '<span class="opacity-50 text-xs">Удален</span>'; const o = allOrders.find(x => String(x.id) === String(id)); if(o) o.file_url = null; loadData(); } catch (err) { showToast("Ошибка", true); }
         }
 
         // --- Задачи ---
-        function setTaskView(v) { taskView = v; document.getElementById('t-active').className = v === 'active' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 text-gray-500'; document.getElementById('t-archive').className = v === 'archive' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 text-gray-500'; renderTasks(); }
+        function setTaskView(v) { taskView = v; document.getElementById('t-active').className = v === 'active' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 opacity-60'; document.getElementById('t-archive').className = v === 'archive' ? 'bx-tab active !m-0 !px-6' : 'bx-tab !m-0 !px-6 opacity-60'; renderTasks(); }
         function renderTasks() {
             const container = document.getElementById('tasks-list-content'); if(!container) return;
             const filtered = allTasks.filter(t => taskView === 'active' ? !t.is_completed : t.is_completed);
-            if (filtered.length === 0) { container.innerHTML = `<div class="text-center text-gray-400 py-10 font-bold bg-gray-50 dark:bg-gray-900 rounded-[20px]">${taskView === 'active' ? 'Все задачи выполнены! 🎉' : 'Архив пуст'}</div>`; return; }
-            container.innerHTML = filtered.map(t => `<div class="flex items-center justify-between p-5 border border-gray-100 dark:border-gray-700 rounded-[24px] bg-white dark:bg-gray-800 mb-3 hover:shadow-md transition-all"><div class="flex items-center gap-4 cursor-pointer flex-1" onclick="toggleTask(${t.id}, ${!t.is_completed})">${t.is_completed ? `<div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md">✓</div>` : `<div class="w-6 h-6 border-2 border-gray-300 rounded-full hover:border-blue-500 transition-colors"></div>`} <div><div class="${t.is_completed ? 'line-through text-gray-400' : 'text-gray-800 dark:text-gray-100 font-semibold'} text-[15px] break-words">${t.title}</div><div class="text-[11px] text-gray-400 mt-1">${formatDate(t.created_at)}</div></div></div><div class="flex items-center gap-3"><button onclick="toggleTask(${t.id}, ${!t.is_completed})" class="bx-btn-default h-10 px-4 text-[12px] bg-gray-50 dark:bg-gray-700 border-transparent rounded-full">${t.is_completed ? 'Вернуть' : 'Готово'}</button><button onclick="deleteTask(${t.id})" class="text-gray-400 hover:text-red-500 text-2xl bg-transparent border-none cursor-pointer px-2">&times;</button></div></div>`).join('');
+            if (filtered.length === 0) { container.innerHTML = `<div class="text-center opacity-50 py-10 font-bold glass-inner">${taskView === 'active' ? 'Все задачи выполнены! 🎉' : 'Архив пуст'}</div>`; return; }
+            container.innerHTML = filtered.map(t => `<div class="flex items-center justify-between p-5 glass-inner mb-3 hover:bg-white/40 dark:hover:bg-white/10 transition-all"><div class="flex items-center gap-4 cursor-pointer flex-1" onclick="toggleTask(${t.id}, ${!t.is_completed})">${t.is_completed ? `<div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md">✓</div>` : `<div class="w-6 h-6 border-2 border-white/50 rounded-full hover:border-blue-500 transition-colors"></div>`} <div><div class="${t.is_completed ? 'line-through opacity-50' : 'font-semibold'} text-[15px] break-words">${t.title}</div><div class="text-[11px] opacity-60 mt-1">${formatDate(t.created_at)}</div></div></div><div class="flex items-center gap-3"><button onclick="toggleTask(${t.id}, ${!t.is_completed})" class="bx-btn-default h-10 px-4 text-[12px] !bg-white/20 !border-none rounded-full">${t.is_completed ? 'Вернуть' : 'Готово'}</button><button onclick="deleteTask(${t.id})" class="opacity-50 hover:opacity-100 hover:text-red-500 text-2xl bg-transparent border-none cursor-pointer px-2">&times;</button></div></div>`).join('');
         }
         async function addTask(id) { const i = document.getElementById(id); if(!i||!i.value.trim()) return showToast("Введите текст", true); await _supabase.from('tasks').insert([{ title: i.value.trim() }]); i.value = ''; loadTasks(); showToast("Добавлена", false); }
         async function toggleTask(id, st) { await _supabase.from('tasks').update({ is_completed: st }).eq('id', id); loadTasks(); }
@@ -873,10 +885,10 @@
             const grid = document.getElementById('crm-files-grid'); if(!grid) return; grid.innerHTML = '';
             if (currentFolderId === null) {
                 document.getElementById('currentFolderBreadcrumb').classList.add('hidden');
-                allFiles.filter(f => f.is_folder).forEach(f => { grid.innerHTML += `<div class="p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-500 shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group" onclick="openFolder(${f.id})"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, true)" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100">🗑</button><div class="text-5xl mb-2 transition-transform group-hover:scale-110">📁</div><div class="text-xs font-semibold text-gray-700 dark:text-gray-300 text-center truncate w-full">${f.name}</div></div>`; });
+                allFiles.filter(f => f.is_folder).forEach(f => { grid.innerHTML += `<div class="p-4 glass-inner hover:bg-white/40 dark:hover:bg-white/10 shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group" onclick="openFolder(${f.id})"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, true)" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100">🗑</button><div class="text-5xl mb-2 transition-transform group-hover:scale-110">📁</div><div class="text-xs font-semibold text-center truncate w-full">${f.name}</div></div>`; });
             } else {
-                const folder = allFiles.find(f => f.id === currentFolderId); document.getElementById('currentFolderBreadcrumb').classList.remove('hidden'); document.getElementById('currentFolderBreadcrumb').innerHTML = ` / <span class="text-gray-800 dark:text-white font-extrabold">${folder?folder.name:''}</span>`;
-                allFiles.filter(f => !f.is_folder && f.folder_id === currentFolderId).forEach(f => { grid.innerHTML += `<div class="p-4 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800 hover:border-blue-500 shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group" onclick="window.open('${f.file_url}', '_blank')"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, false, '${f.file_url}')" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100">🗑</button><div class="text-5xl mb-2 text-blue-300 transition-transform group-hover:scale-110">📄</div><div class="text-xs font-semibold text-gray-700 dark:text-gray-300 text-center truncate w-full">${f.name}</div></div>`; });
+                const folder = allFiles.find(f => f.id === currentFolderId); document.getElementById('currentFolderBreadcrumb').classList.remove('hidden'); document.getElementById('currentFolderBreadcrumb').innerHTML = ` / <span class="font-extrabold">${folder?folder.name:''}</span>`;
+                allFiles.filter(f => !f.is_folder && f.folder_id === currentFolderId).forEach(f => { grid.innerHTML += `<div class="p-4 glass-inner hover:bg-white/40 dark:hover:bg-white/10 shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group" onclick="window.open('${f.file_url}', '_blank')"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, false, '${f.file_url}')" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100">🗑</button><div class="text-5xl mb-2 text-blue-300 transition-transform group-hover:scale-110">📄</div><div class="text-xs font-semibold text-center truncate w-full">${f.name}</div></div>`; });
             }
         }
         function openFolder(id) { currentFolderId = id; renderFiles(); }
@@ -911,14 +923,14 @@
                 const dt = `${y}-${String(m + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const doO = allOrders.filter(o => o.shipment_date === dt);
                 const isT = (i === td.getDate() && m === td.getMonth() && y === td.getFullYear());
-                grid.innerHTML += `<div onclick="openDayModal('${dt}')" class="p-3 sm:p-4 rounded-2xl border ${isT ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md'} cursor-pointer flex flex-col items-center sm:items-start"><span class="font-extrabold ${isT ? 'text-blue-600 dark:text-blue-400 text-lg' : 'text-gray-700 dark:text-gray-300 text-base'}">${i}</span>${doO.length > 0 ? `<div class="mt-2 text-[10px] font-extrabold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg px-2 py-1">${doO.length} дел</div>` : ''}</div>`;
+                grid.innerHTML += `<div onclick="openDayModal('${dt}')" class="p-3 sm:p-4 glass-inner ${isT ? 'border-blue-400 bg-white/50 dark:bg-black/50' : 'hover:bg-white/40 dark:hover:bg-black/30'} cursor-pointer flex flex-col items-center sm:items-start"><span class="font-extrabold ${isT ? 'text-blue-700 dark:text-blue-300 text-lg' : 'text-base'}">${i}</span>${doO.length > 0 ? `<div class="mt-2 text-[10px] font-extrabold bg-blue-500/20 text-blue-800 dark:text-blue-200 rounded-lg px-2 py-1">${doO.length} дел</div>` : ''}</div>`;
             }
         }
         function openDayModal(dt) {
             const doO = allOrders.filter(o => o.shipment_date === dt); document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dt)}`;
             const l = document.getElementById('dayOrdersList');
-            if(doO.length === 0) l.innerHTML = `<div class="text-center text-gray-400 py-8 bg-gray-50 dark:bg-gray-900 rounded-2xl">Пусто</div>`;
-            else l.innerHTML = doO.map(o => `<div class="p-5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[20px] shadow-sm cursor-pointer mb-3 flex flex-col gap-2" onclick="openEditModal('${o.id}')"><div class="flex justify-between items-start"><div class="font-bold text-gray-800 dark:text-white">${o.customer_name}</div><span class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-[9px] uppercase font-bold">${o.status}</span></div><div class="text-[11px] text-gray-400 font-mono">#${o.order_number||o.id}</div><div class="text-lg font-black mt-1">${(Number(o.total_price)||0).toLocaleString()} ₽</div></div>`).join('');
+            if(doO.length === 0) l.innerHTML = `<div class="text-center opacity-50 py-8 glass-inner">Пусто</div>`;
+            else l.innerHTML = doO.map(o => `<div class="p-5 glass-inner shadow-sm cursor-pointer mb-3 flex flex-col gap-2 hover:bg-white/40 dark:hover:bg-black/30" onclick="openEditModal('${o.id}')"><div class="flex justify-between items-start"><div class="font-bold">${o.customer_name}</div><span class="px-2 py-1 rounded bg-white/30 dark:bg-black/30 text-[9px] uppercase font-bold">${o.status}</span></div><div class="text-[11px] opacity-60 font-mono">#${o.order_number||o.id}</div><div class="text-lg font-black mt-1 drop-shadow-sm">${(Number(o.total_price)||0).toLocaleString()} ₽</div></div>`).join('');
             document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
         }
         function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
