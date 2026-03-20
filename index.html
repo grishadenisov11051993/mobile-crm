@@ -14,7 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* Дизайн Bitrix24 */
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; background-color: #eef2f4; color: #333; }
         .dark body { background-color: #111827; color: #f3f4f6; }
         
@@ -58,7 +57,6 @@
 
         .mass-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: #2fc6f6; }
 
-        /* Лоадер */
         #ai-loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; color: white; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(4px); }
         .spinner { border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #2fc6f6; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -69,9 +67,8 @@
     <div id="ai-loader">
         <div class="spinner"></div>
         <h3 class="text-xl font-bold mb-2">Обработка...</h3>
-        <p class="text-sm text-gray-300">Подождите, сохраняем данные.</p>
+        <p class="text-sm text-gray-300">Сжимаем фото и сохраняем данные.</p>
     </div>
-
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800"></div>
 
     <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
@@ -210,7 +207,7 @@
     <div id="authScreen" class="fixed inset-0 bg-[#1d252f] z-[150] flex flex-col items-center justify-center p-4">
         <div class="bg-white dark:bg-gray-800 p-8 sm:p-12 rounded shadow-2xl w-full max-w-sm text-center">
             <div class="w-16 h-16 bg-[#2fc6f6] text-white rounded flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-sm">ХП</div>
-            <h2 class="text-xl font-bold text-[#535c69] dark:text-white mb-8 tracking-tight">Вход в систему</h2>
+            <h2 class="text-xl font-bold text-[#535c69] dark:text-white mb-8">Вход в систему</h2>
             <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" class="bx-input text-center text-3xl tracking-[0.5em] mb-8 h-[60px] bg-[#f4f7f8] dark:bg-gray-900 rounded">
             <button onclick="checkPin()" class="bx-btn-success w-full h-[50px] text-[14px]">Войти</button>
         </div>
@@ -225,32 +222,16 @@
                 <span class="font-bold tracking-wider text-sm uppercase">Хорошие Полы</span>
                 <button onclick="toggleSidebar()" class="md:hidden text-white/50 text-3xl ml-auto">&times;</button>
             </div>
-            
             <nav class="flex-1 py-4 space-y-1 overflow-y-auto px-2">
                 <div class="sidebar-category mt-2">Рабочий стол</div>
-                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard')" class="bx-sidebar-item active">
-                    <svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Дашборд
-                </a>
-                <a href="#" id="nav-deals" onclick="switchSection('deals')" class="bx-sidebar-item">
-                    <svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M4 7h16M4 7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2M4 7v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7M8 12h8"/></svg> Сделки
-                </a>
-                <a href="#" id="nav-tasks" onclick="switchSection('tasks')" class="bx-sidebar-item">
-                    <svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Задачи
-                </a>
-                <a href="#" id="nav-files" onclick="switchSection('files')" class="bx-sidebar-item">
-                    <svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Общий диск
-                </a>
-                <a href="#" id="nav-calendar" onclick="switchSection('calendar')" class="bx-sidebar-item">
-                    <svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Календарь
-                </a>
-                <a href="#" id="nav-archive" onclick="switchSection('archive')" class="bx-sidebar-item">
-                    <svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Архив
-                </a>
-                
+                <a href="#" id="nav-dashboard" onclick="switchSection('dashboard')" class="bx-sidebar-item active"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Дашборд</a>
+                <a href="#" id="nav-deals" onclick="switchSection('deals')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M4 7h16M4 7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2M4 7v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7M8 12h8"/></svg> Сделки</a>
+                <a href="#" id="nav-tasks" onclick="switchSection('tasks')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Задачи</a>
+                <a href="#" id="nav-files" onclick="switchSection('files')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Общий диск</a>
+                <a href="#" id="nav-calendar" onclick="switchSection('calendar')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Календарь</a>
+                <a href="#" id="nav-archive" onclick="switchSection('archive')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Архив</a>
                 <div class="sidebar-category mt-6">Отчеты и Настройки</div>
-                <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="bx-sidebar-item">
-                    <svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-5 5"/></svg> Аналитика
-                </a>
+                <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-5 5"/></svg> Аналитика</a>
                 <button onclick="toggleDarkMode()" class="w-full text-left bx-sidebar-item bg-transparent border-none cursor-pointer"><span class="bx-sidebar-icon" id="themeIcon">🌙</span> Тема</button>
             </nav>
             <div class="p-5 border-t border-white/10">
@@ -279,6 +260,7 @@
                             <span class="absolute left-3 top-2 text-[#aab3b8] text-sm">🔍</span>
                             <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск..." class="bx-input pl-8 !h-[36px]">
                         </div>
+                        <button onclick="exportToCSV()" class="bx-btn-default px-4 !h-[36px] hidden sm:inline-flex" title="Экспорт в Excel">📊</button>
                         <button onclick="toggleForm()" class="bx-btn-success !h-[36px] hidden sm:inline-flex">+ Сделка</button>
                     </div>
                 </div>
@@ -289,6 +271,12 @@
                         <button onclick="startDictation('newTaskInputHead', this)" class="absolute right-2 top-2 text-[#535c69]">🎤</button>
                     </div>
                     <button onclick="addTaskFromInput('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex !h-[36px]">Добавить</button>
+                </div>
+
+                <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 mt-2 sm:mt-0">
+                    <button onclick="createFolder()" class="bx-btn-default !h-[36px] w-full sm:w-auto">📁 Папка</button>
+                    <input type="file" id="crmFileInput" class="hidden" multiple onchange="uploadCrmFile(event)">
+                    <button onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success !h-[36px] w-full sm:w-auto">📤 Загрузить</button>
                 </div>
             </header>
 
@@ -305,36 +293,57 @@
             <div id="section-dashboard" class="p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-[#333] dark:text-white">Доброе утро 👋</h2>
-                        <p class="text-[#535c69] dark:text-gray-400 font-medium text-sm mt-1" id="dash-date">...</p>
+                        <h2 class="text-2xl font-bold text-[#333] dark:text-white tracking-tight">Доброе утро 👋</h2>
+                        <p class="text-[#535c69] dark:text-gray-400 font-medium text-sm mt-1" id="dash-date">Сегодня: ...</p>
                     </div>
+                    <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-10 px-6 hidden sm:inline-flex">+ Создать сделку</button>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="dash-stats">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#3bc8f5]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сделок в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-deals">0</div></div>
-                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0</div></div>
-                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#f5a623]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Задач активно</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-tasks">0</div></div>
+                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0 ₽</div></div>
+                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#f5a623]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Открытых задач</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-tasks">0</div></div>
                 </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase mb-4 uppercase">Отгрузки сегодня</h3><div id="dash-todays-shipments" class="space-y-2 overflow-y-auto flex-1"></div></div>
-                    <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase mb-4 uppercase">Ближайшие</h3><div id="dash-upcoming-shipments" class="space-y-2 overflow-y-auto flex-1"></div></div>
-                    <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase mb-4 uppercase">Важные задачи</h3><div id="dash-recent-tasks" class="space-y-2 overflow-y-auto flex-1"></div></div>
+                    <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">🚚 Отгрузки сегодня</h3><button onclick="switchSection('calendar')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
+                        <div id="dash-todays-shipments" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">🔜 Ближайшие</h3><button onclick="switchSection('calendar')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
+                        <div id="dash-upcoming-shipments" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col lg:col-span-1 md:col-span-2">
+                        <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">✅ Задачи</h3><button onclick="switchSection('tasks')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button></div>
+                        <div class="flex items-center mb-4 relative bg-[#f4f7f8] dark:bg-gray-900 rounded p-1 border border-[#dce3e7] dark:border-gray-700">
+                            <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full px-3 text-[13px] h-[34px] text-[#333] dark:text-white" onkeypress="if(event.key==='Enter') addTaskFromInput('dashTaskInput')">
+                            <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 text-[#535c69]">🎤</button>
+                        </div>
+                        <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
+                    </div>
                 </div>
             </div>
 
             <div id="section-deals" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1600px]">
-                <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
-                    <button onclick="setFilter('Все')" id="filter-Все" class="snap-start shrink-0 px-4 py-2 rounded text-[11px] font-bold uppercase bg-[#2fc6f6] text-white shadow-sm border-none cursor-pointer">Все</button>
-                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="snap-start shrink-0 px-4 py-2 rounded text-[11px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] cursor-pointer">Не оплачен</button>
-                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="snap-start shrink-0 px-4 py-2 rounded text-[11px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] cursor-pointer">Предоплата</button>
-                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="snap-start shrink-0 px-4 py-2 rounded text-[11px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] cursor-pointer">Оплачен</button>
+                <div class="flex gap-2 sm:gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar w-full snap-x">
+                    <button onclick="setFilter('Все')" id="filter-Все" class="snap-start shrink-0 px-4 sm:px-6 py-2 rounded text-[11px] sm:text-[12px] font-bold uppercase bg-[#2fc6f6] text-white shadow-sm border-none cursor-pointer transition-transform">Все</button>
+                    <button onclick="setFilter('Не оплачен')" id="filter-Не оплачен" class="snap-start shrink-0 px-4 sm:px-6 py-2 rounded text-[11px] sm:text-[12px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] dark:hover:bg-gray-700 cursor-pointer shadow-sm transition-transform">Не оплачен</button>
+                    <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="snap-start shrink-0 px-4 sm:px-6 py-2 rounded text-[11px] sm:text-[12px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] dark:hover:bg-gray-700 cursor-pointer shadow-sm transition-transform">Предоплата</button>
+                    <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="snap-start shrink-0 px-4 sm:px-6 py-2 rounded text-[11px] sm:text-[12px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] dark:hover:bg-gray-700 cursor-pointer shadow-sm transition-transform">Оплачен</button>
                 </div>
 
                 <div id="formSection" class="hidden bg-white dark:bg-gray-800 p-5 sm:p-6 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm mb-6">
                     <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mb-6 border-b border-[#dce3e7] dark:border-gray-700 pb-4">
                         <h2 class="text-sm font-bold uppercase text-[#535c69] dark:text-white tracking-wider m-0">Новая сделка</h2>
-                        <label for="ai-scanner-input" class="w-full sm:w-auto text-center bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 text-white text-[11px] font-bold uppercase px-4 py-2.5 rounded shadow-sm cursor-pointer transition-all flex items-center justify-center gap-2">📸 ИИ Скан Бланка</label>
-                        <input type="file" id="ai-scanner-input" accept="image/*" capture="environment" class="hidden" onchange="processAiScanner(event)">
+                        <div class="flex gap-2 items-center w-full sm:w-auto">
+                            <label for="ai-scanner-input" class="w-full sm:w-auto text-center bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 text-white text-[11px] font-bold uppercase px-4 py-2.5 rounded shadow-sm cursor-pointer transition-all flex items-center justify-center gap-2">
+                                <span>📸 СКАНИРОВАТЬ БЛАНК (ИИ)</span>
+                            </label>
+                            <input type="file" id="ai-scanner-input" accept="image/*" capture="environment" class="hidden" onchange="processAiScanner(event)">
+                        </div>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6 text-sm">
                         <div><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">№ Заказа</label><input id="cOrderNum" type="text" class="bx-input"></div>
                         <div class="md:col-span-2 lg:col-span-2"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
@@ -342,16 +351,17 @@
                         <div class="md:col-span-2 lg:col-span-4"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Теги</label><input id="cTags" type="text" placeholder="например: сайт, tarkett" class="bx-input"></div>
                         <div><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Сумма (₽)</label><input id="cPrice" type="number" class="bx-input"></div>
                         <div><label class="block text-[11px] font-bold text-[#2fc6f6] mb-1.5 uppercase">Предоплата (₽)</label><input id="cPrepayment" type="number" class="bx-input border-[#2fc6f6] bg-[#f0fbff] dark:bg-blue-900/20"></div>
-                        <div><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Счет пост.</label><input id="cInvoice" type="text" class="bx-input"></div>
-                        <div><label class="block text-[11px] font-bold text-[#aab3b8] uppercase mb-1.5">Оплата пост.</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
+                        <div><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Счет поставщика</label><input id="cInvoice" type="text" class="bx-input"></div>
+                        <div><label class="block text-[11px] font-bold text-[#aab3b8] uppercase mb-1.5">Оплата поставщику</label><select id="cSupplierStatus" class="bx-input"><option value="Не оплачен">Не оплачен</option><option value="Предоплата">Предоплата</option><option value="Оплачен">Оплачен</option></select></div>
                         <div><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
-                        <div class="md:col-span-2 lg:col-span-3"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Адрес</label><input id="cAddress" type="text" class="bx-input"></div>
+                        <div class="md:col-span-2 lg:col-span-3"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Адрес доставки</label><input id="cAddress" type="text" class="bx-input"></div>
                         <div class="md:col-span-2 lg:col-span-4"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
-                        <div class="md:col-span-2 p-4 bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded"><label class="block text-[11px] font-bold text-[#535c69] dark:text-gray-400 mb-2 uppercase">Бланк</label><input id="cFile" type="file" class="block w-full text-xs text-gray-500"></div>
-                        <div class="md:col-span-2 p-4 bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded"><label class="block text-[11px] font-bold text-[#535c69] dark:text-gray-400 mb-2 uppercase">Галерея</label><input id="cGallery" type="file" multiple accept="image/*" class="block w-full text-xs text-gray-500"></div>
+                        
+                        <div class="md:col-span-2 p-4 bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded"><label class="block text-[11px] font-bold text-[#535c69] dark:text-gray-400 mb-2 uppercase">Главный документ</label><input id="cFile" type="file" class="block w-full text-xs text-gray-500"></div>
+                        <div class="md:col-span-2 p-4 bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded"><label class="block text-[11px] font-bold text-[#535c69] dark:text-gray-400 mb-2 uppercase">Галерея фото</label><input id="cGallery" type="file" multiple accept="image/*" class="block w-full text-xs text-gray-500"></div>
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100 dark:border-gray-700">
-                        <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success w-full sm:w-auto">Создать</button>
+                    <div class="flex flex-col sm:flex-row gap-3 border-t border-[#dce3e7] dark:border-gray-700 pt-4">
+                        <button onclick="saveOrder()" id="saveBtn" class="bx-btn-success w-full sm:w-auto">Создать сделку</button>
                         <button onclick="toggleForm()" class="bx-btn-default w-full sm:w-auto">Отмена</button>
                     </div>
                 </div>
@@ -393,7 +403,7 @@
                 <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm">
                     <div class="flex justify-between items-center mb-6">
                         <button onclick="changeMonth(-1)" class="bx-btn-default px-4">◀</button>
-                        <h2 id="calendarMonthLabel" class="text-lg font-bold dark:text-white uppercase"></h2>
+                        <h2 id="calendarMonthLabel" class="text-lg font-bold text-[#535c69] dark:text-white uppercase m-0"></h2>
                         <button onclick="changeMonth(1)" class="bx-btn-default px-4">▶</button>
                     </div>
                     <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-[11px] font-bold text-[#aab3b8] uppercase mb-2">
@@ -404,37 +414,25 @@
             </div>
 
             <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-6 shadow-sm">
-                    <div class="flex justify-between items-center mb-6">
+                <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 sm:p-6 shadow-sm">
+                    <div class="flex justify-between items-center mb-6 border-b border-[#dce3e7] dark:border-gray-700 pb-4">
                         <button onclick="changeAnalyticsMonth(-1)" class="bx-btn-default px-4">◀</button>
-                        <h2 id="analyticsMonthLabel" class="text-lg font-bold dark:text-white uppercase"></h2>
+                        <h2 id="analyticsMonthLabel" class="text-lg font-bold text-[#535c69] dark:text-white uppercase m-0"></h2>
                         <button onclick="changeAnalyticsMonth(1)" class="bx-btn-default px-4">▶</button>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-grid">
-                        <div class="p-5 bg-gray-50 dark:bg-gray-900/50 rounded border border-slate-200 dark:border-gray-700">
-                            <div class="text-[11px] text-gray-500 font-bold uppercase">Сделок создано</div>
-                            <div class="text-3xl font-bold mt-1" id="stat-total-count">0</div>
-                        </div>
-                        <div class="p-5 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-100 dark:border-blue-800/50">
-                            <div class="text-[11px] text-blue-500 font-bold uppercase">Общая сумма</div>
-                            <div class="text-3xl font-bold mt-1 text-blue-600 dark:text-blue-400" id="stat-total-sum">0 ₽</div>
-                        </div>
-                        <div class="p-5 bg-green-50 dark:bg-green-900/20 rounded border border-green-100 dark:border-green-800/50">
-                            <div class="text-[11px] text-green-500 font-bold uppercase">Успешно завершено</div>
-                            <div class="text-3xl font-bold mt-1 text-green-600 dark:text-green-400" id="stat-success-sum">0 ₽</div>
-                        </div>
-                        <div class="p-5 bg-red-50 dark:bg-red-900/20 rounded border border-red-100 dark:border-red-800/50">
-                            <div class="text-[11px] text-red-500 font-bold uppercase">Остаток долга</div>
-                            <div class="text-3xl font-bold mt-1 text-red-600 dark:text-red-400" id="stat-debt-sum">0 ₽</div>
-                        </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6">
+                        <div class="p-5 bg-[#f4f7f8] dark:bg-gray-900/50 border border-[#dce3e7] dark:border-gray-700 rounded"><div class="text-[11px] text-[#aab3b8] font-bold uppercase mb-1">Создано сделок</div><div class="text-2xl font-bold text-[#333] dark:text-white" id="stat-total-count">0</div></div>
+                        <div class="p-5 bg-[#f0fbff] dark:bg-blue-900/20 border border-[#c6eaf8] dark:border-blue-800/50 rounded"><div class="text-[11px] text-[#2fc6f6] font-bold uppercase mb-1">Общая сумма</div><div class="text-2xl font-bold text-[#2fc6f6]" id="stat-total-sum">0 ₽</div></div>
+                        <div class="p-5 bg-[#f4fbf0] dark:bg-emerald-900/20 border border-[#d2eeb5] dark:border-emerald-800/50 rounded"><div class="text-[11px] text-[#7bd500] font-bold uppercase mb-1">Завершено (Успех)</div><div class="text-2xl font-bold text-[#7bd500]" id="stat-success-sum">0 ₽</div></div>
+                        <div class="p-5 bg-[#fff4f4] dark:bg-red-900/20 border border-[#f8d7d7] dark:border-red-800/50 rounded"><div class="text-[11px] text-red-400 font-bold uppercase mb-1">Остаток долга</div><div class="text-2xl font-bold text-red-500" id="stat-debt-sum">0 ₽</div></div>
                     </div>
                 </div>
             </div>
 
             <div id="section-archive" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
-                <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded overflow-hidden shadow-sm">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left min-w-[1000px]">
+                <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded overflow-hidden w-full shadow-sm">
+                    <div class="overflow-x-auto no-scrollbar w-full">
+                        <table class="w-full text-left border-collapse min-w-[1000px]">
                             <thead>
                                 <tr class="bg-[#f4f7f8] dark:bg-gray-900/50 border-b border-[#dce3e7] dark:border-gray-700 text-[11px] font-bold text-[#aab3b8] uppercase tracking-wider">
                                     <th class="px-4 py-3 w-24 text-center">№ / Дата</th>
@@ -462,7 +460,7 @@
                         <input id="newTaskInputBody" type="text" placeholder="Добавить задачу..." class="bx-input flex-1" onkeypress="if(event.key==='Enter') addTaskFromInput('newTaskInputBody')">
                         <button onclick="addTaskFromInput('newTaskInputBody')" class="bx-btn-success w-12 px-0">+</button>
                     </div>
-                    <div id="tasks-list-content" class="space-y-3 flex-1 overflow-y-auto pr-2"></div>
+                    <div id="tasks-list-content" class="space-y-2 flex-1 overflow-y-auto pr-2"></div>
                 </div>
             </div>
 
@@ -472,9 +470,10 @@
                         <span onclick="openFolder(null)" class="cursor-pointer text-[#535c69] dark:text-gray-300 font-bold text-lg">📁 Общий диск</span>
                         <span id="currentFolderBreadcrumb" class="text-gray-400 font-bold text-lg hidden"> / </span>
                     </div>
-                    <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4"></div>
+                    <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4"></div>
                 </div>
             </div>
+
         </main>
     </div>
 
@@ -493,7 +492,7 @@
         let selectedOrders = [];
         let currentGallery = [];
 
-        // --- ФУНКЦИЯ СЖАТИЯ ИЗОБРАЖЕНИЙ ---
+        // --- Умное сжатие фото ---
         async function compressImageFile(file) {
             if (!file.type.startsWith('image/')) return file;
             return new Promise((resolve) => {
@@ -531,7 +530,7 @@
             });
         }
 
-        // --- УТИЛИТЫ ---
+        // --- Утилиты ---
         function applyTheme() {
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -602,14 +601,19 @@
             return `<div class="mt-2 flex flex-wrap gap-1 pointer-events-none">` + arr.map(t => `<span class="bx-tag ${getTagColorClass(t)}">#${t}</span>`).join('') + `</div>`;
         }
 
-        // --- DRAG AND DROP ---
         function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
         function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
         function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
         function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
         function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
 
-        // --- ИНИЦИАЛИЗАЦИЯ И МЕНЮ ---
+        function checkBodyScroll() {
+            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden');
+            if (hasOpenModals) document.body.classList.add('overflow-hidden');
+            else document.body.classList.remove('overflow-hidden');
+        }
+
+        // --- ИНИЦИАЛИЗАЦИЯ И НАВИГАЦИЯ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
@@ -674,18 +678,38 @@
         function clearSelection() { selectedOrders = []; document.querySelectorAll('.order-checkbox').forEach(c => c.checked = false); updateMassToolbar(); }
         
         async function massChangeStatus(st) { 
-            if(selectedOrders.length===0)return; showToast(`Перемещение...`); 
-            try { const {error} = await _supabase.from('orders').update({status:st}).in('id', selectedOrders); if (error) throw error; showToast(`Успешно`); clearSelection(); loadData(); } catch(e) { showToast("Ошибка: " + e.message, true); } 
+            if(selectedOrders.length===0)return; 
+            showToast(`Перемещение...`); 
+            try { 
+                const {error} = await _supabase.from('orders').update({status:st}).in('id', selectedOrders); 
+                if (error) throw error;
+                showToast(`Успешно перемещено`); clearSelection(); loadData(); 
+            } catch(e) { showToast("Ошибка перемещения: " + e.message, true); } 
         }
+        
         async function massDelete() { 
-            if(selectedOrders.length===0)return; if(!confirm(`Удалить ${selectedOrders.length} сделок навсегда?`))return; showToast(`Удаление...`); 
-            try { const {error} = await _supabase.from('orders').delete().in('id', selectedOrders); if (error) throw error; showToast(`Удалено`); clearSelection(); loadData(); } catch(e) { showToast("Ошибка: " + e.message, true); } 
+            if(selectedOrders.length===0)return; 
+            if(!confirm(`Удалить ${selectedOrders.length} сделок навсегда?`))return; 
+            showToast(`Удаление...`); 
+            try { 
+                const {error} = await _supabase.from('orders').delete().in('id', selectedOrders); 
+                if (error) throw error;
+                showToast(`Успешно удалено`); clearSelection(); loadData(); 
+            } catch(e) { showToast("Ошибка удаления: " + e.message, true); } 
         }
 
-        // --- ЗАГРУЗКА ДАННЫХ ---
+        // --- ЗАГРУЗКА ДАННЫХ И РЕНДЕР ---
         async function loadData() { 
             const cached = localStorage.getItem('crm_orders_cache');
-            if (cached) { try { allOrders = JSON.parse(cached); if(!Array.isArray(allOrders)) allOrders = []; renderData(); if(activeSection === 'dashboard') renderDashboard(); if(activeSection === 'calendar') renderCalendar(); } catch(e) { allOrders = []; } }
+            if (cached) {
+                try {
+                    let parsed = JSON.parse(cached);
+                    allOrders = Array.isArray(parsed) ? parsed : [];
+                    renderData();
+                    if(activeSection === 'dashboard') renderDashboard();
+                    if(activeSection === 'calendar') renderCalendar();
+                } catch(e) { allOrders = []; }
+            }
             try { 
                 const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
@@ -703,7 +727,6 @@
         let searchTimeout;
         function debounceSearch() { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { renderData(); }, 300); }
 
-        // --- РЕНДЕР ДАШБОРДА ---
         function renderDashboard() {
             try {
                 const today = new Date(); const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -724,7 +747,6 @@
             } catch(e) {}
         }
 
-        // --- РЕНДЕР СДЕЛОК ---
         function renderData() {
             try {
                 if (!Array.isArray(allOrders)) allOrders = [];
@@ -803,7 +825,6 @@
                             
                             phoneHtml = `<div class="text-[12px] md:text-[13px] font-mono text-[#535c69] dark:text-gray-400 mt-1.5">${item.phone}</div>`;
                             
-                            // Яркие и сочные кнопки связи
                             contactLinksHtml = `
                                 <div class="flex gap-1 mt-2.5 pointer-events-auto" onclick="event.stopPropagation()">
                                     <a href="tel:+${linkPhone}" class="flex-1 flex items-center justify-center gap-1 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 py-1.5 md:py-2 rounded text-[10px] md:text-[11px] font-bold no-underline hover:bg-green-200 transition-colors" title="Позвонить">📞 Звонок</a>
@@ -836,7 +857,6 @@
                     }
 
                     if(activeView === 'kanban') {
-                        // ОПТИМИЗИРОВАННАЯ КАРТОЧКА КАНБАНА ДЛЯ ПК 
                         const cardStr = `
                         <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 border-t-4 rounded shadow-sm hover:shadow-md p-4 mb-4 cursor-grab flex flex-col gap-2 group transition-all" style="border-top-color: ${topBorderColor}" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')">
                             <div class="flex justify-between items-start">
@@ -888,10 +908,7 @@
                     const vis = document.querySelectorAll('.order-checkbox');
                     mainCb.checked = vis.length > 0 && Array.from(vis).every(cb => cb.checked);
                 }
-            } catch(e) {
-                console.error("Render Data Error:", e);
-                showToast("Ошибка отображения данных", true);
-            }
+            } catch(e) {}
         }
 
         async function changeStatus(id, st) { 
@@ -900,10 +917,10 @@
                 const {error} = await _supabase.from('orders').update({ status: st }).eq('id', id); 
                 if (error) throw error;
                 loadData(); showToast("Статус изменен", false); 
-            } catch(e) { showToast("Ошибка обновления: " + e.message, true); } 
+            } catch(e) { showToast("Ошибка обновления", true); } 
         }
         
-        // --- РЕДАКТИРОВАНИЕ И СОХРАНЕНИЕ ---
+        // --- СОХРАНЕНИЕ СДЕЛОК ---
         function renderEditGallery() {
             const container = document.getElementById('editGalleryPreview'); if(!container) return;
             if(currentGallery.length === 0) { container.innerHTML = '<span class="text-xs text-[#aab3b8] dark:text-gray-500 font-medium">Фотографий нет</span>'; return; }
@@ -915,14 +932,12 @@
             showToast("Удаление...");
             try {
                 const fileName = url.split('/').pop(); 
-                const {error: rmErr} = await _supabase.storage.from('order-files').remove([fileName]);
-                if (rmErr) throw rmErr;
+                await _supabase.storage.from('order-files').remove([fileName]);
                 currentGallery = currentGallery.filter(u => u !== url);
-                const {error: dbErr} = await _supabase.from('orders').update({ gallery: JSON.stringify(currentGallery) }).eq('id', currentEditId);
-                if (dbErr) throw dbErr;
+                await _supabase.from('orders').update({ gallery: JSON.stringify(currentGallery) }).eq('id', currentEditId);
                 const o = allOrders.find(x => String(x.id) === String(currentEditId)); if(o) o.gallery = JSON.stringify(currentGallery);
                 renderEditGallery(); showToast("Фото удалено"); renderData();
-            } catch(e) { showToast("Ошибка удаления: " + e.message, true); }
+            } catch(e) { showToast("Ошибка удаления", true); }
         }
 
         function openEditModal(id) {
@@ -942,10 +957,8 @@
 
         async function saveEdit() {
             if(!currentEditId) return; 
-            const btn = document.getElementById('saveEditBtn'); 
-            const origText = btn.innerText;
-            btn.innerText = 'Сжатие...'; 
-            btn.disabled = true;
+            const btn = document.getElementById('saveEditBtn'); const origText = btn.innerText;
+            btn.innerText = 'Сжатие...'; btn.disabled = true;
             document.getElementById('ai-loader').style.display = 'flex';
 
             let updates = { order_number: document.getElementById('editOrderNum').value, customer_name: document.getElementById('editName').value, total_price: document.getElementById('editPrice').value || null, prepayment: document.getElementById('editPrepayment').value || null, phone: document.getElementById('editPhone').value, tags: document.getElementById('editTags').value, supplier_invoice: document.getElementById('editInvoice').value, supplier_status: document.getElementById('editSupplierStatus').value, shipment_date: document.getElementById('editShipDate').value || null, delivery_address: document.getElementById('editAddress').value, comments: document.getElementById('editComments').value, status: document.getElementById('editStatus').value };
@@ -954,8 +967,7 @@
                 if (fileInput.files.length > 0) {
                     const comp = await compressImageFile(fileInput.files[0]);
                     const name = `main_${Date.now()}_${Math.random().toString(36).substring(2)}.jpg`;
-                    const { error: upErr } = await _supabase.storage.from('order-files').upload(name, comp);
-                    if (upErr) throw new Error("Сбой документа: " + upErr.message);
+                    await _supabase.storage.from('order-files').upload(name, comp);
                     updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
                 }
                 const galInput = document.getElementById('editGalleryInput');
@@ -963,31 +975,21 @@
                     for (let file of galInput.files) {
                         const comp = await compressImageFile(file);
                         const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.jpg`;
-                        const { error: upErr } = await _supabase.storage.from('order-files').upload(name, comp);
-                        if (upErr) throw new Error("Сбой фото галереи: " + upErr.message);
+                        await _supabase.storage.from('order-files').upload(name, comp);
                         currentGallery.push(_supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl);
                     }
                 }
                 updates.gallery = JSON.stringify(currentGallery);
-                
-                const {error: dbErr} = await _supabase.from('orders').update(updates).eq('id', currentEditId);
-                if (dbErr) throw new Error("Сбой БД: " + dbErr.message);
-                
+                await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 showToast("Сохранено", false); closeEditModal(); loadData();
-            } catch(e) { 
-                alert("Ошибка: " + e.message); 
-            } finally { 
-                btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none';
-            }
+            } catch(e) { alert("Ошибка: " + e.message); } finally { btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none'; }
         }
 
         function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editFile').value = ''; document.getElementById('editGalleryInput').value = ''; checkBodyScroll(); }
 
         async function saveOrder() {
-            const btn = document.getElementById('saveBtn'); 
-            const origText = btn.innerText;
-            btn.innerText = 'Сжатие и загрузка...'; 
-            btn.disabled = true;
+            const btn = document.getElementById('saveBtn'); const origText = btn.innerText;
+            btn.innerText = 'Сжатие и загрузка...'; btn.disabled = true;
             document.getElementById('ai-loader').style.display = 'flex';
 
             let newOrder = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value || null, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, tags: document.getElementById('cTags').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, delivery_address: document.getElementById('cAddress').value, comments: document.getElementById('cComments').value, status: 'Новый' };
@@ -998,8 +1000,7 @@
                 if (fileInput.files.length > 0) {
                     const comp = await compressImageFile(fileInput.files[0]);
                     const name = `main_${Date.now()}_${Math.random().toString(36).substring(2)}.jpg`;
-                    const { error: upErr } = await _supabase.storage.from('order-files').upload(name, comp);
-                    if (upErr) throw new Error("Сбой загрузки документа: " + upErr.message);
+                    await _supabase.storage.from('order-files').upload(name, comp);
                     newOrder.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
                 }
                 
@@ -1008,25 +1009,17 @@
                     for (let file of galInput.files) {
                         const comp = await compressImageFile(file);
                         const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.jpg`;
-                        const { error: upErr } = await _supabase.storage.from('order-files').upload(name, comp);
-                        if (upErr) throw new Error("Сбой галереи: " + upErr.message);
+                        await _supabase.storage.from('order-files').upload(name, comp);
                         galleryUrls.push(_supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl);
                     }
                 }
                 if(galleryUrls.length > 0) newOrder.gallery = JSON.stringify(galleryUrls);
 
-                const {error: dbErr} = await _supabase.from('orders').insert([newOrder]); 
-                if (dbErr) throw new Error("Сбой базы данных: " + dbErr.message);
-
+                await _supabase.from('orders').insert([newOrder]); 
                 toggleForm(); showToast("Сделка создана", false); loadData();
-                
                 ['cOrderNum','cName','cPrice','cPrepayment','cPhone','cTags','cInvoice','cShipDate','cComments','cAddress'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; });
                 document.getElementById('cFile').value = ''; document.getElementById('cGallery').value = '';
-            } catch(e) { 
-                alert("Ошибка сохранения: " + e.message); 
-            } finally { 
-                btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none';
-            }
+            } catch(e) { alert("Ошибка сохранения: " + e.message); } finally { btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none'; }
         }
 
         function exportToCSV() {
@@ -1043,13 +1036,11 @@
         async function deleteAttachedFile(id, url) {
             if(!confirm("Удалить файл?")) return;
             try { 
-                const {error: rmErr} = await _supabase.storage.from('order-files').remove([url.split('/').pop()]); 
-                if (rmErr) throw rmErr;
-                const {error: dbErr} = await _supabase.from('orders').update({ file_url: null }).eq('id', id); 
-                if (dbErr) throw dbErr;
+                await _supabase.storage.from('order-files').remove([url.split('/').pop()]); 
+                await _supabase.from('orders').update({ file_url: null }).eq('id', id); 
                 document.getElementById('currentFileLink').innerHTML = '<span class="text-[#aab3b8] text-[11px]">Удален</span>'; 
                 const o = allOrders.find(x => String(x.id) === String(id)); if(o) o.file_url = null; loadData(); 
-            } catch (err) { showToast("Ошибка удаления: " + err.message, true); }
+            } catch (err) { showToast("Ошибка удаления", true); }
         }
 
         // --- ЗАДАЧИ ---
@@ -1061,6 +1052,7 @@
             if (filtered.length === 0) { container.innerHTML = `<div class="text-center text-[#aab3b8] py-10 font-bold bg-[#f4f7f8] dark:bg-gray-900/50 rounded">Пусто</div>`; return; }
             
             const today = new Date(); today.setHours(0,0,0,0);
+
             container.innerHTML = filtered.map(t => {
                 let badgeHtml = '';
                 if (t.due_date && !t.is_completed) {
@@ -1097,7 +1089,7 @@
 
         async function addTaskFromInput(id) { 
             const i = document.getElementById(id); if(!i||!i.value.trim()) return showToast("Введите текст", true); 
-            try { const {error} = await _supabase.from('tasks').insert([{ title: i.value.trim() }]); if (error) throw error; i.value = ''; loadTasks(); showToast("Добавлена", false); } catch(e) { showToast("Ошибка: " + e.message, true); }
+            try { await _supabase.from('tasks').insert([{ title: i.value.trim() }]); i.value = ''; loadTasks(); showToast("Добавлена", false); } catch(e) { showToast("Ошибка", true); }
         }
         
         async function toggleTask(id, st) { try { await _supabase.from('tasks').update({ is_completed: st }).eq('id', id); loadTasks(); } catch(e) {} }
@@ -1105,14 +1097,20 @@
 
         function openTaskModal(id) {
             const t = allTasks.find(x => String(x.id) === String(id)); if(!t) return; currentTaskId = t.id;
-            document.getElementById('taskTitle').value = t.title || ''; document.getElementById('taskDesc').value = t.description || ''; document.getElementById('taskDueDate').value = t.due_date || '';
+            
+            document.getElementById('taskTitle').value = t.title || '';
+            document.getElementById('taskDesc').value = t.description || '';
+            document.getElementById('taskDueDate').value = t.due_date || '';
+            
             const select = document.getElementById('taskOrderSelect');
             select.innerHTML = '<option value="">-- Без привязки к сделке --</option>';
             allOrders.filter(o => o.status !== 'Завершен' || String(o.id) === String(t.order_id)).forEach(o => { select.innerHTML += `<option value="${o.id}">${o.customer_name} (Заказ #${o.order_number||o.id})</option>`; });
             select.value = t.order_id || '';
+
             const linkDiv = document.getElementById('currentTaskFileLink');
             if (t.file_url) linkDiv.innerHTML = `<div class="flex gap-2"><a href="${t.file_url}" target="_blank" class="text-[11px] font-bold text-[#2fc6f6] bg-[#f0fbff] border border-[#c6eaf8] px-3 py-1.5 rounded">📎 Открыть файл</a><button type="button" onclick="deleteTaskAttachedFile('${t.id}', '${t.file_url}')" class="text-[11px] font-bold text-red-500">Удалить</button></div>`;
             else linkDiv.innerHTML = '<span class="text-[#aab3b8] text-[11px]">Файл не прикреплен</span>';
+
             document.getElementById('taskModal').classList.remove('hidden'); checkBodyScroll();
         }
 
@@ -1120,17 +1118,19 @@
 
         async function saveTaskDetails() {
             if(!currentTaskId) return; 
-            const title = document.getElementById('taskTitle').value.trim(); if(!title) return showToast("Укажите название", true);
+            const title = document.getElementById('taskTitle').value.trim();
+            if(!title) return showToast("Укажите название задачи", true);
+
             const btn = document.getElementById('saveTaskBtn'); const origText = btn.innerText; btn.innerText = 'Сохранение...'; btn.disabled = true;
             let updates = { title: title, description: document.getElementById('taskDesc').value, due_date: document.getElementById('taskDueDate').value || null, order_id: document.getElementById('taskOrderSelect').value || null };
+
             try {
                 const fileInput = document.getElementById('taskFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0]; 
                     const ext = file.name ? file.name.split('.').pop() : 'pdf'; 
                     const name = `task_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
-                    const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
-                    if (upErr) throw new Error("Сбой вложения: " + upErr.message);
+                    await _supabase.storage.from('order-files').upload(name, file);
                     updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
                 }
                 await _supabase.from('tasks').update(updates).eq('id', currentTaskId); 
@@ -1138,7 +1138,12 @@
             } catch(e) { alert("Ошибка: " + e.message); } finally { btn.disabled = false; btn.innerText = origText; }
         }
 
-        async function deleteTaskFromModal() { if(!currentTaskId) return; if(confirm("Удалить задачу навсегда?")) { try { await _supabase.from('tasks').delete().eq('id', currentTaskId); closeTaskModal(); loadTasks(); showToast("Задача удалена"); } catch(e) {} } }
+        async function deleteTaskFromModal() {
+            if(!currentTaskId) return;
+            if(confirm("Удалить задачу навсегда?")) {
+                try { await _supabase.from('tasks').delete().eq('id', currentTaskId); closeTaskModal(); loadTasks(); showToast("Задача удалена"); } catch(e) {}
+            }
+        }
 
         async function deleteTaskAttachedFile(id, url) {
             if(!confirm("Удалить прикрепленный файл?")) return;
@@ -1172,7 +1177,7 @@
                     await _supabase.from('crm_files').insert([{ name: file.name, is_folder: false, folder_id: currentFolderId, file_url: _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl }]); 
                 } 
                 loadFiles(); showToast("Загружено"); 
-            } catch(err) { alert("Ошибка загрузки: " + err.message); } finally { e.target.value = ''; }
+            } catch(err) { alert("Ошибка загрузки"); } finally { e.target.value = ''; }
         }
         
         async function deleteCrmFile(id, isF, url) { 
@@ -1254,7 +1259,6 @@
             const loader = document.getElementById('ai-loader');
             loader.style.display = 'flex';
 
-            // Прикрепляем файл к форме
             try {
                 const dt = new DataTransfer();
                 dt.items.add(file);
@@ -1262,7 +1266,6 @@
             } catch(e) {}
 
             try {
-                // Сжимаем ТОЛЬКО ДЛЯ ИИ, чтобы Яндекс распознал быстро (базу Base64)
                 const compressedFile = await compressImageFile(file);
                 const base64Data = await new Promise((resolve) => {
                     const reader = new FileReader();
@@ -1272,16 +1275,10 @@
 
                 const response = await fetch(YANDEX_API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Api-Key ${YANDEX_API_KEY}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Api-Key ${YANDEX_API_KEY}` },
                     body: JSON.stringify({
                         "folderId": YANDEX_FOLDER_ID,
-                        "analyzeSpecs": [{
-                            "content": base64Data,
-                            "features": [{ "type": "TEXT_DETECTION", "textDetectionConfig": { "languageCodes": ["ru", "en"] } }]
-                        }]
+                        "analyzeSpecs": [{ "content": base64Data, "features": [{ "type": "TEXT_DETECTION", "textDetectionConfig": { "languageCodes": ["ru", "en"] } }] }]
                     })
                 });
 
@@ -1294,25 +1291,19 @@
                 let fullText = "";
                 try {
                     const blocks = data.results[0].results[0].textDetection.pages[0].blocks;
-                    blocks.forEach(block => {
-                        block.lines.forEach(line => {
-                            line.words.forEach(word => { fullText += word.text + " "; });
-                            fullText += "\n";
-                        });
-                    });
+                    blocks.forEach(block => { block.lines.forEach(line => { line.words.forEach(word => { fullText += word.text + " "; }); fullText += "\n"; }); });
                 } catch (e) { }
 
                 extractSmartData(fullText); 
                 showToast("Данные извлечены! Нажмите Создать.", false);
             } catch (error) {
-                showToast('Сбой распознавания: ' + error.message, true);
+                showToast('Сбой распознавания', true);
             } finally {
                 loader.style.display = 'none'; 
                 document.getElementById('ai-scanner-input').value = ''; 
             }
         }
 
-        // Снайперский поиск данных
         function extractSmartData(text) {
             const nameMatch = text.match(/лицо\s*(.*?)\s*Адрес/i);
             if (nameMatch && nameMatch[1].trim().length > 2) document.getElementById('cName').value = nameMatch[1].trim();
