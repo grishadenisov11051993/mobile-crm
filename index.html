@@ -73,17 +73,17 @@
     </div>
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800"></div>
 
-    <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-center justify-center p-4 transition-all">
-        <div class="bg-white dark:bg-gray-800 rounded shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
+    <div id="dayModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[155] flex items-end sm:items-center justify-center sm:p-4 transition-opacity duration-300 opacity-0">
+        <div id="dayModalContent" class="bg-white dark:bg-gray-800 w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] rounded-t-3xl sm:rounded-xl transform translate-y-full sm:translate-y-0 transition-transform duration-300 shadow-2xl">
+            <div class="w-full flex justify-center pt-3 pb-2 sm:hidden bg-[#f4f7f8] dark:bg-gray-800 shrink-0 cursor-pointer" onclick="closeDayModal()">
+                <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+            </div>
             <div class="p-4 border-b border-[#dce3e7] dark:border-gray-700 flex justify-between items-center bg-[#f4f7f8] dark:bg-gray-800 shrink-0">
-                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer">←</button>
+                <button onclick="closeDayModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold bg-transparent border-none cursor-pointer hidden sm:block">←</button>
                 <h3 id="dayModalTitle" class="font-bold text-[#535c69] dark:text-white text-sm uppercase m-0 text-center flex-1">Планы на день</h3>
                 <button onclick="closeDayModal()" class="text-gray-400 hover:text-red-500 text-2xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
             </div>
-            <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white dark:bg-gray-900/50"></div>
-            <div class="p-4 border-t border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-800 flex justify-center shrink-0">
-                <button onclick="closeDayModal()" class="bx-btn-default w-full">Закрыть</button>
-            </div>
+            <div id="dayOrdersList" class="p-4 overflow-y-auto space-y-3 flex-1 bg-white dark:bg-gray-900/50 pb-8 sm:pb-4"></div>
         </div>
     </div>
 
@@ -455,7 +455,7 @@
             <div id="section-tasks" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[800px]">
                 <div class="flex gap-2 mb-4 bg-[#f4f7f8] dark:bg-gray-800 p-1 rounded border border-[#dce3e7] dark:border-gray-700 w-max">
                     <div onclick="setTaskView('active')" id="t-active" class="bx-tab active !m-0">Текущие</div>
-                    <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab !m-0">Архив</div>
+                    <div onclick="setTaskView('archive')" id="t-archive" class="bx-tab !m-0 text-gray-500">Архив</div>
                 </div>
                 <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-4 sm:p-6 shadow-sm min-h-[500px] flex flex-col">
                     <div class="flex gap-2 mb-6 sm:hidden">
@@ -494,7 +494,7 @@
         let selectedOrders = [];
         let currentGallery = [];
 
-        // --- Умное сжатие фото ---
+        // --- СЖАТИЕ ИЗОБРАЖЕНИЙ ---
         async function compressImageFile(file) {
             if (!file.type.startsWith('image/')) return file;
             return new Promise((resolve) => {
@@ -521,10 +521,7 @@
                         ctx.drawImage(img, 0, 0, width, height);
 
                         canvas.toBlob((blob) => {
-                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
-                                type: 'image/jpeg',
-                                lastModified: Date.now()
-                            });
+                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg', lastModified: Date.now() });
                             resolve(compressedFile);
                         }, 'image/jpeg', 0.8);
                     };
@@ -532,7 +529,31 @@
             });
         }
 
-        // --- Утилиты ---
+        // --- DRAG AND DROP ---
+        function dragStart(e, id) { 
+            e.dataTransfer.setData('text/plain', id); 
+            setTimeout(() => e.target.classList.add('dragging'), 0); 
+        }
+        function dragEnd(e) { 
+            e.target.classList.remove('dragging'); 
+            document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); 
+        }
+        function allowDrop(e) { 
+            e.preventDefault(); 
+            e.currentTarget.classList.add('drag-over'); 
+        }
+        function dragLeave(e) { 
+            if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return; 
+            e.currentTarget.classList.remove('drag-over'); 
+        }
+        function dropCard(e, newStatus) { 
+            e.preventDefault(); 
+            e.currentTarget.classList.remove('drag-over'); 
+            const orderId = e.dataTransfer.getData('text/plain'); 
+            if(orderId) changeStatus(orderId, newStatus); 
+        }
+
+        // --- УТИЛИТЫ ---
         function applyTheme() {
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -603,12 +624,10 @@
             return `<div class="mt-2 flex flex-wrap gap-1 pointer-events-none">` + arr.map(t => `<span class="bx-tag ${getTagColorClass(t)}">#${t}</span>`).join('') + `</div>`;
         }
 
-        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
-        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
-        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-        function dragLeave(e) { if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return; e.currentTarget.classList.remove('drag-over'); }
-        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
-        function checkBodyScroll() { const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden'); if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden'); }
+        function checkBodyScroll() { 
+            const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden'); 
+            if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden'); 
+        }
 
         // --- ИНИЦИАЛИЗАЦИЯ И НАВИГАЦИЯ ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -1142,8 +1161,9 @@
             if(document.getElementById('stat-debt-sum')) document.getElementById('stat-debt-sum').innerText = dS.toLocaleString() + ' ₽';
         }
 
-        // --- КАЛЕНДАРЬ ---
+        // --- КАЛЕНДАРЬ И ШТОРКА ---
         function changeMonth(d) { currentDate.setMonth(currentDate.getMonth() + d); renderCalendar(); }
+        
         function renderCalendar() {
             const y = currentDate.getFullYear(); const m = currentDate.getMonth();
             document.getElementById('calendarMonthLabel').innerText = `${["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"][m]} ${y}`;
@@ -1151,21 +1171,67 @@
             const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = '';
             for (let i = 0; i < (fD === 0 ? 6 : fD - 1); i++) grid.innerHTML += `<div></div>`;
             const td = new Date();
+            
             for (let i = 1; i <= dIM; i++) {
                 const dt = `${y}-${String(m + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const doO = allOrders.filter(o => o.shipment_date === dt);
                 const isT = (i === td.getDate() && m === td.getMonth() && y === td.getFullYear());
-                grid.innerHTML += `<div onclick="openDayModal('${dt}')" class="p-3 sm:p-4 rounded border ${isT ? 'border-[#2fc6f6] bg-[#f0fbff] dark:bg-blue-900/30' : 'border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-800 hover:shadow-sm'} cursor-pointer flex flex-col items-center sm:items-start transition-shadow"><span class="font-bold ${isT ? 'text-[#2fc6f6] text-lg' : 'text-[#535c69] dark:text-gray-400 text-base'}">${i}</span>${doO.length > 0 ? `<div class="mt-2 text-[10px] font-bold bg-white dark:bg-gray-700 border border-[#c6eaf8] dark:border-gray-600 text-[#2fc6f6] rounded px-1.5 py-0.5">${doO.length} отгр.</div>` : ''}</div>`;
+                
+                let barsHtml = '';
+                if (doO.length > 0) {
+                    const maxBars = window.innerWidth < 640 ? 3 : 4;
+                    barsHtml = '<div class="mt-2 w-full flex flex-col items-center gap-1 px-1">';
+                    doO.slice(0, maxBars).forEach(o => {
+                        const debt = (Number(o.total_price)||0) - (Number(o.prepayment)||0);
+                        const color = debt <= 0 ? 'bg-[#7bd500]' : 'bg-red-400';
+                        barsHtml += `<div class="h-1.5 w-full max-w-[28px] rounded-full ${color} opacity-80"></div>`;
+                    });
+                    if (doO.length > maxBars) {
+                        barsHtml += `<div class="text-[9px] font-bold text-[#535c69] dark:text-gray-400 leading-none mt-0.5">+${doO.length - maxBars}</div>`;
+                    }
+                    barsHtml += '</div>';
+                }
+
+                grid.innerHTML += `<div onclick="openDayModal('${dt}')" class="min-h-[70px] sm:min-h-[90px] p-2 sm:p-3 rounded border ${isT ? 'border-[#2fc6f6] bg-[#f0fbff] dark:bg-blue-900/30' : 'border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-800 hover:shadow-sm'} cursor-pointer flex flex-col items-center sm:items-start transition-shadow"><span class="font-bold ${isT ? 'text-[#2fc6f6] text-lg' : 'text-[#535c69] dark:text-gray-400 text-sm sm:text-base'}">${i}</span>${barsHtml}</div>`;
             }
         }
+
         function openDayModal(dt) {
-            const doO = allOrders.filter(o => o.shipment_date === dt); document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dt)}`;
+            const doO = allOrders.filter(o => o.shipment_date === dt); 
+            document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dt)}`;
             const l = document.getElementById('dayOrdersList');
-            if(doO.length === 0) l.innerHTML = `<div class="text-center text-[#aab3b8] py-8 bg-[#f4f7f8] dark:bg-gray-900/50 rounded">Пусто</div>`;
-            else l.innerHTML = doO.map(o => `<div class="p-4 bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm cursor-pointer mb-3 flex flex-col gap-1 transition-transform hover:scale-[1.02]" onclick="openEditModal('${o.id}')"><div class="flex justify-between items-start"><div class="font-bold text-[#333] dark:text-white">${o.customer_name}</div><span class="px-1.5 py-0.5 rounded border border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-900 text-[9px] uppercase font-bold text-[#535c69] dark:text-gray-400">${o.status}</span></div><div class="text-[11px] text-[#aab3b8] font-mono">#${o.order_number||o.id}</div><div class="text-base font-bold text-[#333] dark:text-white mt-1">${(Number(o.total_price)||0).toLocaleString()} ₽</div></div>`).join('');
-            document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
+            if(doO.length === 0) {
+                l.innerHTML = `<div class="text-center text-[#aab3b8] py-8 bg-[#f4f7f8] dark:bg-gray-900/50 rounded">Нет отгрузок</div>`;
+            } else {
+                l.innerHTML = doO.map(o => {
+                    const debt = (Number(o.total_price)||0) - (Number(o.prepayment)||0);
+                    const statusBadge = debt <= 0 
+                        ? `<span class="text-[9px] font-bold bg-[#f4fbf0] text-[#7bd500] px-1.5 py-0.5 rounded border border-[#d2eeb5]">ОПЛАЧЕН</span>` 
+                        : `<span class="text-[9px] font-bold bg-[#fff4f4] text-red-500 px-1.5 py-0.5 rounded border border-[#f8d7d7]">ДОЛГ: ${debt.toLocaleString()} ₽</span>`;
+                    
+                    return `<div class="p-4 bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm cursor-pointer mb-3 flex flex-col gap-1 transition-transform hover:scale-[1.02]" onclick="closeDayModal(); setTimeout(()=>openEditModal('${o.id}'), 300);"><div class="flex justify-between items-start"><div class="font-bold text-[#333] dark:text-white pr-2">${o.customer_name}</div>${statusBadge}</div><div class="text-[11px] text-[#aab3b8] font-mono mt-1">#${o.order_number||o.id}</div></div>`;
+                }).join('');
+            }
+            
+            const modal = document.getElementById('dayModal');
+            const content = document.getElementById('dayModalContent');
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; // trigger reflow
+            modal.classList.remove('opacity-0');
+            content.classList.remove('translate-y-full');
+            checkBodyScroll();
         }
-        function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
+
+        function closeDayModal() { 
+            const modal = document.getElementById('dayModal');
+            const content = document.getElementById('dayModalContent');
+            modal.classList.add('opacity-0');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                checkBodyScroll();
+            }, 300);
+        }
 
         // --- ИИ СКАНЕР БЛАНКОВ (YANDEX VISION) ---
         const YANDEX_FOLDER_ID = 'b1ge7tbjtdsrcitf4bhq';
