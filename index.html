@@ -323,7 +323,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#3bc8f5]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сделок в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-deals">0</div></div>
-                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0 ₽</div></div>
+                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0</div></div>
                     <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#f5a623]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Открытых задач</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-tasks">0</div></div>
                 </div>
 
@@ -829,22 +829,23 @@
                         ${status !== 'Завершен' ? `<button onclick="changeStatus('${item.id}', '${nextSt}')" class="${btnClass} px-2 py-1.5 rounded text-[10px] font-bold uppercase transition-all">Вперед ▶</button>` : ''}
                     </div>`;
 
+                    // БЕЗОПАСНЫЙ ВЫВОД НОМЕРА (item.order_number || item.id без substr, как в оригинале)
                     if (status === 'Завершен' && document.getElementById('archive-items-content')) {
                         archiveTotal += price;
-                        htmlArchive += `<tr class="hover:bg-[#f4f7f8] dark:hover:bg-gray-700/50 border-b border-[#dce3e7] dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-4 py-3 font-mono text-[11px] text-[#aab3b8] text-center">${item.order_number||item.id.substr(0,5)}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-4 py-3"><div class="font-bold text-[#333] dark:text-white">${item.customer_name}</div>${phoneHtml}${contactLinksHtml}${tagsHtml}</td><td class="px-4 py-3 font-bold">${price.toLocaleString()} ₽</td><td class="px-4 py-3"><span class="${supColor} text-[9px] px-2 py-1 rounded font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-4 py-3 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-4 py-3 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
+                        htmlArchive += `<tr class="hover:bg-[#f4f7f8] dark:hover:bg-gray-700/50 border-b border-[#dce3e7] dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-4 py-3 font-mono text-[11px] text-[#aab3b8] text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-4 py-3"><div class="font-bold text-[#333] dark:text-white">${item.customer_name}</div>${phoneHtml}${contactLinksHtml}${tagsHtml}</td><td class="px-4 py-3 font-bold">${price.toLocaleString()} ₽</td><td class="px-4 py-3"><span class="${supColor} text-[9px] px-2 py-1 rounded font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-4 py-3 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-4 py-3 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
                     }
 
                     if(activeView === 'table' && status !== 'Завершен' && document.getElementById('table-items-content')) {
                         const isChecked = selectedOrders.includes(item.id) ? 'checked' : '';
-                        htmlTable += `<tr class="hover:bg-[#f4f7f8] dark:hover:bg-gray-700/50 border-b border-[#dce3e7] dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-4 py-3 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-4 py-3 font-mono text-[11px] text-[#aab3b8] text-center">${item.order_number||item.id.substr(0,5)}</td><td class="px-4 py-3"><div class="font-bold text-[#333] dark:text-white">${item.customer_name}</div>${phoneHtml}${contactLinksHtml}${tagsHtml}</td><td class="px-4 py-3"><div class="font-bold">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-4 py-3"><span class="px-2 py-1 rounded font-bold text-[9px] uppercase bg-[#f4f7f8] dark:bg-gray-800 text-[#535c69] border border-[#dce3e7] dark:border-gray-700">${status}</span></td><td class="px-4 py-3"><span class="px-2 py-1 rounded font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-4 py-3 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-4 py-3"><div class="flex justify-end items-center gap-2">${fileLink}${galleryBadge}${actionButtons}</div></td></tr>`;
+                        htmlTable += `<tr class="hover:bg-[#f4f7f8] dark:hover:bg-gray-700/50 border-b border-[#dce3e7] dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-4 py-3 text-center pointer-events-auto" onclick="event.stopPropagation()"><input type="checkbox" class="mass-checkbox order-checkbox" value="${item.id}" ${isChecked} onchange="toggleOrderSelection('${item.id}')"></td><td class="px-4 py-3 font-mono text-[11px] text-[#aab3b8] text-center">${item.order_number||item.id}</td><td class="px-4 py-3"><div class="font-bold text-[#333] dark:text-white">${item.customer_name}</div>${phoneHtml}${contactLinksHtml}${tagsHtml}</td><td class="px-4 py-3"><div class="font-bold">${price.toLocaleString()} ₽</div>${balHtml}</td><td class="px-4 py-3"><span class="px-2 py-1 rounded font-bold text-[9px] uppercase bg-[#f4f7f8] dark:bg-gray-800 text-[#535c69] border border-[#dce3e7] dark:border-gray-700">${status}</span></td><td class="px-4 py-3"><span class="px-2 py-1 rounded font-bold text-[9px] uppercase ${supColor}">${item.supplier_status||'Не оплачен'}</span></td><td class="px-4 py-3 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-4 py-3"><div class="flex justify-end items-center gap-2">${fileLink}${galleryBadge}${actionButtons}</div></td></tr>`;
                     }
 
                     if(activeView === 'list' && status !== 'Завершен' && document.getElementById('list-items-content')) {
-                        htmlList += `<div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 border-l-4 rounded p-4 flex flex-col sm:flex-row justify-between cursor-pointer hover:shadow-md mb-4 gap-4 transition-shadow" style="border-left-color: ${topBorderColor}" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-2"><div class="font-bold text-[14px] text-[#333] dark:text-white">${item.customer_name}</div><div class="text-[10px] text-[#aab3b8] font-mono">#${item.order_number||item.id.substr(0,5)}</div></div>${phoneHtml}${contactLinksHtml}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-[#dce3e7] dark:border-gray-700 pt-3 sm:pt-0 shrink-0"><div><div class="font-bold text-[16px] text-[#333] dark:text-white">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-3 flex items-center gap-2"><div class="pointer-events-auto">${fileLink}${galleryBadge}</div>${actionButtons}</div></div></div>`;
+                        htmlList += `<div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 border-l-4 rounded p-4 flex flex-col sm:flex-row justify-between cursor-pointer hover:shadow-md mb-4 gap-4 transition-shadow" style="border-left-color: ${topBorderColor}" onclick="openEditModal('${item.id}')"><div class="flex-1"><div class="flex items-center gap-2"><div class="font-bold text-[14px] text-[#333] dark:text-white">${item.customer_name}</div><div class="text-[10px] text-[#aab3b8] font-mono">#${item.order_number||item.id}</div></div>${phoneHtml}${contactLinksHtml}${tagsHtml}</div><div class="flex flex-col items-end justify-between border-t sm:border-t-0 border-[#dce3e7] dark:border-gray-700 pt-3 sm:pt-0 shrink-0"><div><div class="font-bold text-[16px] text-[#333] dark:text-white">${price.toLocaleString()} ₽</div>${balHtml}</div><div class="mt-3 flex items-center gap-2"><div class="pointer-events-auto">${fileLink}${galleryBadge}</div>${actionButtons}</div></div></div>`;
                     }
 
                     if(activeView === 'kanban') {
-                        const cardStr = `<div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 border-t-4 rounded shadow-sm hover:shadow-md p-4 mb-3 cursor-grab flex flex-col gap-2 group transition-all" style="border-top-color: ${topBorderColor}" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-bold text-[13px] text-[#333] dark:text-white leading-tight">${item.customer_name}</div><span class="text-[10px] font-mono text-[#aab3b8]">#${item.order_number||item.id.substr(0,5)}</span></div>${phoneHtml}${contactLinksHtml}<div><div class="font-bold text-[15px] text-[#333] dark:text-white">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-[#f4f7f8] dark:bg-gray-800/50 rounded p-2 text-[10px] flex justify-between items-center border border-[#dce3e7] dark:border-gray-700 mt-1"><span class="${supColor} px-1.5 py-0.5 rounded font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span class="font-medium text-[#535c69] dark:text-gray-400">📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-2 mt-1"><div class="pointer-events-auto flex items-center gap-1">${fileLink}${galleryBadge}</div>${actionButtons}</div></div>`;
+                        const cardStr = `<div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 border-t-4 rounded shadow-sm hover:shadow-md p-4 mb-3 cursor-grab flex flex-col gap-2 group transition-all" style="border-top-color: ${topBorderColor}" draggable="true" ondragstart="dragStart(event, '${item.id}')" ondragend="dragEnd(event)" onclick="openEditModal('${item.id}')"><div class="flex justify-between items-start"><div class="font-bold text-[13px] text-[#333] dark:text-white leading-tight">${item.customer_name}</div><span class="text-[10px] font-mono text-[#aab3b8]">#${item.order_number||item.id}</span></div>${phoneHtml}${contactLinksHtml}<div><div class="font-bold text-[15px] text-[#333] dark:text-white">${price.toLocaleString()} ₽</div>${balHtml}</div>${tagsHtml}<div class="bg-[#f4f7f8] dark:bg-gray-800/50 rounded p-2 text-[10px] flex justify-between items-center border border-[#dce3e7] dark:border-gray-700 mt-1"><span class="${supColor} px-1.5 py-0.5 rounded font-bold uppercase">${item.supplier_status||'Не оплачен'}</span> <span class="font-medium text-[#535c69] dark:text-gray-400">📅 ${formatDate(item.shipment_date)}</span></div><div class="flex justify-between items-center pt-2 mt-1"><div class="pointer-events-auto flex items-center gap-1">${fileLink}${galleryBadge}</div>${actionButtons}</div></div>`;
                         
                         if (status === 'Новый') htmlNew += cardStr;
                         else if (status === 'В работе') htmlWork += cardStr;
@@ -981,7 +982,7 @@
                 const fileInput = document.getElementById('cFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0]; 
-                    const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
+                    const ext = (file.name || 'file.jpg').split('.').pop(); 
                     const name = `main_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                     if (upErr) throw new Error("Сбой загрузки документа: " + upErr.message);
@@ -991,7 +992,7 @@
                 let galleryUrls = []; const galInput = document.getElementById('cGallery');
                 if (galInput.files.length > 0) {
                     for (let file of galInput.files) {
-                        const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
+                        const ext = (file.name || 'file.jpg').split('.').pop(); 
                         const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                         const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                         if (upErr) throw new Error("Сбой галереи: " + upErr.message);
@@ -1110,7 +1111,7 @@
             const select = document.getElementById('taskOrderSelect');
             select.innerHTML = '<option value="">-- Без привязки к сделке --</option>';
             const activeOrders = allOrders.filter(o => o.status !== 'Завершен' || String(o.id) === String(t.order_id));
-            activeOrders.forEach(o => { select.innerHTML += `<option value="${o.id}">${o.customer_name} (Заказ #${o.order_number||o.id.substr(0,5)})</option>`; });
+            activeOrders.forEach(o => { select.innerHTML += `<option value="${o.id}">${o.customer_name} (Заказ #${o.order_number||o.id})</option>`; });
             select.value = t.order_id || '';
 
             const linkDiv = document.getElementById('currentTaskFileLink');
@@ -1277,7 +1278,7 @@
             const doO = allOrders.filter(o => o.shipment_date === dt); document.getElementById('dayModalTitle').innerText = `Отгрузки: ${formatDate(dt)}`;
             const l = document.getElementById('dayOrdersList');
             if(doO.length === 0) l.innerHTML = `<div class="text-center text-[#aab3b8] py-8 bg-[#f4f7f8] dark:bg-gray-900/50 rounded">Пусто</div>`;
-            else l.innerHTML = doO.map(o => `<div class="p-4 bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm cursor-pointer mb-3 flex flex-col gap-1 transition-transform hover:scale-[1.02]" onclick="openEditModal('${o.id}')"><div class="flex justify-between items-start"><div class="font-bold text-[#333] dark:text-white">${o.customer_name}</div><span class="px-1.5 py-0.5 rounded border border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-900 text-[9px] uppercase font-bold text-[#535c69] dark:text-gray-400">${o.status}</span></div><div class="text-[11px] text-[#aab3b8] font-mono">#${o.order_number||o.id.substr(0,5)}</div><div class="text-base font-bold text-[#333] dark:text-white mt-1">${(Number(o.total_price)||0).toLocaleString()} ₽</div></div>`).join('');
+            else l.innerHTML = doO.map(o => `<div class="p-4 bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm cursor-pointer mb-3 flex flex-col gap-1 transition-transform hover:scale-[1.02]" onclick="openEditModal('${o.id}')"><div class="flex justify-between items-start"><div class="font-bold text-[#333] dark:text-white">${o.customer_name}</div><span class="px-1.5 py-0.5 rounded border border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-900 text-[9px] uppercase font-bold text-[#535c69] dark:text-gray-400">${o.status}</span></div><div class="text-[11px] text-[#aab3b8] font-mono">#${o.order_number||o.id}</div><div class="text-base font-bold text-[#333] dark:text-white mt-1">${(Number(o.total_price)||0).toLocaleString()} ₽</div></div>`).join('');
             document.getElementById('dayModal').classList.remove('hidden'); checkBodyScroll();
         }
         function closeDayModal() { document.getElementById('dayModal').classList.add('hidden'); checkBodyScroll(); }
@@ -1287,6 +1288,13 @@
         // ===============================================
         const YANDEX_FOLDER_ID = 'b1ge7tbjtdsrcitf4bhq';
         const YANDEX_API_URL = '/api/yandex-vision'; 
+
+        function dataURLtoFile(dataurl, filename) {
+            let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+            return new File([u8arr], filename, {type:mime});
+        }
 
         function compressImage(file, callback) {
             const reader = new FileReader();
@@ -1309,8 +1317,9 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
-                    callback(base64);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // 70% quality compression
+                    const base64Data = dataUrl.split(',')[1];
+                    callback(base64Data, dataUrl);
                 };
             };
         }
@@ -1332,16 +1341,6 @@
                 }
             }
 
-            // ПРИКРЕПЛЯЕМ ОРИГИНАЛЬНЫЙ ФАЙЛ К ФОРМЕ (безопасный метод без зависаний)
-            try {
-                const dt = new DataTransfer();
-                dt.items.add(file);
-                document.getElementById('cFile').files = dt.files;
-            } catch(e) {
-                console.error("Attachment fallback", e);
-            }
-
-            // Очищаем форму перед заполнением
             document.getElementById('cName').value = '';
             document.getElementById('cPhone').value = '';
             document.getElementById('cAddress').value = '';
@@ -1351,8 +1350,16 @@
             const loader = document.getElementById('ai-loader');
             loader.style.display = 'flex';
 
-            // Сжимаем ТОЛЬКО ДЛЯ ИИ, чтобы Yandex прочитал быстро
-            compressImage(file, async (base64Image) => {
+            compressImage(file, async (base64Data, dataUrl) => {
+                // БЕЗОПАСНОЕ ПРИКРЕПЛЕНИЕ ОРИГИНАЛЬНОГО ФАЙЛА
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    document.getElementById('cFile').files = dt.files;
+                } catch(e) {
+                    console.error("Attachment fallback", e);
+                }
+
                 try {
                     const response = await fetch(YANDEX_API_URL, {
                         method: 'POST',
@@ -1363,7 +1370,7 @@
                         body: JSON.stringify({
                             "folderId": YANDEX_FOLDER_ID,
                             "analyzeSpecs": [{
-                                "content": base64Image,
+                                "content": base64Data,
                                 "features": [{ "type": "TEXT_DETECTION", "textDetectionConfig": { "languageCodes": ["ru", "en"] } }]
                             }]
                         })
