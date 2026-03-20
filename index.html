@@ -69,7 +69,7 @@
     <div id="ai-loader">
         <div class="spinner"></div>
         <h3 class="text-xl font-bold mb-2">Обработка...</h3>
-        <p class="text-sm text-gray-300">Сжимаем фото и сохраняем данные.</p>
+        <p class="text-sm text-gray-300">Подождите, сохраняем данные.</p>
     </div>
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800"></div>
 
@@ -259,20 +259,17 @@
                     </div>
 
                     <div class="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-2 w-full md:w-auto shrink-0 order-2">
-                        
                         <select id="sortSelect" onchange="renderData()" class="bx-input !h-[36px] text-[11px] sm:text-[12px] font-bold text-[#535c69] dark:text-gray-300 bg-[#f4f7f8] dark:bg-gray-800 cursor-pointer !w-auto !px-2 sm:!px-3 border-[#dce3e7] dark:border-gray-700 outline-none">
                             <option value="newest">Новые ↓</option>
                             <option value="oldest">Старые ↑</option>
                             <option value="price_desc">Сумма ₽ ↓</option>
                             <option value="shipment">Отгрузка ⏳</option>
                         </select>
-
                         <div class="flex bg-[#f4f7f8] dark:bg-gray-800 rounded border border-[#dce3e7] dark:border-gray-700 p-0.5">
                             <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold">Канбан</div>
                             <div onclick="setView('list')" id="v-list" class="bx-tab !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold">Список</div>
                             <div onclick="setView('table')" id="v-table" class="bx-tab !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold hidden sm:block">Таблица</div>
                         </div>
-                        
                         <button onclick="exportToCSV()" class="bx-btn-default px-3 !h-[36px] hidden lg:inline-flex bg-gray-50 dark:bg-gray-800 shadow-sm" title="Экспорт в Excel">📊</button>
                         <button onclick="toggleForm()" class="bx-btn-success !h-[36px] hidden sm:inline-flex whitespace-nowrap shadow-sm">+ Сделка</button>
                     </div>
@@ -733,7 +730,10 @@
                 renderData(); renderAnalytics(); 
                 if(activeSection === 'dashboard') renderDashboard();
                 if(activeSection === 'calendar') renderCalendar();
-            } catch (err) { showToast("Ошибка загрузки БД", true); } 
+            } catch (err) { 
+                console.warn(err);
+                if (!cached) showToast("Слабый интернет: загружены офлайн-данные", true); 
+            } 
         }
         
         async function loadTasks() { try { const { data } = await _supabase.from('tasks').select('*').order('created_at', { ascending: false }); allTasks = data || []; renderTasks(); if(activeSection === 'dashboard') renderDashboard(); } catch (err) {} }
@@ -781,7 +781,6 @@
                     return ms && tag;
                 });
 
-                // ФИШКА: Умная сортировка
                 const sortVal = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'newest';
                 filtered.sort((a, b) => {
                     if (sortVal === 'newest') {
@@ -931,7 +930,7 @@
                 const {error} = await _supabase.from('orders').update({ status: st }).eq('id', id); 
                 if (error) throw error;
             } catch(e) { 
-                allOrders[orderIndex].status = oldStatus; renderData(); if(activeSection === 'dashboard') renderDashboard(); showToast("Ошибка сети", true); 
+                allOrders[orderIndex].status = oldStatus; renderData(); if(activeSection === 'dashboard') renderDashboard(); showToast("Ошибка сети. Повторите", true); 
             } 
         }
 
@@ -974,7 +973,20 @@
             const btn = document.getElementById('saveEditBtn'); const origText = btn.innerText;
             btn.innerText = 'Сжатие...'; btn.disabled = true; document.getElementById('ai-loader').style.display = 'flex';
 
-            let updates = { order_number: document.getElementById('editOrderNum').value, customer_name: document.getElementById('editName').value, total_price: document.getElementById('editPrice').value || null, prepayment: document.getElementById('editPrepayment').value || null, phone: document.getElementById('editPhone').value, tags: document.getElementById('editTags').value, supplier_invoice: document.getElementById('editInvoice').value, supplier_status: document.getElementById('editSupplierStatus').value, shipment_date: document.getElementById('editShipDate').value || null, delivery_address: document.getElementById('editAddress').value, comments: document.getElementById('editComments').value, status: document.getElementById('editStatus').value };
+            let updates = { 
+                order_number: document.getElementById('editOrderNum').value, 
+                customer_name: document.getElementById('editName').value, 
+                total_price: Number(document.getElementById('editPrice').value) || 0, 
+                prepayment: Number(document.getElementById('editPrepayment').value) || 0, 
+                phone: document.getElementById('editPhone').value, 
+                tags: document.getElementById('editTags').value, 
+                supplier_invoice: document.getElementById('editInvoice').value, 
+                supplier_status: document.getElementById('editSupplierStatus').value, 
+                shipment_date: document.getElementById('editShipDate').value || null, 
+                delivery_address: document.getElementById('editAddress').value, 
+                comments: document.getElementById('editComments').value, 
+                status: document.getElementById('editStatus').value 
+            };
             try {
                 const fileInput = document.getElementById('editFile');
                 if (fileInput.files.length > 0) {
@@ -995,7 +1007,11 @@
                 updates.gallery = JSON.stringify(currentGallery);
                 await _supabase.from('orders').update(updates).eq('id', currentEditId);
                 showToast("Сохранено", false); closeEditModal(); loadData();
-            } catch(e) { alert("Ошибка: " + e.message); } finally { btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none'; }
+            } catch(e) { 
+                showToast(e.message.includes('fetch') ? "Слабый интернет. Повторите попытку" : "Ошибка сохранения", true);
+            } finally { 
+                btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none'; 
+            }
         }
 
         function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editFile').value = ''; document.getElementById('editGalleryInput').value = ''; checkBodyScroll(); }
@@ -1004,7 +1020,20 @@
             const btn = document.getElementById('saveBtn'); const origText = btn.innerText;
             btn.innerText = 'Сжатие и загрузка...'; btn.disabled = true; document.getElementById('ai-loader').style.display = 'flex';
 
-            let newOrder = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value || null, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, tags: document.getElementById('cTags').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, delivery_address: document.getElementById('cAddress').value, comments: document.getElementById('cComments').value, status: 'Новый' };
+            let newOrder = { 
+                order_number: document.getElementById('cOrderNum').value, 
+                customer_name: document.getElementById('cName').value, 
+                total_price: Number(document.getElementById('cPrice').value) || 0, 
+                prepayment: Number(document.getElementById('cPrepayment').value) || 0, 
+                phone: document.getElementById('cPhone').value, 
+                tags: document.getElementById('cTags').value, 
+                supplier_invoice: document.getElementById('cInvoice').value, 
+                supplier_status: document.getElementById('cSupplierStatus').value, 
+                shipment_date: document.getElementById('cShipDate').value || null, 
+                delivery_address: document.getElementById('cAddress').value, 
+                comments: document.getElementById('cComments').value, 
+                status: 'Новый' 
+            };
             if (!newOrder.customer_name) { showToast("Укажите имя", true); btn.innerText = origText; btn.disabled = false; document.getElementById('ai-loader').style.display = 'none'; return; }
             
             try {
@@ -1031,7 +1060,11 @@
                 toggleForm(); showToast("Сделка создана", false); loadData();
                 ['cOrderNum','cName','cPrice','cPrepayment','cPhone','cTags','cInvoice','cShipDate','cComments','cAddress'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = ''; });
                 document.getElementById('cFile').value = ''; document.getElementById('cGallery').value = '';
-            } catch(e) { alert("Ошибка сохранения: " + e.message); } finally { btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none'; }
+            } catch(e) { 
+                showToast(e.message.includes('fetch') ? "Слабый интернет. Повторите попытку" : "Ошибка сохранения", true);
+            } finally { 
+                btn.disabled = false; btn.innerText = origText; document.getElementById('ai-loader').style.display = 'none'; 
+            }
         }
 
         function exportToCSV() {
@@ -1100,7 +1133,7 @@
 
         async function addTaskFromInput(id) { 
             const i = document.getElementById(id); if(!i||!i.value.trim()) return showToast("Введите текст", true); 
-            try { await _supabase.from('tasks').insert([{ title: i.value.trim() }]); i.value = ''; loadTasks(); showToast("Добавлена", false); } catch(e) { showToast("Ошибка", true); }
+            try { await _supabase.from('tasks').insert([{ title: i.value.trim() }]); i.value = ''; loadTasks(); showToast("Добавлена", false); } catch(e) { showToast("Ошибка связи", true); }
         }
         
         async function toggleTask(id, st) { 
@@ -1139,7 +1172,7 @@
                 }
                 await _supabase.from('tasks').update(updates).eq('id', currentTaskId); 
                 showToast("Задача сохранена", false); closeTaskModal(); loadTasks();
-            } catch(e) { alert("Ошибка: " + e.message); } finally { btn.disabled = false; btn.innerText = origText; }
+            } catch(e) { showToast("Слабый интернет", true); } finally { btn.disabled = false; btn.innerText = origText; }
         }
 
         async function deleteTaskFromModal() { if(!currentTaskId) return; if(confirm("Удалить задачу навсегда?")) { try { await _supabase.from('tasks').delete().eq('id', currentTaskId); closeTaskModal(); loadTasks(); showToast("Задача удалена"); } catch(e) {} } }
@@ -1168,7 +1201,7 @@
                     await _supabase.from('crm_files').insert([{ name: file.name, is_folder: false, folder_id: currentFolderId, file_url: _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl }]); 
                 } 
                 loadFiles(); showToast("Загружено"); 
-            } catch(err) { alert("Ошибка загрузки"); } finally { e.target.value = ''; }
+            } catch(err) { showToast("Ошибка загрузки", true); } finally { e.target.value = ''; }
         }
         async function deleteCrmFile(id, isF, url) { 
             if(!confirm("Удалить?")) return; 
