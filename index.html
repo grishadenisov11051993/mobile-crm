@@ -37,7 +37,7 @@
 <div id="ai-loader">
     <div class="spinner"></div>
     <h3>Магия в процессе...</h3>
-    <p>Сжимаем фото и читаем текст.<br>Пожалуйста, подождите.</p>
+    <p>Ищем нужные данные в бланке.<br>Пожалуйста, подождите.</p>
 </div>
 
 <div class="container">
@@ -59,11 +59,9 @@
 </div>
 
 <script>
-    // Тот самый правильный ID папки, который подсказал Яндекс
     const FOLDER_ID = 'b1ge7tbjtdsrcitf4bhq';
-    const YANDEX_URL = '/api/yandex-vision'; // Используем Vercel обход
+    const YANDEX_URL = '/api/yandex-vision'; 
 
-    // Умное сжатие фото перед отправкой
     function compressImage(file, callback) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -72,7 +70,7 @@
             img.src = event.target.result;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 1000; // Ужимаем до 1000 пикселей (Яндекс любит такой размер)
+                const MAX_WIDTH = 1200; 
                 let width = img.width;
                 let height = img.height;
 
@@ -85,7 +83,6 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 
-                // Превращаем в легкий JPEG
                 const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
                 callback(base64);
             };
@@ -109,10 +106,16 @@
             }
         }
 
+        // Очищаем поля перед новым сканированием
+        document.getElementById('client_name').value = '';
+        document.getElementById('client_phone').value = '';
+        document.getElementById('client_address').value = '';
+        document.getElementById('order_sum').value = '';
+        document.getElementById('order_prepay').value = '';
+
         const loader = document.getElementById('ai-loader');
         loader.style.display = 'flex';
 
-        // Сжимаем и отправляем
         compressImage(file, async (base64Image) => {
             try {
                 const response = await fetch(YANDEX_URL, {
@@ -130,18 +133,11 @@
                     })
                 });
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    if (response.status === 401 || response.status === 403) {
-                        localStorage.removeItem('yandex_api_key'); 
-                        throw new Error(`Яндекс не принял ключ. Я удалил его из памяти.\n\nДетали: ${errorText}`);
-                    }
-                    throw new Error(`Ошибка сервера ${response.status}: ${errorText}`);
-                }
+                if (!response.ok) throw new Error(`Ошибка сервера ${response.status}`);
 
                 const data = await response.json();
                 const text = parseYandexText(data);
-                extractData(text); 
+                extractSmartData(text); 
                 
                 loader.style.display = 'none'; 
                 document.getElementById('photo-input').value = ''; 
@@ -149,7 +145,7 @@
             } catch (error) {
                 loader.style.display = 'none';
                 document.getElementById('photo-input').value = ''; 
-                alert('Сбой распознавания:\n' + error.message);
+                alert('Сбой распознавания. Попробуйте еще раз.');
             }
         });
     }
@@ -165,36 +161,50 @@
                 });
             });
         } catch (e) {
-            throw new Error("Не удалось найти текст на фотографии. Попробуйте сфотографировать крупнее и ровнее.");
+            throw new Error("Не удалось найти текст.");
         }
         return fullText;
     }
 
-    function extractData(text) {
-        console.log("Распознанный текст:\n", text);
+    // НОВЫЙ СНАЙПЕРСКИЙ АЛГОРИТМ ПОИСКА
+    function extractSmartData(text) {
+        console.log("Текст от нейросети:\n", text);
         
-        const nameMatch = text.match(/Заказчик[\s\S]*?лицо\s+([А-Яа-яЁё\s]+)\n/);
-        if (nameMatch) document.getElementById('client_name').value = nameMatch[1].trim();
+        // 1. ФИО (Ищем строго между словом "лицо" и словом "Адрес")
+        const nameMatch = text.match(/лицо\s*(.*?)\s*Адрес/i);
+        if (nameMatch && nameMatch[1].trim().length > 2) {
+            document.getElementById('client_name').value = nameMatch[1].trim();
+        }
 
+        // 2. Телефон (Тут регулярка и так работает отлично)
         const phoneMatch = text.match(/[78][\s-]?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}/);
-        if (phoneMatch) document.getElementById('client_phone').value = phoneMatch[0];
+        if (phoneMatch) {
+            document.getElementById('client_phone').value = phoneMatch[0];
+        }
 
-        const addressMatch = text.match(/Адрес доставки\s+([А-Яа-яЁё0-9\s,.-]+)\n/);
-        if (addressMatch) document.getElementById('client_address').value = addressMatch[1].trim();
+        // 3. Адрес доставки (Ищем строго между "доставки" и "Телефон")
+        const addressMatch = text.match(/Адрес доставки\s*(.*?)\s*Телефон/i);
+        if (addressMatch) {
+            let addr = addressMatch[1].trim();
+            // Если в адрес попал телефон (мусор), не пишем его
+            if (addr.length > 3 && !addr.match(/[78][\s-]?\(?\d{3}\)/)) {
+                document.getElementById('client_address').value = addr;
+            }
+        }
 
-        const lines = text.split('\n');
-        lines.forEach(line => {
-            if (line.toLowerCase().includes('учетом скидки')) {
-                const sum = line.replace(/[^0-9]/g, '');
-                if (sum) document.getElementById('order_sum').value = sum;
-            }
-            if (line.toLowerCase().includes('предоплата') && !line.toLowerCase().includes('сумма предоплаты')) {
-                const prepay = line.replace(/[^0-9]/g, '');
-                if (prepay) document.getElementById('order_prepay').value = prepay;
-            }
-        });
-        
-        alert("Данные успешно извлечены!");
+        // 4. Сумма со скидкой (Ищем фразу, пропускаем мусор, берем первые цифры)
+        const sumMatch = text.match(/учетом скидки[^\d]*(\d[\d\s]*)/i);
+        if (sumMatch) {
+            const sum = sumMatch[1].replace(/\s/g, ''); // убираем пробелы (380 000 -> 380000)
+            if (sum) document.getElementById('order_sum').value = sum;
+        }
+
+        // 5. Внесенная предоплата
+        const prepayMatch = text.match(/Внесенная предоплата[^\d]*(\d[\d\s]*)/i);
+        if (prepayMatch) {
+            const prepay = prepayMatch[1].replace(/\s/g, '');
+            if (prepay) document.getElementById('order_prepay').value = prepay;
+        }
     }
 
     function saveOrder() {
