@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/yandex-vision",
+      "destination": "https://vision.api.cloud.yandex.net/vision/v1/batchAnalyze"
+    }
+  ]
+}
