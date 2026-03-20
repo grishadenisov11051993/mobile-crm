@@ -301,13 +301,7 @@
                     <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-10 px-6 hidden sm:inline-flex">+ Создать сделку</button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#3bc8f5]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сделок в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-deals">0</div></div>
-                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0 ₽</div></div>
-                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#f5a623]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Открытых задач</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-tasks">0</div></div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col">
                         <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">🚚 Отгрузки сегодня</h3><button onclick="switchSection('calendar')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
                         <div id="dash-todays-shipments" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
@@ -324,6 +318,12 @@
                         </div>
                         <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="dash-stats">
+                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#3bc8f5]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сделок в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-deals">0</div></div>
+                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0 ₽</div></div>
+                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#f5a623]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Открытых задач</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-tasks">0</div></div>
                 </div>
             </div>
 
@@ -494,7 +494,7 @@
         let selectedOrders = [];
         let currentGallery = [];
 
-        // --- СЖАТИЕ ИЗОБРАЖЕНИЙ ---
+        // --- Умное сжатие фото ---
         async function compressImageFile(file) {
             if (!file.type.startsWith('image/')) return file;
             return new Promise((resolve) => {
@@ -521,7 +521,10 @@
                         ctx.drawImage(img, 0, 0, width, height);
 
                         canvas.toBlob((blob) => {
-                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg', lastModified: Date.now() });
+                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            });
                             resolve(compressedFile);
                         }, 'image/jpeg', 0.8);
                     };
@@ -529,31 +532,7 @@
             });
         }
 
-        // --- DRAG AND DROP (БЕЗ МЕРЦАНИЯ) ---
-        function dragStart(e, id) { 
-            e.dataTransfer.setData('text/plain', id); 
-            setTimeout(() => e.target.classList.add('dragging'), 0); 
-        }
-        function dragEnd(e) { 
-            e.target.classList.remove('dragging'); 
-            document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); 
-        }
-        function allowDrop(e) { 
-            e.preventDefault(); 
-            e.currentTarget.classList.add('drag-over'); 
-        }
-        function dragLeave(e) { 
-            if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return; // Анти-мерцание
-            e.currentTarget.classList.remove('drag-over'); 
-        }
-        function dropCard(e, newStatus) { 
-            e.preventDefault(); 
-            e.currentTarget.classList.remove('drag-over'); 
-            const orderId = e.dataTransfer.getData('text/plain'); 
-            if(orderId) changeStatus(orderId, newStatus); 
-        }
-
-        // --- УТИЛИТЫ ---
+        // --- Утилиты ---
         function applyTheme() {
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -624,7 +603,14 @@
             return `<div class="mt-2 flex flex-wrap gap-1 pointer-events-none">` + arr.map(t => `<span class="bx-tag ${getTagColorClass(t)}">#${t}</span>`).join('') + `</div>`;
         }
 
-        // --- ИНИЦИАЛИЗАЦИЯ И МЕНЮ ---
+        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
+        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
+        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+        function dragLeave(e) { if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return; e.currentTarget.classList.remove('drag-over'); }
+        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
+        function checkBodyScroll() { const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden'); if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden'); }
+
+        // --- ИНИЦИАЛИЗАЦИЯ И НАВИГАЦИЯ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
@@ -682,7 +668,7 @@
             renderData();
         }
 
-        // --- МАССОВЫЕ ДЕЙСТВИЯ (С Оптимистичным UI) ---
+        // --- МАССОВЫЕ ДЕЙСТВИЯ (Оптимистичный UI) ---
         function toggleOrderSelection(id) { const i = selectedOrders.indexOf(id); if (i === -1) selectedOrders.push(id); else selectedOrders.splice(i, 1); updateMassToolbar(); }
         function toggleAllSelections(cb) { const vis = document.querySelectorAll('.order-checkbox'); selectedOrders = []; if (cb.checked) { vis.forEach(c => { c.checked = true; selectedOrders.push(c.value); }); } else { vis.forEach(c => { c.checked = false; }); } updateMassToolbar(); }
         function updateMassToolbar() { const tb = document.getElementById('massActionToolbar'); document.getElementById('massCount').innerText = selectedOrders.length; if (selectedOrders.length > 0) { tb.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none'); } else { tb.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none'); const mCb = document.getElementById('selectAllCheckbox'); if(mCb) mCb.checked = false; } }
@@ -693,24 +679,16 @@
             const backup = {};
             selectedOrders.forEach(id => { const o = allOrders.find(x => String(x.id)===String(id)); if(o) { backup[id] = o.status; o.status = st; } });
             renderData(); clearSelection();
-            try { 
-                const {error} = await _supabase.from('orders').update({status:st}).in('id', Object.keys(backup)); 
-                if (error) throw error;
-            } catch(e) { 
-                Object.keys(backup).forEach(id => { const o = allOrders.find(x => String(x.id)===String(id)); if(o) o.status = backup[id]; });
-                renderData(); showToast("Ошибка", true); 
-            } 
+            try { const {error} = await _supabase.from('orders').update({status:st}).in('id', Object.keys(backup)); if (error) throw error; } 
+            catch(e) { Object.keys(backup).forEach(id => { const o = allOrders.find(x => String(x.id)===String(id)); if(o) o.status = backup[id]; }); renderData(); showToast("Ошибка сети", true); } 
         }
         
         async function massDelete() { 
             if(selectedOrders.length===0) return; 
             if(!confirm(`Удалить ${selectedOrders.length} сделок навсегда?`)) return; 
             showToast(`Удаление...`); 
-            try { 
-                const {error} = await _supabase.from('orders').delete().in('id', selectedOrders); 
-                if (error) throw error;
-                showToast(`Удалено`); clearSelection(); loadData(); 
-            } catch(e) { showToast("Ошибка", true); } 
+            try { const {error} = await _supabase.from('orders').delete().in('id', selectedOrders); if (error) throw error; showToast(`Удалено`); clearSelection(); loadData(); } 
+            catch(e) { showToast("Ошибка удаления: " + e.message, true); } 
         }
 
         // --- ЗАГРУЗКА БАЗЫ ---
@@ -894,27 +872,19 @@
             } catch(e) {}
         }
 
-        // --- ОПТИМИСТИЧНОЕ ИЗМЕНЕНИЕ СТАТУСА (МГНОВЕННО) ---
+        // --- ОПТИМИСТИЧНОЕ ИЗМЕНЕНИЕ СТАТУСА ---
         async function changeStatus(id, st) { 
             const orderIndex = allOrders.findIndex(o => String(o.id) === String(id));
             if(orderIndex === -1) return;
             const oldStatus = allOrders[orderIndex].status;
-            
-            // Меняем статус мгновенно локально
             allOrders[orderIndex].status = st;
             renderData(); 
             if(activeSection === 'dashboard') renderDashboard();
-
-            // Фоновая отправка
             try { 
                 const {error} = await _supabase.from('orders').update({ status: st }).eq('id', id); 
                 if (error) throw error;
             } catch(e) { 
-                // Откат если нет интернета
-                allOrders[orderIndex].status = oldStatus;
-                renderData();
-                if(activeSection === 'dashboard') renderDashboard();
-                showToast("Ошибка сети", true); 
+                allOrders[orderIndex].status = oldStatus; renderData(); if(activeSection === 'dashboard') renderDashboard(); showToast("Ошибка сети", true); 
             } 
         }
 
@@ -985,7 +955,7 @@
 
         async function saveOrder() {
             const btn = document.getElementById('saveBtn'); const origText = btn.innerText;
-            btn.innerText = 'Загрузка...'; btn.disabled = true; document.getElementById('ai-loader').style.display = 'flex';
+            btn.innerText = 'Сжатие и загрузка...'; btn.disabled = true; document.getElementById('ai-loader').style.display = 'flex';
 
             let newOrder = { order_number: document.getElementById('cOrderNum').value, customer_name: document.getElementById('cName').value, total_price: document.getElementById('cPrice').value || null, prepayment: document.getElementById('cPrepayment').value || null, phone: document.getElementById('cPhone').value, tags: document.getElementById('cTags').value, supplier_invoice: document.getElementById('cInvoice').value, supplier_status: document.getElementById('cSupplierStatus').value, shipment_date: document.getElementById('cShipDate').value || null, delivery_address: document.getElementById('cAddress').value, comments: document.getElementById('cComments').value, status: 'Новый' };
             if (!newOrder.customer_name) { showToast("Укажите имя", true); btn.innerText = origText; btn.disabled = false; document.getElementById('ai-loader').style.display = 'none'; return; }
@@ -1030,11 +1000,16 @@
         }
         async function deleteAttachedFile(id, url) {
             if(!confirm("Удалить файл?")) return;
-            try { await _supabase.storage.from('order-files').remove([url.split('/').pop()]); await _supabase.from('orders').update({ file_url: null }).eq('id', id); document.getElementById('currentFileLink').innerHTML = '<span class="text-[#aab3b8] text-[11px]">Удален</span>'; const o = allOrders.find(x => String(x.id) === String(id)); if(o) o.file_url = null; loadData(); } catch (err) { showToast("Ошибка удаления", true); }
+            try { 
+                await _supabase.storage.from('order-files').remove([url.split('/').pop()]); 
+                await _supabase.from('orders').update({ file_url: null }).eq('id', id); 
+                document.getElementById('currentFileLink').innerHTML = '<span class="text-[#aab3b8] text-[11px]">Удален</span>'; 
+                const o = allOrders.find(x => String(x.id) === String(id)); if(o) o.file_url = null; loadData(); 
+            } catch (err) { showToast("Ошибка удаления", true); }
         }
 
         // --- ЗАДАЧИ ---
-        function setTaskView(v) { taskView = v; document.getElementById('t-active').className = v === 'active' ? 'bx-tab active !m-0' : 'bx-tab !m-0'; document.getElementById('t-archive').className = v === 'archive' ? 'bx-tab active !m-0' : 'bx-tab !m-0'; renderTasks(); }
+        function setTaskView(v) { taskView = v; document.getElementById('t-active').className = v === 'active' ? 'bx-tab active !m-0' : 'bx-tab !m-0 text-gray-500'; document.getElementById('t-archive').className = v === 'archive' ? 'bx-tab active !m-0' : 'bx-tab !m-0 text-gray-500'; renderTasks(); }
         
         function renderTasks() {
             const container = document.getElementById('tasks-list-content'); if(!container) return;
@@ -1083,7 +1058,7 @@
         
         async function toggleTask(id, st) { 
             const t = allTasks.find(x => String(x.id) === String(id)); if(t) t.is_completed = st; renderTasks(); if(activeSection === 'dashboard') renderDashboard();
-            try { await _supabase.from('tasks').update({ is_completed: st }).eq('id', id); } catch(e) { if(t) t.is_completed = !st; renderTasks(); showToast("Ошибка сети", true); } 
+            try { await _supabase.from('tasks').update({ is_completed: st }).eq('id', id); } catch(e) { if(t) t.is_completed = !st; renderTasks(); } 
         }
         
         async function deleteTask(id) { if(confirm("Удалить?")) { try { await _supabase.from('tasks').delete().eq('id', id); loadTasks(); } catch(e) {} } }
