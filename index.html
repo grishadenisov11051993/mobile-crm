@@ -71,7 +71,7 @@
     <div id="ai-loader">
         <div class="spinner"></div>
         <h3 class="text-xl font-bold mb-2">Нейросеть читает бланк...</h3>
-        <p class="text-sm text-gray-300">Извлекаем данные и сжимаем фото.</p>
+        <p class="text-sm text-gray-300">Пожалуйста, подождите пару секунд.</p>
     </div>
 
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800"></div>
@@ -323,7 +323,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#3bc8f5]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сделок в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-deals">0</div></div>
-                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0</div></div>
+                    <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0 ₽</div></div>
                     <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#f5a623]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Открытых задач</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-tasks">0</div></div>
                 </div>
 
@@ -684,16 +684,19 @@
             const cached = localStorage.getItem('crm_orders_cache');
             if (cached) {
                 try {
-                    allOrders = JSON.parse(cached);
+                    let parsed = JSON.parse(cached);
+                    allOrders = Array.isArray(parsed) ? parsed : [];
                     renderData();
                     if(activeSection === 'dashboard') renderDashboard();
                     if(activeSection === 'calendar') renderCalendar();
-                } catch(e) {}
+                } catch(e) {
+                    allOrders = [];
+                }
             }
             try { 
                 const { data, error } = await _supabase.from('orders').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
-                allOrders = data || []; 
+                allOrders = Array.isArray(data) ? data : []; 
                 localStorage.setItem('crm_orders_cache', JSON.stringify(allOrders));
                 renderData(); renderAnalytics(); 
                 if(activeSection === 'dashboard') renderDashboard();
@@ -734,6 +737,8 @@
 
         function renderData() {
             try {
+                if (!Array.isArray(allOrders)) allOrders = [];
+                
                 document.getElementById('view-kanban-container').classList.toggle('hidden', activeView !== 'kanban');
                 document.getElementById('view-list-container').classList.toggle('hidden', activeView !== 'list');
                 document.getElementById('view-table-container').classList.toggle('hidden', activeView !== 'table');
@@ -765,8 +770,12 @@
                 let total = 0, archiveTotal = 0;
 
                 filtered.forEach(item => {
-                    const status = item.status || 'Новый'; counts[status]++; 
-                    const price = Number(item.total_price || 0); sums[status] += price;
+                    const status = item.status || 'Новый'; 
+                    if (counts[status] !== undefined) counts[status]++; 
+                    
+                    const price = Number(item.total_price || 0); 
+                    if (sums[status] !== undefined) sums[status] += price;
+                    
                     if(status !== 'Завершен') total += price;
 
                     const statusColors = { 'Новый': '#2fc6f6', 'В работе': '#3bc8f5', 'На складе': '#f5a623', 'Завершен': '#7bd500' };
@@ -796,7 +805,7 @@
                     let phoneHtml = '';
                     let contactLinksHtml = '';
                     if (item.phone) {
-                        const cleanPhone = String(item.phone).replace(/\D/g, '');
+                        const cleanPhone = String(item.phone || '').replace(/\D/g, '');
                         if (cleanPhone.length >= 10) {
                             let linkPhone = cleanPhone;
                             if (linkPhone.startsWith('8')) linkPhone = '7' + linkPhone.substring(1);
@@ -928,7 +937,7 @@
                 const fileInput = document.getElementById('editFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0]; 
-                    const ext = file.name.split('.').pop() || 'jpg'; 
+                    const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
                     const name = `main_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                     if (upErr) throw new Error("Сбой документа: " + upErr.message);
@@ -937,7 +946,7 @@
                 const galInput = document.getElementById('editGalleryInput');
                 if (galInput.files.length > 0) {
                     for (let file of galInput.files) {
-                        const ext = file.name.split('.').pop() || 'jpg'; 
+                        const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
                         const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                         const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                         if (upErr) throw new Error("Сбой фото галереи: " + upErr.message);
@@ -972,7 +981,7 @@
                 const fileInput = document.getElementById('cFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0]; 
-                    const ext = file.name.split('.').pop() || 'jpg'; 
+                    const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
                     const name = `main_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                     if (upErr) throw new Error("Сбой загрузки документа: " + upErr.message);
@@ -982,7 +991,7 @@
                 let galleryUrls = []; const galInput = document.getElementById('cGallery');
                 if (galInput.files.length > 0) {
                     for (let file of galInput.files) {
-                        const ext = file.name.split('.').pop() || 'jpg'; 
+                        const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
                         const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                         const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                         if (upErr) throw new Error("Сбой галереи: " + upErr.message);
@@ -1129,7 +1138,7 @@
                 const fileInput = document.getElementById('taskFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0]; 
-                    const ext = file.name.split('.').pop() || 'pdf'; 
+                    const ext = file.name ? file.name.split('.').pop() : 'pdf'; 
                     const name = `task_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                     if (upErr) throw new Error("Сбой вложения: " + upErr.message);
@@ -1182,7 +1191,7 @@
                 allFiles.filter(f => f.is_folder).forEach(f => { grid.innerHTML += `<div class="p-4 border border-[#dce3e7] dark:border-gray-700 rounded bg-[#f4f7f8] dark:bg-gray-800 hover:border-[#2fc6f6] shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group transition-colors" onclick="openFolder(${f.id})"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, true)" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100 text-lg transition-opacity">&times;</button><div class="text-5xl mb-2 transition-transform group-hover:scale-110">📁</div><div class="text-xs font-semibold text-gray-700 dark:text-gray-300 text-center truncate w-full">${f.name}</div></div>`; });
             } else {
                 const folder = allFiles.find(f => f.id === currentFolderId); document.getElementById('currentFolderBreadcrumb').classList.remove('hidden'); document.getElementById('currentFolderBreadcrumb').innerHTML = ` / <span class="text-[#535c69] dark:text-white font-bold uppercase">${folder?folder.name:''}</span>`;
-                allFiles.filter(f => !f.is_folder && f.folder_id === currentFolderId).forEach(f => { grid.innerHTML += `<div class="p-4 border border-[#dce3e7] dark:border-gray-700 rounded bg-white dark:bg-gray-800 hover:border-[#2fc6f6] shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group transition-colors" onclick="window.open('${f.file_url}', '_blank')"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, false, '${f.file_url}')" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity text-lg" title="Удалить">&times;</button><button onclick="event.stopPropagation(); shareCrmFile('${f.file_url}', '${String(f.name).replace(/'/g, "\\'")}')" class="absolute top-2 right-2 text-[#2fc6f6] font-bold opacity-0 group-hover:opacity-100 transition-opacity" title="Поделиться">📤</button><div class="text-5xl mb-2 text-[#2fc6f6] transition-transform group-hover:scale-110">📄</div><div class="text-[11px] font-bold text-[#535c69] dark:text-gray-300 text-center truncate w-full uppercase">${f.name}</div></div>`; });
+                allFiles.filter(f => !f.is_folder && f.folder_id === currentFolderId).forEach(f => { grid.innerHTML += `<div class="p-4 border border-[#dce3e7] dark:border-gray-700 rounded bg-white dark:bg-gray-800 hover:border-[#2fc6f6] shadow-sm cursor-pointer flex flex-col items-center justify-center h-32 relative group transition-colors" onclick="window.open('${f.file_url}', '_blank')"><button onclick="event.stopPropagation(); deleteCrmFile(${f.id}, false, '${f.file_url}')" class="absolute top-2 left-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity text-lg" title="Удалить">&times;</button><button onclick="event.stopPropagation(); shareCrmFile('${f.file_url}', '${String(f.name).replace(/'/g, "\\'")}')" class="absolute top-2 right-2 text-[#2fc6f6] font-bold opacity-0 group-hover:opacity-100 transition-opacity" title="Поделиться">📤</button><div class="text-5xl mb-2 text-[#2fc6f6] transition-transform group-hover:scale-110">📄</div><div class="text-xs font-semibold text-gray-700 dark:text-gray-300 text-center truncate w-full">${f.name}</div></div>`; });
             }
         }
         function openFolder(id) { currentFolderId = id; renderFiles(); }
@@ -1202,7 +1211,7 @@
             showToast("Загрузка...", false); 
             try {
                 for(let file of e.target.files) { 
-                    const ext = file.name.split('.').pop() || 'doc';
+                    const ext = file.name ? file.name.split('.').pop() : 'doc';
                     const name = `crm_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`; 
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file); 
                     if(upErr) throw upErr;
@@ -1261,7 +1270,7 @@
                 const dt = `${y}-${String(m + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 const doO = allOrders.filter(o => o.shipment_date === dt);
                 const isT = (i === td.getDate() && m === td.getMonth() && y === td.getFullYear());
-                grid.innerHTML += `<div onclick="openDayModal('${dt}')" class="p-3 sm:p-4 rounded-2xl border ${isT ? 'border-[#2fc6f6] bg-[#f0fbff] dark:bg-blue-900/30' : 'border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-800 hover:shadow-sm'} cursor-pointer flex flex-col items-center sm:items-start transition-shadow"><span class="font-extrabold ${isT ? 'text-[#2fc6f6] text-lg' : 'text-[#535c69] dark:text-gray-400 text-base'}">${i}</span>${doO.length > 0 ? `<div class="mt-2 text-[10px] font-extrabold bg-white dark:bg-gray-700 border border-[#c6eaf8] dark:border-gray-600 text-[#2fc6f6] rounded px-1.5 py-0.5">${doO.length} отгр.</div>` : ''}</div>`;
+                grid.innerHTML += `<div onclick="openDayModal('${dt}')" class="p-3 sm:p-4 rounded border ${isT ? 'border-[#2fc6f6] bg-[#f0fbff] dark:bg-blue-900/30' : 'border-[#dce3e7] dark:border-gray-700 bg-[#f4f7f8] dark:bg-gray-800 hover:shadow-sm'} cursor-pointer flex flex-col items-center sm:items-start transition-shadow"><span class="font-bold ${isT ? 'text-[#2fc6f6] text-lg' : 'text-[#535c69] dark:text-gray-400 text-base'}">${i}</span>${doO.length > 0 ? `<div class="mt-2 text-[10px] font-bold bg-white dark:bg-gray-700 border border-[#c6eaf8] dark:border-gray-600 text-[#2fc6f6] rounded px-1.5 py-0.5">${doO.length} отгр.</div>` : ''}</div>`;
             }
         }
         function openDayModal(dt) {
@@ -1278,13 +1287,6 @@
         // ===============================================
         const YANDEX_FOLDER_ID = 'b1ge7tbjtdsrcitf4bhq';
         const YANDEX_API_URL = '/api/yandex-vision'; 
-
-        function dataURLtoFile(dataurl, filename) {
-            let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-            while(n--){ u8arr[n] = bstr.charCodeAt(n); }
-            return new File([u8arr], filename, {type:mime});
-        }
 
         function compressImage(file, callback) {
             const reader = new FileReader();
@@ -1307,9 +1309,8 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // 70% quality compression
-                    const base64Data = dataUrl.split(',')[1];
-                    callback(base64Data, dataUrl);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+                    callback(base64);
                 };
             };
         }
@@ -1331,6 +1332,16 @@
                 }
             }
 
+            // ПРИКРЕПЛЯЕМ ОРИГИНАЛЬНЫЙ ФАЙЛ К ФОРМЕ (безопасный метод без зависаний)
+            try {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                document.getElementById('cFile').files = dt.files;
+            } catch(e) {
+                console.error("Attachment fallback", e);
+            }
+
+            // Очищаем форму перед заполнением
             document.getElementById('cName').value = '';
             document.getElementById('cPhone').value = '';
             document.getElementById('cAddress').value = '';
@@ -1340,18 +1351,8 @@
             const loader = document.getElementById('ai-loader');
             loader.style.display = 'flex';
 
-            compressImage(file, async (base64Data, dataUrl) => {
-                // ПРИКРЕПЛЕНИЕ СЖАТОГО ФАЙЛА (В 10-20 раз легче оригинала)
-                try {
-                    const compressedFile = dataURLtoFile(dataUrl, file.name || 'scan.jpg');
-                    const dt = new DataTransfer();
-                    dt.items.add(compressedFile);
-                    document.getElementById('cFile').files = dt.files;
-                } catch(e) {
-                    console.error("Compression assign fallback", e);
-                    const dt = new DataTransfer(); dt.items.add(file); document.getElementById('cFile').files = dt.files;
-                }
-
+            // Сжимаем ТОЛЬКО ДЛЯ ИИ, чтобы Yandex прочитал быстро
+            compressImage(file, async (base64Image) => {
                 try {
                     const response = await fetch(YANDEX_API_URL, {
                         method: 'POST',
@@ -1362,7 +1363,7 @@
                         body: JSON.stringify({
                             "folderId": YANDEX_FOLDER_ID,
                             "analyzeSpecs": [{
-                                "content": base64Data,
+                                "content": base64Image,
                                 "features": [{ "type": "TEXT_DETECTION", "textDetectionConfig": { "languageCodes": ["ru", "en"] } }]
                             }]
                         })
