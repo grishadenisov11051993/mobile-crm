@@ -812,11 +812,13 @@
                             else if (!linkPhone.startsWith('7')) linkPhone = '7' + linkPhone;
                             
                             phoneHtml = `<div class="text-[12px] font-mono text-[#535c69] dark:text-gray-400 mt-1">${item.phone}</div>`;
+                            
+                            // ЯРКАЯ И СОЧНАЯ ПОДСВЕТКА КНОПОК СВЯЗИ КАК В ОРИГИНАЛЕ
                             contactLinksHtml = `
-                                <div class="flex gap-1 mt-1.5 pointer-events-auto" onclick="event.stopPropagation()">
-                                    <a href="tel:+${linkPhone}" class="flex-1 flex items-center justify-center gap-1 bg-[#f4fbf0] dark:bg-emerald-900/20 text-[#7bd500] dark:text-emerald-400 py-1.5 rounded text-[10px] font-bold no-underline hover:bg-[#e9f7df] transition-colors" title="Позвонить">📞</a>
-                                    <a href="https://wa.me/${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-[#f4fbf0] dark:bg-emerald-900/20 text-[#7bd500] dark:text-emerald-400 py-1.5 rounded text-[10px] font-bold no-underline hover:bg-[#e9f7df] transition-colors" title="WhatsApp">💬</a>
-                                    <a href="https://t.me/+${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-[#f0fbff] dark:bg-blue-900/20 text-[#2fc6f6] dark:text-blue-400 py-1.5 rounded text-[10px] font-bold no-underline hover:bg-[#e0f7ff] transition-colors" title="Telegram">✈️</a>
+                                <div class="flex gap-1 mt-2 pointer-events-auto" onclick="event.stopPropagation()">
+                                    <a href="tel:+${linkPhone}" class="flex-1 flex items-center justify-center gap-1 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 py-1.5 rounded text-[10px] font-bold no-underline hover:bg-green-200 transition-colors" title="Позвонить">📞 Звонок</a>
+                                    <a href="https://wa.me/${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 py-1.5 rounded text-[10px] font-bold no-underline hover:bg-emerald-200 transition-colors" title="WhatsApp">💬 WhatsApp</a>
+                                    <a href="https://t.me/+${linkPhone}" target="_blank" class="flex-1 flex items-center justify-center gap-1 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 py-1.5 rounded text-[10px] font-bold no-underline hover:bg-blue-200 transition-colors" title="Telegram">✈️ Telegram</a>
                                 </div>
                             `;
                         } else {
@@ -829,7 +831,6 @@
                         ${status !== 'Завершен' ? `<button onclick="changeStatus('${item.id}', '${nextSt}')" class="${btnClass} px-2 py-1.5 rounded text-[10px] font-bold uppercase transition-all">Вперед ▶</button>` : ''}
                     </div>`;
 
-                    // БЕЗОПАСНЫЙ ВЫВОД НОМЕРА (item.order_number || item.id без substr, как в оригинале)
                     if (status === 'Завершен' && document.getElementById('archive-items-content')) {
                         archiveTotal += price;
                         htmlArchive += `<tr class="hover:bg-[#f4f7f8] dark:hover:bg-gray-700/50 border-b border-[#dce3e7] dark:border-gray-700 cursor-pointer" onclick="openEditModal('${item.id}')"><td class="px-4 py-3 font-mono text-[11px] text-[#aab3b8] text-center">${item.order_number||item.id}<div class="text-[10px] mt-1 font-sans">${formatDate(item.created_at)}</div></td><td class="px-4 py-3"><div class="font-bold text-[#333] dark:text-white">${item.customer_name}</div>${phoneHtml}${contactLinksHtml}${tagsHtml}</td><td class="px-4 py-3 font-bold">${price.toLocaleString()} ₽</td><td class="px-4 py-3"><span class="${supColor} text-[9px] px-2 py-1 rounded font-bold uppercase">${item.supplier_status||'Не оплачен'}</span></td><td class="px-4 py-3 text-xs font-bold">${formatDate(item.shipment_date)}</td><td class="px-4 py-3 text-right pointer-events-auto">${fileLink}${galleryBadge}</td></tr>`;
@@ -982,7 +983,7 @@
                 const fileInput = document.getElementById('cFile');
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0]; 
-                    const ext = (file.name || 'file.jpg').split('.').pop(); 
+                    const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
                     const name = `main_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                     const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                     if (upErr) throw new Error("Сбой загрузки документа: " + upErr.message);
@@ -992,7 +993,7 @@
                 let galleryUrls = []; const galInput = document.getElementById('cGallery');
                 if (galInput.files.length > 0) {
                     for (let file of galInput.files) {
-                        const ext = (file.name || 'file.jpg').split('.').pop(); 
+                        const ext = file.name ? file.name.split('.').pop() : 'jpg'; 
                         const name = `gallery_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
                         const { error: upErr } = await _supabase.storage.from('order-files').upload(name, file);
                         if (upErr) throw new Error("Сбой галереи: " + upErr.message);
