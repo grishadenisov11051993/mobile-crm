@@ -242,43 +242,54 @@
         </aside>
 
         <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
-            <header class="sticky top-0 z-40 px-6 h-auto sm:h-[60px] flex flex-col sm:flex-row items-center justify-between w-full bg-white dark:bg-gray-900 border-b border-[#dce3e7] dark:border-gray-700 shadow-sm py-2 sm:py-0">
-                <div class="flex items-center justify-between w-full sm:w-auto h-[40px] sm:h-auto">
-                    <div class="flex items-center gap-4">
+            
+            <header class="sticky top-0 z-40 px-4 sm:px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between w-full bg-white dark:bg-gray-900 border-b border-[#dce3e7] dark:border-gray-700 shadow-sm gap-3">
+                <div class="flex items-center justify-between w-full md:w-auto shrink-0">
+                    <div class="flex items-center gap-3 sm:gap-4">
                         <button onclick="toggleSidebar()" class="md:hidden text-[#535c69] dark:text-gray-300 text-2xl">☰</button>
-                        <h1 id="headerTitle" class="text-lg font-bold text-[#535c69] dark:text-white m-0 uppercase tracking-wide">Дашборд</h1>
+                        <h1 id="headerTitle" class="text-lg font-bold text-[#535c69] dark:text-white m-0 uppercase tracking-wide shrink-0">Дашборд</h1>
                     </div>
-                    <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-9 h-9 !p-0 rounded text-xl">+</button>
+                    <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-9 h-9 !p-0 rounded text-xl shrink-0">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="hidden flex-col sm:flex-row w-full sm:w-auto gap-3 sm:gap-4 mt-2 sm:mt-0">
-                    <div class="flex bg-[#f4f7f8] dark:bg-gray-800 rounded border border-[#dce3e7] dark:border-gray-700 p-1 w-full sm:w-auto overflow-x-auto no-scrollbar">
-                        <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active flex-1 text-center sm:flex-none">Канбан</div>
-                        <div onclick="setView('list')" id="v-list" class="bx-tab flex-1 text-center sm:flex-none">Список</div>
-                        <div onclick="setView('table')" id="v-table" class="bx-tab flex-1 text-center sm:flex-none">Таблица</div>
+                <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 w-full mt-2 sm:mt-0">
+                    <div class="relative w-full md:max-w-md lg:max-w-2xl mx-auto flex-1 order-1">
+                        <span class="absolute left-3 top-2.5 text-[#aab3b8] text-sm">🔍</span>
+                        <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск по клиентам, номерам, тегам..." class="bx-input pl-8 !h-[38px] w-full shadow-inner bg-gray-50 dark:bg-gray-800">
                     </div>
-                    <div class="flex gap-2 sm:gap-3 items-center w-full sm:w-auto">
-                        <div class="relative flex-1 sm:w-56">
-                            <span class="absolute left-3 top-2 text-[#aab3b8] text-sm">🔍</span>
-                            <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск..." class="bx-input pl-8 !h-[36px]">
+
+                    <div class="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-2 w-full md:w-auto shrink-0 order-2">
+                        
+                        <select id="sortSelect" onchange="renderData()" class="bx-input !h-[36px] text-[11px] sm:text-[12px] font-bold text-[#535c69] dark:text-gray-300 bg-[#f4f7f8] dark:bg-gray-800 cursor-pointer !w-auto !px-2 sm:!px-3 border-[#dce3e7] dark:border-gray-700 outline-none">
+                            <option value="newest">Новые ↓</option>
+                            <option value="oldest">Старые ↑</option>
+                            <option value="price_desc">Сумма ₽ ↓</option>
+                            <option value="shipment">Отгрузка ⏳</option>
+                        </select>
+
+                        <div class="flex bg-[#f4f7f8] dark:bg-gray-800 rounded border border-[#dce3e7] dark:border-gray-700 p-0.5">
+                            <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold">Канбан</div>
+                            <div onclick="setView('list')" id="v-list" class="bx-tab !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold">Список</div>
+                            <div onclick="setView('table')" id="v-table" class="bx-tab !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold hidden sm:block">Таблица</div>
                         </div>
-                        <button onclick="exportToCSV()" class="bx-btn-default px-4 !h-[36px] hidden sm:inline-flex" title="Экспорт в Excel">📊</button>
-                        <button onclick="toggleForm()" class="bx-btn-success !h-[36px] hidden sm:inline-flex">+ Сделка</button>
+                        
+                        <button onclick="exportToCSV()" class="bx-btn-default px-3 !h-[36px] hidden lg:inline-flex bg-gray-50 dark:bg-gray-800 shadow-sm" title="Экспорт в Excel">📊</button>
+                        <button onclick="toggleForm()" class="bx-btn-success !h-[36px] hidden sm:inline-flex whitespace-nowrap shadow-sm">+ Сделка</button>
                     </div>
                 </div>
 
                 <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 mt-2 sm:mt-0">
                     <div class="hidden sm:flex items-center relative w-full sm:w-64">
-                        <input id="newTaskInputHead" type="text" placeholder="Новая задача..." class="bx-input !h-[36px] w-full pr-8" onkeypress="if(event.key==='Enter') addTaskFromInput('newTaskInputHead')">
+                        <input id="newTaskInputHead" type="text" placeholder="Новая задача..." class="bx-input !h-[36px] w-full pr-8 shadow-sm" onkeypress="if(event.key==='Enter') addTaskFromInput('newTaskInputHead')">
                         <button onclick="startDictation('newTaskInputHead', this)" class="absolute right-2 top-2 text-[#535c69]">🎤</button>
                     </div>
-                    <button onclick="addTaskFromInput('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex !h-[36px]">Добавить</button>
+                    <button onclick="addTaskFromInput('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex !h-[36px] shadow-sm">Добавить</button>
                 </div>
 
                 <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 mt-2 sm:mt-0">
-                    <button onclick="createFolder()" class="bx-btn-default !h-[36px] w-full sm:w-auto">📁 Папка</button>
+                    <button onclick="createFolder()" class="bx-btn-default !h-[36px] w-full sm:w-auto shadow-sm">📁 Папка</button>
                     <input type="file" id="crmFileInput" class="hidden" multiple onchange="uploadCrmFile(event)">
-                    <button onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success !h-[36px] w-full sm:w-auto">📤 Загрузить</button>
+                    <button onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success !h-[36px] w-full sm:w-auto shadow-sm">📤 Загрузить</button>
                 </div>
             </header>
 
@@ -529,7 +540,7 @@
             });
         }
 
-        // --- DRAG AND DROP ---
+        // --- DRAG AND DROP (БЕЗ МЕРЦАНИЯ) ---
         function dragStart(e, id) { 
             e.dataTransfer.setData('text/plain', id); 
             setTimeout(() => e.target.classList.add('dragging'), 0); 
@@ -707,7 +718,7 @@
             if(!confirm(`Удалить ${selectedOrders.length} сделок навсегда?`)) return; 
             showToast(`Удаление...`); 
             try { const {error} = await _supabase.from('orders').delete().in('id', selectedOrders); if (error) throw error; showToast(`Удалено`); clearSelection(); loadData(); } 
-            catch(e) { showToast("Ошибка удаления: " + e.message, true); } 
+            catch(e) { showToast("Ошибка удаления", true); } 
         }
 
         // --- ЗАГРУЗКА БАЗЫ ---
@@ -762,12 +773,29 @@
                 let searchPhone = searchRaw.replace(/\D/g, '');
                 if (searchPhone.startsWith('8')) searchPhone = '7' + searchPhone.substring(1);
 
-                const filtered = allOrders.filter(o => {
+                let filtered = allOrders.filter(o => {
                     let orderPhone = String(o.phone || '').replace(/\D/g, '');
                     if (orderPhone.startsWith('8')) orderPhone = '7' + orderPhone.substring(1);
                     const ms = String(o.customer_name||'').toLowerCase().includes(searchRaw) || String(o.order_number||'').toLowerCase().includes(searchRaw) || String(o.tags||'').toLowerCase().includes(searchRaw) || String(o.id).toLowerCase().includes(searchRaw) || (searchRaw !== '' && String(o.phone||'').toLowerCase().includes(searchRaw)) || (searchPhone !== '' && orderPhone.includes(searchPhone));
                     const tag = currentSupplierFilter === 'Все' || (o.supplier_status || 'Не оплачен') === currentSupplierFilter;
                     return ms && tag;
+                });
+
+                // ФИШКА: Умная сортировка
+                const sortVal = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'newest';
+                filtered.sort((a, b) => {
+                    if (sortVal === 'newest') {
+                        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+                    } else if (sortVal === 'oldest') {
+                        return new Date(a.created_at || 0) - new Date(b.created_at || 0);
+                    } else if (sortVal === 'price_desc') {
+                        return (Number(b.total_price) || 0) - (Number(a.total_price) || 0);
+                    } else if (sortVal === 'shipment') {
+                        const dateA = a.shipment_date ? new Date(a.shipment_date) : new Date('2099-12-31');
+                        const dateB = b.shipment_date ? new Date(b.shipment_date) : new Date('2099-12-31');
+                        return dateA - dateB;
+                    }
+                    return 0;
                 });
 
                 let htmlNew = '', htmlWork = '', htmlStock = '', htmlDone = '';
@@ -1216,7 +1244,7 @@
             const modal = document.getElementById('dayModal');
             const content = document.getElementById('dayModalContent');
             modal.classList.remove('hidden');
-            void modal.offsetWidth; // trigger reflow
+            void modal.offsetWidth; 
             modal.classList.remove('opacity-0');
             content.classList.remove('translate-y-full');
             checkBodyScroll();
