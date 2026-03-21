@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v2.7 PRO</title>
+    <title>Хорошие полы - CRM v2.8 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -295,9 +295,7 @@
                 <button onclick="lockCrm()" class="w-full text-left bx-sidebar-item border-none bg-transparent hover:text-white">🚪 Выйти</button>
             </div>
         </aside>
-
         <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
-            
             <header class="sticky top-0 z-40 px-4 sm:px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between w-full bg-white dark:bg-gray-900 border-b border-[#dce3e7] dark:border-gray-700 shadow-sm gap-3">
                 <div class="flex items-center justify-between w-full md:w-auto shrink-0">
                     <div class="flex items-center gap-3 sm:gap-4">
@@ -307,7 +305,7 @@
                     <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-9 h-9 !p-0 rounded text-xl shrink-0" id="mobileAddBtn">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
+                <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 w-full mt-2 sm:mt-0">
                     <div class="relative w-full md:max-w-md lg:max-w-2xl mx-auto flex-1 order-1">
                         <span class="absolute left-3 top-2.5 text-[#aab3b8] text-sm">🔍</span>
                         <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск по клиентам, номерам, тегам..." class="bx-input pl-8 !h-[38px] w-full shadow-inner bg-gray-50 dark:bg-gray-800">
@@ -960,11 +958,9 @@
             
             if (total === 0) return showToast('Смета пуста. Добавьте товары.', true);
 
-            // Включаем лоадер, так как сохраняем в интернет
             document.getElementById('ai-loader').style.display = 'flex';
 
             try {
-                // 1. Сохраняем КП в Supabase
                 const { data, error } = await _supabase.from('kps').insert([{
                     client_name: name,
                     phone: phoneRaw,
@@ -975,13 +971,9 @@
 
                 if (error) throw error;
                 
-                // Берем ID, который нам выдал Supabase
                 const kpId = data[0].id;
-                
-                // 2. Генерируем ту самую ссылку на VERCEL!
                 const kpLink = `https://mobile-crm-jet.vercel.app/kp.html?id=${kpId}`;
 
-                // 3. Формируем текст сообщения
                 let text = `Здравствуйте, ${name}! Ваше коммерческое предложение от "Хорошие Полы":\n\n`;
                 text += `Итоговая сумма: ${total.toLocaleString()} ₽\n\n`;
                 text += `✨ Посмотреть интерактивную смету, фото товаров и скорректировать опции вы можете по этой ссылке:\n${kpLink}\n\n`;
@@ -989,10 +981,8 @@
                 
                 const encodedText = encodeURIComponent(text);
 
-                // 4. Сохраняем в локальный Архив CRM (чтобы менеджер видел историю)
                 saveKpToLocalArchive(kpId, name, phoneRaw, address, total, [...kpItems]);
 
-                // 5. Открываем нужный мессенджер
                 let link = '';
                 if (platform === 'wa') link = `https://wa.me/${phone}?text=${encodedText}`;
                 if (platform === 'sms') link = `sms:+${phone}?body=${encodedText}`;
@@ -1021,8 +1011,11 @@
             try {
                 let archiveStr = localStorage.getItem('crm_saved_kps');
                 let archive = archiveStr ? JSON.parse(archiveStr) : [];
+                // Проверяем, может мы редактируем уже существующее? Удалим старую копию.
+                archive = archive.filter(k => String(k.id) !== String(id));
+                
                 const newKp = { id: id, date: new Date().toISOString(), name: name, phone: phone, address: address, total: total, items: items };
-                archive.unshift(newKp);
+                archive.unshift(newKp); // Добавляем наверх
                 localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
             } catch(e) {}
         }
@@ -1050,6 +1043,7 @@
                         </td>
                         <td class="px-4 py-3 font-bold text-[14px] text-[#333] dark:text-white">${kp.total.toLocaleString()} ₽</td>
                         <td class="px-4 py-3 text-right whitespace-nowrap">
+                            <button onclick="editSavedKp('${kp.id}')" class="bx-btn-default !h-8 !px-2 text-xs text-[#f5a623] border-[#fde8c3] hover:bg-[#fff9f0] mr-2" title="Редактировать">✏️</button>
                             <button onclick="kpArchiveToDeal('${kp.id}')" class="bx-btn-success !h-8 !px-3 text-xs bg-[#7bd500] hover:bg-[#68b500] mr-2 transition-transform hover:scale-105">→ В Сделку</button>
                             <button onclick="deleteSavedKp('${kp.id}')" class="bx-btn-default !h-8 !px-2 text-xs text-red-500 border-red-200 hover:bg-red-50" title="Удалить">🗑</button>
                         </td>
@@ -1059,12 +1053,44 @@
             } catch(e) {}
         }
 
+        // РЕДАКТИРОВАНИЕ СОХРАНЕННОГО КП
+        function editSavedKp(id) {
+            try {
+                let archiveStr = localStorage.getItem('crm_saved_kps');
+                let archive = archiveStr ? JSON.parse(archiveStr) : [];
+                const kp = archive.find(k => String(k.id) === String(id));
+                if (!kp) return;
+
+                // Подгружаем данные клиента
+                document.getElementById('kpName').value = kp.name || '';
+                document.getElementById('kpPhone').value = applyPhoneMask(kp.phone || '');
+                document.getElementById('kpAddress').value = kp.address || '';
+                
+                // Подгружаем товары
+                kpItems = (typeof kp.items === 'string') ? JSON.parse(kp.items) : [...kp.items];
+                
+                // Переключаемся на вкладку "Новое КП"
+                setKpTab('create');
+                renderKpConstructor();
+                
+                // Триггерим проверку телефона, чтобы показались кнопки отправки WhatsApp/TG
+                handleKpPhoneInput({target: document.getElementById('kpPhone')});
+                
+                showToast("КП загружено для редактирования!");
+            } catch(e){
+                showToast("Ошибка загрузки КП", true);
+            }
+        }
+
         function deleteSavedKp(id) {
             if (!confirm("Удалить это КП из архива?")) return;
             try {
                 let archiveStr = localStorage.getItem('crm_saved_kps');
                 let archive = archiveStr ? JSON.parse(archiveStr) : [];
-                archive = archive.filter(k => k.id !== id);
+                
+                // Исправленная строка (надежное сравнение текстовых ID)
+                archive = archive.filter(k => String(k.id) !== String(id));
+                
                 localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
                 renderSavedKps();
                 showToast("КП удалено из Архива");
@@ -1075,7 +1101,7 @@
             try {
                 let archiveStr = localStorage.getItem('crm_saved_kps');
                 let archive = archiveStr ? JSON.parse(archiveStr) : [];
-                const kp = archive.find(k => k.id === id);
+                const kp = archive.find(k => String(k.id) === String(id));
                 if (!kp) return;
 
                 let commentsArr = [];
@@ -1084,7 +1110,7 @@
                 });
 
                 document.getElementById('cName').value = kp.name;
-                document.getElementById('cPhone').value = kp.phone;
+                document.getElementById('cPhone').value = applyPhoneMask(kp.phone);
                 document.getElementById('cAddress').value = kp.address || '';
                 document.getElementById('cPrice').value = kp.total;
                 
