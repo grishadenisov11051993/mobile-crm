@@ -98,6 +98,10 @@
         </div>
     </div>
 
+    <div id="imageLightbox" class="fixed inset-0 bg-black/95 hidden z-[999] flex items-center justify-center p-4 cursor-zoom-out opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
+        <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl transform scale-95 transition-transform duration-300">
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
@@ -131,6 +135,29 @@
             document.getElementById('error-screen').classList.add('flex');
         }
 
+        function openLightbox(src) {
+            const lb = document.getElementById('imageLightbox');
+            const img = document.getElementById('lightboxImg');
+            img.src = src;
+            lb.classList.remove('hidden');
+            setTimeout(() => {
+                lb.classList.remove('opacity-0');
+                img.classList.remove('scale-95');
+                img.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const lb = document.getElementById('imageLightbox');
+            const img = document.getElementById('lightboxImg');
+            lb.classList.add('opacity-0');
+            img.classList.remove('scale-100');
+            img.classList.add('scale-95');
+            setTimeout(() => {
+                lb.classList.add('hidden');
+            }, 300);
+        }
+
         function renderItems() {
             const baseContainer = document.getElementById('base-items');
             const addonContainer = document.getElementById('addon-items');
@@ -143,7 +170,14 @@
             kpItems.forEach(item => {
                 if(!item.name && item.price === 0) return; 
                 
-                const imgHtml = item.image ? `<img src="${item.image}" class="w-16 h-16 object-cover rounded shadow-sm border border-kp-gold/30 shrink-0">` : `<div class="w-16 h-16 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30">БЕЗ ФОТО</div>`;
+                const imgHtml = item.image ? 
+                    `<div class="relative group shrink-0 cursor-zoom-in w-16 h-16" onclick="openLightbox('${item.image}')">
+                        <img src="${item.image}" class="w-full h-full object-cover rounded shadow-sm border border-kp-gold/30 transition-all group-hover:brightness-75">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-white text-xl drop-shadow-md">🔍</span>
+                        </div>
+                    </div>` : 
+                    `<div class="w-16 h-16 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30 text-center">БЕЗ<br>ФОТО</div>`;
                 
                 if (!item.isOption) {
                     hasBase = true;
@@ -151,11 +185,14 @@
                     <div class="flex items-center gap-4 py-4 border-b border-kp-gold/10 last:border-0">
                         ${imgHtml}
                         <div class="flex-1 min-w-0">
-                            <div class="font-bold text-white text-[15px] leading-tight mb-1 truncate">${item.name || 'Товар'}</div>
-                            <div class="text-[12px] text-white/60">${item.qty} шт</div>
+                            <div class="font-bold text-white text-[15px] leading-tight mb-2 truncate">${item.name || 'Товар'}</div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded text-kp-gold/90 whitespace-nowrap">${item.qty} ед.</span>
+                                <span class="text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded text-white/70 whitespace-nowrap">${item.price.toLocaleString()} ₽/ед.</span>
+                            </div>
                         </div>
                         <div class="text-right shrink-0 flex flex-col items-end gap-1">
-                            <div class="text-[10px] font-bold text-kp-gold border border-kp-gold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1">База</div>
+                            <div class="text-[9px] font-bold text-kp-gold border border-kp-gold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1">База</div>
                             <div class="font-bold text-white text-[16px]">${(item.qty * item.price).toLocaleString()} ₽</div>
                         </div>
                     </div>`;
@@ -165,8 +202,11 @@
                     <div class="flex items-center gap-4 py-4 border-b border-kp-gold/10 last:border-0">
                         ${imgHtml}
                         <div class="flex-1 min-w-0">
-                            <div class="font-bold text-white text-[15px] leading-tight mb-1 truncate">${item.name || 'Товар'}</div>
-                            <div class="text-[12px] text-white/60">${item.qty} шт × ${item.price.toLocaleString()} ₽</div>
+                            <div class="font-bold text-white text-[15px] leading-tight mb-2 truncate">${item.name || 'Товар'}</div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded text-kp-gold/90 whitespace-nowrap">${item.qty} ед.</span>
+                                <span class="text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded text-white/70 whitespace-nowrap">${item.price.toLocaleString()} ₽/ед.</span>
+                            </div>
                         </div>
                         <div class="text-right shrink-0 flex flex-col items-end gap-2">
                             <label class="relative flex items-center cursor-pointer">
