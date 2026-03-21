@@ -12,26 +12,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
-        /* Базовый дизайн и скроллбары */
+        /* Дизайн Bitrix24 */
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; background-color: #eef2f4; color: #333; }
         .dark body { background-color: #111827; color: #f3f4f6; }
+        
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-
-        /* Сайдбар */
+        
         #sidebar { background: linear-gradient(180deg, #1d252f 0%, #303b4a 100%); color: #fff; border-right: none; }
         .bx-sidebar-item { border-radius: 3px; transition: all 0.2s ease; font-size: 14px; font-weight: 500; text-decoration: none; margin: 4px 12px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.7); border-left: 3px solid transparent; }
         .bx-sidebar-item:hover { background-color: rgba(255,255,255,0.08); color: #fff; }
         .bx-sidebar-item.active { background-color: rgba(255,255,255,0.1); color: #fff; border-left-color: #2fc6f6; font-weight: 600; }
         .bx-sidebar-icon { width: 20px; height: 20px; opacity: 0.8; stroke-width: 2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; display: inline-block; } 
         .sidebar-category { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.4); font-weight: 700; padding: 20px 28px 8px; }
-
-        /* Инпуты и кнопки */
+        
         .bx-input { background-color: #fff; border: 1px solid #c6d1d6; border-radius: 3px; padding: 0 16px; height: 40px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: #333; }
         .dark .bx-input { background-color: #1f2937; border-color: #374151; color: #f3f4f6; }
         .bx-input:focus { border-color: #2fc6f6; box-shadow: 0 0 0 2px rgba(47,198,246,0.2); }
@@ -44,32 +42,31 @@
         .bx-btn-default { background-color: #fff; border: 1px solid #c6d1d6; color: #535c69; border-radius: 3px; font-weight: 600; font-size: 13px; padding: 0 20px; height: 40px; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .dark .bx-btn-default { background-color: #1f2937; border-color: #4b5563; color: #d1d5db; }
         .bx-btn-default:hover { background-color: #f4f7f8; }
-
+        
         .bx-tab { font-weight: 600; color: #535c69; transition: 0.2s; cursor: pointer; border-radius: 3px; border: 1px solid transparent; padding: 8px 16px; font-size: 13px; }
         .bx-tab.active { color: #fff; background: #828b95; }
         .dark .bx-tab { color: #9ca3af; }
         .dark .bx-tab.active { color: #fff; background: #4b5563; }
         
         .bx-tag { font-size: 10px; font-weight: 700; padding: 3px 6px; border-radius: 3px; text-transform: uppercase; display: inline-block; background: #eef2f4; color: #535c69; border: 1px solid #dce3e7; }
-
-        /* Канбан */
+        
         .cursor-grab { cursor: grab; }
         .cursor-grab:active { cursor: grabbing; }
         .drag-over { background-color: rgba(47, 198, 246, 0.05) !important; border: 2px dashed #2fc6f6 !important; border-radius: 4px; }
         .dragging { opacity: 0.5; transform: scale(0.98); z-index: 50; position: relative; }
         .mass-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: #2fc6f6; }
-
+        
         /* Лоадер */
         #ai-loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; color: white; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(4px); }
         .spinner { border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #2fc6f6; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Клиентское превью (Изумруд + Золото) */
+        /* Дизайн клиентского превью КП (Изумруд + Золото) */
         .kp-emerald-bg { background-color: #1a362b; }
         .kp-gold-text { color: #d4af37; }
         .kp-gold-border { border-color: #d4af37; }
         
-        /* Свитчи (iOS style) */
+        /* Свитчи для интерактива */
         .toggle-checkbox:checked { right: 0; border-color: #d4af37; }
         .toggle-checkbox:checked + .toggle-label { background-color: #d4af37; }
         .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
@@ -81,13 +78,12 @@
     <div id="ai-loader">
         <div class="spinner"></div>
         <h3 class="text-xl font-bold mb-2">Обработка...</h3>
-        <p class="text-sm text-gray-300">Сохраняем данные, не закрывайте окно.</p>
+        <p class="text-sm text-gray-300">Подождите, сохраняем данные.</p>
     </div>
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800"></div>
 
     <div id="kpPreviewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-[200] flex items-center justify-center sm:p-4 transition-all">
         <div class="kp-emerald-bg w-full sm:w-[400px] h-full sm:h-[800px] sm:rounded-[3rem] sm:border-[12px] border-gray-900 shadow-2xl overflow-hidden flex flex-col relative">
-            
             <div class="p-6 pb-4 flex items-center justify-between border-b border-[#d4af37]/30 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-[#d4af37] rounded flex items-center justify-center font-bold text-[#1a362b] text-lg shadow-md">ХП</div>
@@ -297,36 +293,35 @@
                 <button onclick="lockCrm()" class="w-full text-left bx-sidebar-item border-none bg-transparent hover:text-white">🚪 Выйти</button>
             </div>
         </aside>
-
+        
         <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
-            
             <header class="sticky top-0 z-40 px-4 sm:px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between w-full bg-white dark:bg-gray-900 border-b border-[#dce3e7] dark:border-gray-700 shadow-sm gap-3">
                 <div class="flex items-center justify-between w-full md:w-auto shrink-0">
                     <div class="flex items-center gap-3 sm:gap-4">
                         <button onclick="toggleSidebar()" class="md:hidden text-[#535c69] dark:text-gray-300 text-2xl">☰</button>
                         <h1 id="headerTitle" class="text-lg font-bold text-[#535c69] dark:text-white m-0 uppercase tracking-wide shrink-0">Дашборд</h1>
                     </div>
-                    <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-9 h-9 !p-0 rounded text-xl shrink-0" id="mobileAddBtn">+</button>
+                    <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-9 h-9 !p-0 rounded text-xl shrink-0">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
+                <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 w-full mt-2 sm:mt-0">
                     <div class="relative w-full md:max-w-md lg:max-w-2xl mx-auto flex-1 order-1">
                         <span class="absolute left-3 top-2.5 text-[#aab3b8] text-sm">🔍</span>
                         <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск по клиентам, номерам, тегам..." class="bx-input pl-8 !h-[38px] w-full shadow-inner bg-gray-50 dark:bg-gray-800">
                     </div>
                     <div class="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-2 w-full md:w-auto shrink-0 order-2">
-                        <select id="sortSelect" onchange="renderData()" class="bx-input !h-[36px] text-[11px] sm:text-[12px] font-bold text-[#535c69] dark:text-gray-300 bg-[#f4f7f8] dark:bg-gray-800 cursor-pointer !w-auto !px-2 border-[#dce3e7] dark:border-gray-700 outline-none">
+                        <select id="sortSelect" onchange="renderData()" class="bx-input !h-[36px] text-[11px] sm:text-[12px] font-bold text-[#535c69] dark:text-gray-300 bg-[#f4f7f8] dark:bg-gray-800 cursor-pointer !w-auto !px-2 sm:!px-3 border-[#dce3e7] dark:border-gray-700 outline-none">
                             <option value="newest">Новые ↓</option>
                             <option value="oldest">Старые ↑</option>
                             <option value="price_desc">Сумма ₽ ↓</option>
                             <option value="shipment">Отгрузка ⏳</option>
                         </select>
                         <div class="flex bg-[#f4f7f8] dark:bg-gray-800 rounded border border-[#dce3e7] dark:border-gray-700 p-0.5">
-                            <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !py-1.5 !px-2.5 text-[11px] sm:text-xs font-bold">Канбан</div>
-                            <div onclick="setView('list')" id="v-list" class="bx-tab !py-1.5 !px-2.5 text-[11px] sm:text-xs font-bold">Список</div>
-                            <div onclick="setView('table')" id="v-table" class="bx-tab !py-1.5 !px-2.5 text-[11px] sm:text-xs font-bold hidden sm:block">Таблица</div>
+                            <div onclick="setView('kanban')" id="v-kanban" class="bx-tab active !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold">Канбан</div>
+                            <div onclick="setView('list')" id="v-list" class="bx-tab !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold">Список</div>
+                            <div onclick="setView('table')" id="v-table" class="bx-tab !py-1.5 !px-2.5 sm:!px-3 text-[11px] sm:text-xs font-bold hidden sm:block">Таблица</div>
                         </div>
-                        <button onclick="exportToCSV()" class="bx-btn-default px-3 !h-[36px] hidden lg:inline-flex bg-gray-50 dark:bg-gray-800 shadow-sm" title="Экспорт">📊</button>
+                        <button onclick="exportToCSV()" class="bx-btn-default px-3 !h-[36px] hidden lg:inline-flex bg-gray-50 dark:bg-gray-800 shadow-sm" title="Экспорт в Excel">📊</button>
                         <button onclick="toggleForm()" class="bx-btn-success !h-[36px] hidden sm:inline-flex whitespace-nowrap shadow-sm">+ Сделка</button>
                     </div>
                 </div>
@@ -342,14 +337,13 @@
                     </div>
                     <button onclick="addTaskFromInput('newTaskInputHead')" class="bx-btn-success hidden sm:inline-flex !h-[36px] shadow-sm">Добавить</button>
                 </div>
-
                 <div id="filesToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 mt-2 sm:mt-0">
                     <button onclick="createFolder()" class="bx-btn-default !h-[36px] w-full sm:w-auto shadow-sm">📁 Папка</button>
                     <input type="file" id="crmFileInput" class="hidden" multiple onchange="uploadCrmFile(event)">
                     <button onclick="document.getElementById('crmFileInput').click()" class="bx-btn-success !h-[36px] w-full sm:w-auto shadow-sm">📤 Загрузить</button>
                 </div>
             </header>
-
+            
             <div id="massActionToolbar" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 md:ml-[130px] bg-[#1d252f] text-white px-4 sm:px-6 py-3 sm:py-4 rounded shadow-2xl flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-4 z-50 transition-all duration-300 translate-y-24 opacity-0 pointer-events-none w-[90%] sm:w-auto">
                 <div class="font-bold text-sm border-r border-white/20 pr-2 sm:pr-4">Выбрано: <span id="massCount" class="text-[#2fc6f6]">0</span></div>
                 <button onclick="massChangeStatus('В работе')" class="text-xs font-bold hover:text-[#3bc8f5]">В работу</button>
@@ -359,7 +353,7 @@
                 <button onclick="massDelete()" class="text-xs font-bold text-red-400 hover:text-red-300">Удалить</button>
                 <button onclick="clearSelection()" class="ml-1 sm:ml-2 text-white/50 hover:text-white text-xl leading-none">&times;</button>
             </div>
-
+            
             <div id="section-dashboard" class="p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
                     <div>
@@ -368,27 +362,17 @@
                     </div>
                     <button onclick="switchSection('deals'); toggleForm();" class="bx-btn-success h-10 px-6 hidden sm:inline-flex">+ Создать сделку</button>
                 </div>
-
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">🚚 Отгрузки сегодня</h3>
-                            <button onclick="switchSection('calendar')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button>
-                        </div>
+                        <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">🚚 Отгрузки сегодня</h3><button onclick="switchSection('calendar')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
                         <div id="dash-todays-shipments" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
                     <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">🔜 Ближайшие</h3>
-                            <button onclick="switchSection('calendar')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button>
-                        </div>
+                        <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">🔜 Ближайшие</h3><button onclick="switchSection('calendar')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Календарь →</button></div>
                         <div id="dash-upcoming-shipments" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
                     <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 shadow-sm flex flex-col lg:col-span-1 md:col-span-2">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">✅ Задачи</h3>
-                            <button onclick="switchSection('tasks')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button>
-                        </div>
+                        <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-[#535c69] dark:text-gray-200 text-[11px] uppercase">✅ Задачи</h3><button onclick="switchSection('tasks')" class="text-[11px] font-bold text-[#2fc6f6] bg-transparent border-none cursor-pointer p-0 hover:underline">Все →</button></div>
                         <div class="flex items-center mb-4 relative bg-[#f4f7f8] dark:bg-gray-900 rounded p-1 border border-[#dce3e7] dark:border-gray-700">
                             <input id="dashTaskInput" type="text" placeholder="Быстрая задача..." class="bg-transparent border-none outline-none w-full px-3 text-[13px] h-[34px] text-[#333] dark:text-white" onkeypress="if(event.key==='Enter') addTaskFromInput('dashTaskInput')">
                             <button onclick="startDictation('dashTaskInput', this)" class="absolute right-2 text-[#535c69]">🎤</button>
@@ -396,7 +380,6 @@
                         <div id="dash-recent-tasks" class="space-y-2 overflow-y-auto pr-2 flex-1"></div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="dash-stats">
                     <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#3bc8f5]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сделок в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-deals">0</div></div>
                     <div class="bg-white dark:bg-gray-800 p-5 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm border-l-4 border-l-[#7bd500]"><div class="text-[11px] font-bold text-[#aab3b8] uppercase">Сумма в работе</div><div class="text-3xl font-bold text-[#333] dark:text-white mt-1" id="dash-active-sum">0 ₽</div></div>
@@ -481,7 +464,6 @@
                     <button onclick="setFilter('Предоплата')" id="filter-Предоплата" class="snap-start shrink-0 px-4 sm:px-6 py-2 rounded text-[11px] sm:text-[12px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] dark:hover:bg-gray-700 cursor-pointer shadow-sm transition-transform">Предоплата</button>
                     <button onclick="setFilter('Оплачен')" id="filter-Оплачен" class="snap-start shrink-0 px-4 sm:px-6 py-2 rounded text-[11px] sm:text-[12px] font-bold uppercase bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 text-[#535c69] dark:text-gray-300 hover:bg-[#f4f7f8] dark:hover:bg-gray-700 cursor-pointer shadow-sm transition-transform">Оплачен</button>
                 </div>
-
                 <div id="formSection" class="hidden bg-white dark:bg-gray-800 p-5 sm:p-6 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm mb-6">
                     <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mb-6 border-b border-[#dce3e7] dark:border-gray-700 pb-4">
                         <h2 class="text-sm font-bold uppercase text-[#535c69] dark:text-white tracking-wider m-0">Новая сделка</h2>
@@ -492,7 +474,6 @@
                             <input type="file" id="ai-scanner-input" accept="image/*" capture="environment" class="hidden" onchange="processAiScanner(event)">
                         </div>
                     </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6 text-sm">
                         <div><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">№ Заказа</label><input id="cOrderNum" type="text" class="bx-input"></div>
                         <div class="md:col-span-2 lg:col-span-2"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Имя клиента *</label><input id="cName" type="text" class="bx-input"></div>
@@ -505,6 +486,7 @@
                         <div><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Дата отгрузки</label><input id="cShipDate" type="date" class="bx-input"></div>
                         <div class="md:col-span-2 lg:col-span-3"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Адрес доставки</label><input id="cAddress" type="text" class="bx-input"></div>
                         <div class="md:col-span-2 lg:col-span-4"><label class="block text-[11px] font-bold text-[#aab3b8] mb-1.5 uppercase">Комментарий</label><input id="cComments" type="text" class="bx-input"></div>
+                        
                         <div class="md:col-span-2 p-4 bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded"><label class="block text-[11px] font-bold text-[#535c69] dark:text-gray-400 mb-2 uppercase">Главный документ</label><input id="cFile" type="file" class="block w-full text-xs text-gray-500"></div>
                         <div class="md:col-span-2 p-4 bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded"><label class="block text-[11px] font-bold text-[#535c69] dark:text-gray-400 mb-2 uppercase">Галерея фото</label><input id="cGallery" type="file" multiple accept="image/*" class="block w-full text-xs text-gray-500"></div>
                     </div>
@@ -513,18 +495,13 @@
                         <button onclick="toggleForm()" class="bx-btn-default w-full sm:w-auto">Отмена</button>
                     </div>
                 </div>
-
                 <div id="view-kanban-container" class="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory items-start no-scrollbar md:grid md:grid-cols-4 md:overflow-x-visible md:gap-5">
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] md:w-auto flex flex-col h-full bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded p-3"><div class="font-bold text-[12px] md:text-[13px] uppercase mb-4 flex justify-between px-1 pt-1"><span class="text-[#2fc6f6]">Новые</span><span id="cnt-new-sum" class="text-[#535c69] dark:text-gray-400">0 ₽</span></div><div id="col-new" class="space-y-4 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Новый')"></div></div>
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] md:w-auto flex flex-col h-full bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded p-3"><div class="font-bold text-[12px] md:text-[13px] uppercase mb-4 flex justify-between px-1 pt-1"><span class="text-[#3bc8f5]">В работе</span><span id="cnt-work-sum" class="text-[#535c69] dark:text-gray-400">0 ₽</span></div><div id="col-work" class="space-y-4 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'В работе')"></div></div>
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] md:w-auto flex flex-col h-full bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded p-3"><div class="font-bold text-[12px] md:text-[13px] uppercase mb-4 flex justify-between px-1 pt-1"><span class="text-[#f5a623]">На складе</span><span id="cnt-stock-sum" class="text-[#535c69] dark:text-gray-400">0 ₽</span></div><div id="col-stock" class="space-y-4 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'На складе')"></div></div>
                     <div class="kanban-col shrink-0 snap-center w-[85vw] sm:w-[320px] md:w-auto flex flex-col h-full bg-[#f4f7f8] dark:bg-gray-800/50 border border-[#dce3e7] dark:border-gray-700 rounded p-3"><div class="font-bold text-[12px] md:text-[13px] uppercase mb-4 flex justify-between px-1 pt-1"><span class="text-[#7bd500]">Завершены</span><span id="cnt-done-sum" class="text-[#535c69] dark:text-gray-400">0 ₽</span></div><div id="col-done" class="space-y-4 min-h-[100px] pb-10" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropCard(event, 'Завершен')"></div></div>
                 </div>
-
-                <div id="view-list-container" class="hidden space-y-3">
-                    <div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
-                </div>
-
+                <div id="view-list-container" class="hidden space-y-3"><div id="list-items-content" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div></div>
                 <div id="view-table-container" class="hidden">
                     <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded overflow-hidden w-full shadow-sm">
                         <div class="overflow-x-auto no-scrollbar w-full">
@@ -548,7 +525,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="section-calendar" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 border border-[#dce3e7] dark:border-gray-700 rounded shadow-sm">
                     <div class="flex justify-between items-center mb-6">
@@ -562,7 +538,6 @@
                     <div id="calendarGrid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
                 </div>
             </div>
-
             <div id="section-analytics" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 sm:p-6 shadow-sm">
                     <div class="flex justify-between items-center mb-6 border-b border-[#dce3e7] dark:border-gray-700 pb-4">
@@ -578,7 +553,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="section-archive" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded overflow-hidden w-full shadow-sm">
                     <div class="overflow-x-auto no-scrollbar w-full">
@@ -613,7 +587,6 @@
                     <div id="tasks-list-content" class="space-y-2 flex-1 overflow-y-auto pr-2"></div>
                 </div>
             </div>
-
             <div id="section-files" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1400px]">
                 <div class="bg-white dark:bg-gray-800 border border-[#dce3e7] dark:border-gray-700 rounded p-5 sm:p-6 shadow-sm min-h-[500px] flex flex-col">
                     <div class="flex items-center gap-2 mb-6 border-b border-[#dce3e7] dark:border-gray-700 pb-4">
@@ -623,17 +596,14 @@
                     <div id="crm-files-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4"></div>
                 </div>
             </div>
-
         </main>
     </div>
-
     <script>
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
         const SECRET_PIN = '1234';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        let activeView = localStorage.getItem('crm_view_mode') || 'kanban'; 
+        let activeView = localStorage.getItem('crm_view_mode') || 'kanban';
         let activeSection = localStorage.getItem('crm_active_section') || 'dashboard';
         let allOrders = [], allTasks = [], allFiles = [];
         let taskView = 'active', currentEditId = null, currentFolderId = null, currentTaskId = null;
@@ -651,42 +621,123 @@
         async function compressImageFile(file) {
             if (!file.type.startsWith('image/')) return file;
             return new Promise((resolve) => {
-                const reader = new FileReader(); reader.readAsDataURL(file);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
                 reader.onload = (event) => {
-                    const img = new Image(); img.src = event.target.result;
+                    const img = new Image();
+                    img.src = event.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        let width = img.width; let height = img.height; const MAX_SIZE = 1600; 
-                        if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
-                        else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-                        canvas.toBlob((blob) => { resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' })); }, 'image/jpeg', 0.8);
+                        let width = img.width;
+                        let height = img.height;
+                        const MAX_SIZE = 1600; 
+                        if (width > height) {
+                            if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                        } else {
+                            if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => {
+                            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg', lastModified: Date.now() });
+                            resolve(compressedFile);
+                        }, 'image/jpeg', 0.8);
                     };
                 };
             });
         }
-
-        // --- УТИЛИТЫ ---
-        function applyTheme() { if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '☀️'; } else { document.documentElement.classList.remove('dark'); if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '🌙'; } }
-        function toggleDarkMode() { if (document.documentElement.classList.contains('dark')) { document.documentElement.classList.remove('dark'); localStorage.setItem('theme', 'light'); document.getElementById('themeIcon').innerText = '🌙'; } else { document.documentElement.classList.add('dark'); localStorage.setItem('theme', 'dark'); document.getElementById('themeIcon').innerText = '☀️'; } }
-        applyTheme();
-
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast'); toast.innerText = msg;
-            toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm ${isError ? 'bg-red-500' : 'bg-[#333] dark:bg-gray-700'}`;
-            toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), 4000);
+        // --- DRAG AND DROP (БЕЗ МЕРЦАНИЯ) ---
+        function dragStart(e, id) { 
+            e.dataTransfer.setData('text/plain', id);
+            setTimeout(() => e.target.classList.add('dragging'), 0); 
         }
-
+        function dragEnd(e) { 
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); 
+        }
+        function allowDrop(e) { 
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over'); 
+        }
+        function dragLeave(e) { 
+            if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return;
+            e.currentTarget.classList.remove('drag-over'); 
+        }
+        function dropCard(e, newStatus) { 
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over'); 
+            const orderId = e.dataTransfer.getData('text/plain'); 
+            if(orderId) changeStatus(orderId, newStatus); 
+        }
+        // --- УТИЛИТЫ ---
+        function applyTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '☀️';
+            } else {
+                document.documentElement.classList.remove('dark');
+                if(document.getElementById('themeIcon')) document.getElementById('themeIcon').innerText = '🌙';
+            }
+        }
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('themeIcon').innerText = '🌙';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('themeIcon').innerText = '☀️';
+            }
+        }
+        applyTheme();
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm ${isError ? 'bg-red-500' : 'bg-[#333] dark:bg-gray-700'}`;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4000);
+        }
         function applyPhoneMask(v) {
-            let val = String(v || '').replace(/\D/g, ''); if (!val) return '';
-            if (val[0] === '8') val = '7' + val.substring(1); else if (val[0] === '9') val = '7' + val; else if (val[0] !== '7') val = '7' + val;
-            let res = '+7'; if (val.length > 1) res += ' (' + val.substring(1, 4); if (val.length >= 5) res += ') ' + val.substring(4, 7); if (val.length >= 8) res += '-' + val.substring(7, 9); if (val.length >= 10) res += '-' + val.substring(9, 11);
+            let val = String(v || '').replace(/\D/g, '');
+            if (!val) return '';
+            if (val[0] === '8') val = '7' + val.substring(1);
+            else if (val[0] === '9') val = '7' + val; else if (val[0] !== '7') val = '7' + val;
+            let res = '+7';
+            if (val.length > 1) res += ' (' + val.substring(1, 4);
+            if (val.length >= 5) res += ') ' + val.substring(4, 7);
+            if (val.length >= 8) res += '-' + val.substring(7, 9);
+            if (val.length >= 10) res += '-' + val.substring(9, 11);
             return res;
         }
         function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
         function formatDate(d) { return d ? new Date(d).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'; }
-
+        function startDictation(inputId, btn) {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Speech) return showToast("Голосовой ввод не поддерживается браузером", true);
+            const recognition = new Speech();
+            recognition.lang = 'ru-RU';
+            btn.innerText = '🛑';
+            recognition.onresult = (e) => { document.getElementById(inputId).value = e.results[0][0].transcript; };
+            recognition.onend = () => { btn.innerText = '🎤'; }; recognition.start();
+        }
+        function getTagColorClass(tag) {
+            const t = tag.toLowerCase().trim();
+            if(['авито', 'vk', 'вк', 'сайт', 'инста', 'телеграм'].includes(t)) return 'text-[#2fc6f6]';
+            if(['tarkett', 'classen', 'kronopol', 'aberhof', 'my floor', 'first floor'].includes(t)) return 'text-[#7bd500]';
+            if(['karelia', 'kahrs', 'wood bee', 'antic wood', 'steinholz', 'паркет'].includes(t)) return 'text-[#f5a623]';
+            if(['дизайнер', 'прораб', 'архитектор'].includes(t)) return 'text-purple-500';
+            if(['важно', 'акция', 'срочно', 'доставка'].includes(t)) return 'text-red-500';
+            return 'text-[#535c69] dark:text-gray-400';
+        }
+        function getTagsHtml(tagsStr) {
+            if(!tagsStr) return '';
+            const arr = String(tagsStr).split(',').map(t => t.trim()).filter(t => t);
+            if(arr.length === 0) return '';
+            return `<div class="mt-2 flex flex-wrap gap-1 pointer-events-none">` + arr.map(t => `<span class="bx-tag ${getTagColorClass(t)}">#${t}</span>`).join('') + `</div>`;
+        }
         function checkBodyScroll() { 
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden') || !document.getElementById('kpPreviewModal').classList.contains('hidden'); 
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden'); 
@@ -702,19 +753,21 @@
             else { showToast("Неверный PIN", true); document.getElementById('pinInput').value = ''; }
         }
         function unlockCrm() {
-            document.getElementById('authScreen').classList.add('hidden'); document.getElementById('mainCrm').classList.remove('hidden');
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainCrm').classList.remove('hidden');
             setTimeout(() => document.getElementById('mainCrm').classList.remove('opacity-0'), 50);
-            switchSection(activeSection); loadData(); loadTasks(); loadFiles(); renderKpConstructor(); renderSavedKps();
+            switchSection(activeSection);
+            loadData(); loadTasks(); loadFiles(); renderKpConstructor(); renderSavedKps();
         }
         function lockCrm() { sessionStorage.removeItem('crm_auth'); location.reload(); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
         function toggleForm() { document.getElementById('formSection').classList.toggle('hidden'); if(!document.getElementById('formSection').classList.contains('hidden')) document.getElementById('formSection').scrollIntoView({behavior:'smooth'}); }
         
         function switchSection(id) {
-            activeSection = id; localStorage.setItem('crm_active_section', id);
-            ['dashboard', 'deals', 'calendar', 'analytics', 'archive', 'tasks', 'files', 'kp'].forEach(sec => { if(document.getElementById('section-' + sec)) document.getElementById('section-' + sec).classList.add('hidden'); });
-            if(document.getElementById('section-' + id)) document.getElementById('section-' + id).classList.remove('hidden');
-            
+            activeSection = id;
+            localStorage.setItem('crm_active_section', id);
+            ['dashboard', 'deals', 'calendar', 'analytics', 'archive', 'tasks', 'files', 'kp'].forEach(sec => { document.getElementById('section-' + sec).classList.add('hidden'); });
+            document.getElementById('section-' + id).classList.remove('hidden');
             const titles = { 'dashboard': 'Дашборд', 'deals': 'Сделки', 'calendar': 'Календарь', 'analytics': 'Аналитика', 'archive': 'Архив', 'tasks': 'Задачи', 'files': 'Общий диск', 'kp': 'Генератор КП' };
             document.getElementById('headerTitle').innerText = titles[id] || id;
             
@@ -727,7 +780,6 @@
             if(id === 'deals') setView(activeView);
             document.querySelectorAll('.bx-sidebar-item').forEach(btn => btn.classList.remove('active'));
             if(document.getElementById('nav-' + id)) document.getElementById('nav-' + id).classList.add('active');
-            
             if(id === 'analytics') renderAnalytics(); if(id === 'dashboard') renderDashboard(); if(id === 'calendar') renderCalendar();
             if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) toggleSidebar();
         }
@@ -824,13 +876,13 @@
             renderKpConstructor();
         }
 
-        // ЗАЩИТА КЛАВИАТУРЫ: Обновляем только нужные элементы, а не всю страницу
         function updateKpItem(id, field, value) {
             const item = kpItems.find(i => i.id === id);
             if (item) {
                 if (field === 'qty' || field === 'price') value = Number(value) || 0;
                 item[field] = value;
                 
+                // Защита клавиатуры: обновляем только текст итоговой суммы
                 if (field === 'qty' || field === 'price') {
                     const totalEl = document.getElementById(`kp-item-total-${id}`);
                     if (totalEl) totalEl.innerText = (item.qty * item.price).toLocaleString() + ' ₽';
@@ -863,6 +915,22 @@
             reader.readAsDataURL(file);
         }
 
+        // Фолбэк для копирования в буфер обмена
+        function fallbackCopyTextToClipboard(text) {
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {}
+            document.body.removeChild(textArea);
+        }
+
         // --- ЛОГИКА ОТПРАВКИ И СОХРАНЕНИЯ В АРХИВ ---
         function shareKp(platform) {
             const phoneRaw = document.getElementById('kpPhone').value;
@@ -873,7 +941,7 @@
             const address = document.getElementById('kpAddress').value || '';
             
             let total = 0;
-            let text = `Здравствуйте, ${name}! Ваше коммерческое предложение от Хорошие Полы:\n\n`;
+            let text = `Здравствуйте, ${name}! Ваше коммерческое предложение от "Хорошие Полы":\n\n`;
             
             kpItems.forEach(i => {
                 if (i.name || i.price > 0) {
@@ -893,15 +961,19 @@
             // Отправляем
             let link = '';
             if (platform === 'wa') link = `https://wa.me/${phone}?text=${encodedText}`;
-            if (platform === 'tg') {
-                navigator.clipboard.writeText(text);
-                link = `https://t.me/+${phone}`;
-                showToast('Текст КП скопирован! Вставьте его в открывшийся чат Telegram.');
-            }
             if (platform === 'sms') link = `sms:+${phone}?body=${encodedText}`;
+            if (platform === 'tg') {
+                // В телеграме копируем текст в буфер, так как он не умеет принимать ?text по номеру телефона
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).catch(err => fallbackCopyTextToClipboard(text));
+                } else {
+                    fallbackCopyTextToClipboard(text);
+                }
+                alert('Текст КП скопирован в буфер обмена! 📋\n\nСейчас откроется Telegram. Просто нажмите "Вставить" в диалоге с клиентом.');
+                link = `https://t.me/+${phone}`;
+            }
             
-            if (platform !== 'tg') window.open(link, '_blank');
-            else setTimeout(() => window.open(link, '_blank'), 1500); // Небольшая задержка для Telegram
+            window.open(link, '_blank');
         }
 
         function saveKpToArchive(name, phone, address, total, items) {
@@ -917,7 +989,6 @@
             };
             archive.unshift(newKp); // Добавляем в начало
             localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
-            showToast("КП отправлено и сохранено в Архив!");
         }
 
         function renderSavedKps() {
@@ -976,7 +1047,7 @@
             
             switchSection('deals');
             toggleForm();
-            showToast("Данные скопированы! Нажмите Создать.");
+            showToast("Данные скопированы! Нажмите Создать сделку.");
         }
 
         // --- ИНТЕРАКТИВНОЕ ПРЕВЬЮ (КЛИЕНТ) ---
@@ -1071,8 +1142,6 @@
         }
 
         function closeKpPreview() { document.getElementById('kpPreviewModal').classList.add('hidden'); checkBodyScroll(); }
-
-        // --- ДАЛЕЕ ИДЕТ ОСТАЛЬНОЙ СТАНДАРТНЫЙ КОД CRM (Без изменений и без сжатия) ---
 
         function setView(mode) { 
             activeView = mode; localStorage.setItem('crm_view_mode', mode); 
@@ -1306,13 +1375,6 @@
                 if(mainCb) { const vis = document.querySelectorAll('.order-checkbox'); mainCb.checked = vis.length > 0 && Array.from(vis).every(cb => cb.checked); }
             } catch(e) {}
         }
-
-        // --- Drag and Drop ---
-        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
-        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
-        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-        function dragLeave(e) { if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return; e.currentTarget.classList.remove('drag-over'); }
-        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
 
         async function changeStatus(id, st) { 
             const orderIndex = allOrders.findIndex(o => String(o.id) === String(id));
