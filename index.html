@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v2.8 PRO</title>
+    <title>Хорошие полы - CRM v2.9 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -405,7 +405,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-6">
+                    <div class="mb-6 flex justify-between items-end">
                         <h2 class="text-xl font-bold text-[#333] dark:text-white uppercase tracking-tight">Смета / Товары</h2>
                     </div>
 
@@ -434,8 +434,15 @@
                             <button onclick="shareKp('tg')" class="bx-btn-success !bg-blue-500 hover:!bg-blue-600 !h-8 !px-3 text-xs w-full sm:w-auto shadow-sm transition-transform hover:scale-105">✈️ Telegram</button>
                             <button onclick="shareKp('sms')" class="bx-btn-success !bg-gray-500 hover:!bg-gray-600 !h-8 !px-3 text-xs w-full sm:w-auto shadow-sm transition-transform hover:scale-105">✉️ SMS</button>
                         </div>
+                        
                         <div id="kpSharePlaceholder" class="text-[11px] font-bold text-red-400 uppercase w-full md:w-auto p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-lg text-center">
                             ⚠️ Введите телефон, чтобы отправить КП
+                        </div>
+
+                        <div id="kpEditBlock" class="hidden flex-col sm:flex-row items-center justify-end gap-3 w-full md:w-auto p-4 bg-[#fff9f0] dark:bg-orange-900/20 border border-[#fde8c3] dark:border-orange-800/50 rounded-lg">
+                            <span class="text-[11px] font-bold text-[#f5a623] uppercase mb-2 sm:mb-0 sm:mr-2">Режим редактирования:</span>
+                            <button onclick="saveKpEdit()" class="bx-btn-success !bg-[#f5a623] hover:!bg-[#e09612] !h-8 !px-3 text-xs w-full sm:w-auto shadow-sm transition-transform hover:scale-105">💾 Сохранить и обновить</button>
+                            <button onclick="cancelKpEdit()" class="bx-btn-default !h-8 !px-3 text-xs w-full sm:w-auto shadow-sm transition-transform hover:scale-105">Отмена / Назад</button>
                         </div>
 
                         <div class="text-right w-full md:w-auto bg-[#f4f7f8] dark:bg-gray-900 p-4 rounded-lg border border-[#dce3e7] dark:border-gray-700">
@@ -616,6 +623,9 @@
         let currentSupplierFilter = 'Все';
         let selectedOrders = [];
         let currentGallery = [];
+
+        // Флаг для понимания, редактируем мы КП или создаем новое
+        let editingKpId = null;
 
         // --- СТРУКТУРА ДЛЯ КП ---
         let kpItems = [
@@ -801,6 +811,12 @@
 
         // --- ЛОГИКА ГЕНЕРАТОРА КП ---
         function setKpTab(tab) {
+            if (tab === 'create' && editingKpId) {
+                // Если мы находимся в режиме редактирования и вручную нажали на вкладку "Новое КП", сбрасываем редактор
+                cancelKpEdit();
+                tab = 'create';
+            }
+            
             document.getElementById('tab-kp-create').className = tab === 'create' ? 'bx-tab active !m-0' : 'bx-tab !m-0 text-gray-500';
             document.getElementById('tab-kp-archive').className = tab === 'archive' ? 'bx-tab active !m-0' : 'bx-tab !m-0 text-gray-500';
             
@@ -812,6 +828,10 @@
 
         function handleKpPhoneInput(e) {
             formatPhoneInput(e);
+            
+            // Если мы редактируем уже созданное КП, не прячем панель редактирования
+            if (editingKpId) return;
+
             const val = e.target.value.replace(/\D/g, '');
             const shareBlock = document.getElementById('kpShareBlock');
             const placeholder = document.getElementById('kpSharePlaceholder');
@@ -1006,16 +1026,112 @@
             }
         }
 
-        // Сохранение в локальный архив менеджера
+        // РЕДАКТИРОВАНИЕ СОХРАНЕННОГО КП
+        function editSavedKp(id) {
+            try {
+                let archiveStr = localStorage.getItem('crm_saved_kps');
+                let archive = archiveStr ? JSON.parse(archiveStr) : [];
+                const kp = archive.find(k => String(k.id) === String(id));
+                if (!kp) return;
+
+                editingKpId = id; // Переводим в режим редактирования
+
+                document.getElementById('kpName').value = kp.name || '';
+                document.getElementById('kpPhone').value = applyPhoneMask(kp.phone || '');
+                document.getElementById('kpAddress').value = kp.address || '';
+                
+                kpItems = (typeof kp.items === 'string') ? JSON.parse(kp.items) : [...kp.items];
+                
+                setKpTab('create');
+                renderKpConstructor();
+                
+                // Меняем UI
+                document.getElementById('tab-kp-create').innerText = 'Редактирование КП';
+                document.getElementById('kpShareBlock').classList.add('hidden');
+                document.getElementById('kpShareBlock').classList.remove('flex');
+                document.getElementById('kpSharePlaceholder').classList.add('hidden');
+                
+                document.getElementById('kpEditBlock').classList.remove('hidden');
+                document.getElementById('kpEditBlock').classList.add('flex');
+                
+                showToast("КП загружено для редактирования!");
+            } catch(e){
+                showToast("Ошибка загрузки КП", true);
+            }
+        }
+
+        function cancelKpEdit() {
+            editingKpId = null;
+            document.getElementById('tab-kp-create').innerText = 'Новое КП';
+            
+            document.getElementById('kpEditBlock').classList.add('hidden');
+            document.getElementById('kpEditBlock').classList.remove('flex');
+            
+            document.getElementById('kpName').value = '';
+            document.getElementById('kpPhone').value = '';
+            document.getElementById('kpAddress').value = '';
+            kpItems = [{ id: 1, name: '', qty: 1, price: 0, isOption: false, image: null }];
+            renderKpConstructor();
+            
+            handleKpPhoneInput({target: document.getElementById('kpPhone')});
+            
+            setKpTab('archive');
+        }
+
+        async function saveKpEdit() {
+            if (!editingKpId) return;
+            const phoneRaw = document.getElementById('kpPhone').value;
+            const phone = phoneRaw.replace(/\D/g, '');
+            if (phone.length < 11) return showToast('Введите корректный телефон', true);
+            
+            const name = document.getElementById('kpName').value || 'Уважаемый клиент';
+            const address = document.getElementById('kpAddress').value || '';
+            
+            let total = 0;
+            kpItems.forEach(i => { if (i.name || i.price > 0) total += i.qty * i.price; });
+            if (total === 0) return showToast('Смета пуста. Добавьте товары.', true);
+
+            document.getElementById('ai-loader').style.display = 'flex';
+
+            try {
+                // Обновляем данные в Supabase
+                const { error } = await _supabase.from('kps').update({
+                    client_name: name,
+                    phone: phoneRaw,
+                    address: address,
+                    total_price: total,
+                    items: JSON.stringify(kpItems)
+                }).eq('id', editingKpId);
+
+                if (error) throw error;
+
+                // Обновляем локальный архив
+                let archiveStr = localStorage.getItem('crm_saved_kps');
+                let archive = archiveStr ? JSON.parse(archiveStr) : [];
+                const idx = archive.findIndex(k => String(k.id) === String(editingKpId));
+                if (idx !== -1) {
+                    archive[idx] = { id: editingKpId, date: archive[idx].date, name: name, phone: phoneRaw, address: address, total: total, items: [...kpItems] };
+                    localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
+                }
+
+                showToast("Ссылка клиента успешно обновлена!", false);
+                cancelKpEdit(); // Возвращаемся в архив
+
+            } catch (err) {
+                console.error(err);
+                showToast("Ошибка обновления в БД", true);
+            } finally {
+                document.getElementById('ai-loader').style.display = 'none';
+            }
+        }
+
         function saveKpToLocalArchive(id, name, phone, address, total, items) {
             try {
                 let archiveStr = localStorage.getItem('crm_saved_kps');
                 let archive = archiveStr ? JSON.parse(archiveStr) : [];
-                // Проверяем, может мы редактируем уже существующее? Удалим старую копию.
                 archive = archive.filter(k => String(k.id) !== String(id));
-                
                 const newKp = { id: id, date: new Date().toISOString(), name: name, phone: phone, address: address, total: total, items: items };
-                archive.unshift(newKp); // Добавляем наверх
+                archive.unshift(newKp);
                 localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
             } catch(e) {}
         }
@@ -1053,44 +1169,12 @@
             } catch(e) {}
         }
 
-        // РЕДАКТИРОВАНИЕ СОХРАНЕННОГО КП
-        function editSavedKp(id) {
-            try {
-                let archiveStr = localStorage.getItem('crm_saved_kps');
-                let archive = archiveStr ? JSON.parse(archiveStr) : [];
-                const kp = archive.find(k => String(k.id) === String(id));
-                if (!kp) return;
-
-                // Подгружаем данные клиента
-                document.getElementById('kpName').value = kp.name || '';
-                document.getElementById('kpPhone').value = applyPhoneMask(kp.phone || '');
-                document.getElementById('kpAddress').value = kp.address || '';
-                
-                // Подгружаем товары
-                kpItems = (typeof kp.items === 'string') ? JSON.parse(kp.items) : [...kp.items];
-                
-                // Переключаемся на вкладку "Новое КП"
-                setKpTab('create');
-                renderKpConstructor();
-                
-                // Триггерим проверку телефона, чтобы показались кнопки отправки WhatsApp/TG
-                handleKpPhoneInput({target: document.getElementById('kpPhone')});
-                
-                showToast("КП загружено для редактирования!");
-            } catch(e){
-                showToast("Ошибка загрузки КП", true);
-            }
-        }
-
         function deleteSavedKp(id) {
             if (!confirm("Удалить это КП из архива?")) return;
             try {
                 let archiveStr = localStorage.getItem('crm_saved_kps');
                 let archive = archiveStr ? JSON.parse(archiveStr) : [];
-                
-                // Исправленная строка (надежное сравнение текстовых ID)
                 archive = archive.filter(k => String(k.id) !== String(id));
-                
                 localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
                 renderSavedKps();
                 showToast("КП удалено из Архива");
