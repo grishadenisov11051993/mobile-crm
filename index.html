@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v2.9 PRO</title>
+    <title>Хорошие полы - CRM v3.0 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -391,8 +391,8 @@
             <div id="section-kp" class="hidden p-4 sm:p-6 mx-auto w-full max-w-[1200px]">
                 
                 <div class="flex gap-2 mb-6 bg-[#f4f7f8] dark:bg-gray-800 p-1 rounded border border-[#dce3e7] dark:border-gray-700 w-max">
-                    <div onclick="setKpTab('create')" id="tab-kp-create" class="bx-tab active !m-0">Новое КП</div>
-                    <div onclick="setKpTab('archive')" id="tab-kp-archive" class="bx-tab !m-0 text-gray-500">Архив КП</div>
+                    <div onclick="handleKpTabClick('create')" id="tab-kp-create" class="bx-tab active !m-0">Новое КП</div>
+                    <div onclick="handleKpTabClick('archive')" id="tab-kp-archive" class="bx-tab !m-0 text-gray-500">Архив КП</div>
                 </div>
 
                 <div id="kp-create-tab" class="bg-white dark:bg-gray-800 p-5 sm:p-8 border border-[#dce3e7] dark:border-gray-700 rounded-lg shadow-sm">
@@ -405,7 +405,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-6 flex justify-between items-end">
+                    <div class="mb-6">
                         <h2 class="text-xl font-bold text-[#333] dark:text-white uppercase tracking-tight">Смета / Товары</h2>
                     </div>
 
@@ -441,8 +441,8 @@
 
                         <div id="kpEditBlock" class="hidden flex-col sm:flex-row items-center justify-end gap-3 w-full md:w-auto p-4 bg-[#fff9f0] dark:bg-orange-900/20 border border-[#fde8c3] dark:border-orange-800/50 rounded-lg">
                             <span class="text-[11px] font-bold text-[#f5a623] uppercase mb-2 sm:mb-0 sm:mr-2">Режим редактирования:</span>
+                            <button onclick="cancelKpEdit()" class="bx-btn-default !h-8 !px-3 text-xs w-full sm:w-auto shadow-sm transition-transform hover:scale-105 border-[#fde8c3] text-[#f5a623]">Отмена / Назад</button>
                             <button onclick="saveKpEdit()" class="bx-btn-success !bg-[#f5a623] hover:!bg-[#e09612] !h-8 !px-3 text-xs w-full sm:w-auto shadow-sm transition-transform hover:scale-105">💾 Сохранить и обновить</button>
-                            <button onclick="cancelKpEdit()" class="bx-btn-default !h-8 !px-3 text-xs w-full sm:w-auto shadow-sm transition-transform hover:scale-105">Отмена / Назад</button>
                         </div>
 
                         <div class="text-right w-full md:w-auto bg-[#f4f7f8] dark:bg-gray-900 p-4 rounded-lg border border-[#dce3e7] dark:border-gray-700">
@@ -632,7 +632,7 @@
             { id: 1, name: '', qty: 1, price: 0, isOption: false, image: null }
         ];
 
-        // --- СЖАТИЕ ИЗОБРАЖЕНИЙ ---
+        // --- СЖАТИЕ ИЗОБРАЖЕНИЙ (ОБНОВЛЕНО) ---
         async function compressImageFile(file) {
             if (!file.type.startsWith('image/')) return file;
             return new Promise((resolve) => {
@@ -645,7 +645,8 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        const MAX_SIZE = 1600; 
+                        // Сильное, но качественное сжатие для мобилок
+                        const MAX_SIZE = 1200; 
                         if (width > height) {
                             if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
                         } else {
@@ -658,7 +659,7 @@
                         canvas.toBlob((blob) => {
                             const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg', lastModified: Date.now() });
                             resolve(compressedFile);
-                        }, 'image/jpeg', 0.8);
+                        }, 'image/jpeg', 0.7); // 0.7 - оптимальное качество
                     };
                 };
             });
@@ -826,10 +827,32 @@
             if (tab === 'archive') renderSavedKps();
         }
 
+        // УМНОЕ УПРАВЛЕНИЕ ВКЛАДКАМИ
+        function handleKpTabClick(tab) {
+            // Если мы редактируем КП, но юзер кликнул на вкладки
+            if (editingKpId) {
+                if (tab === 'create') {
+                    if(confirm("Сбросить текущее редактирование и создать новое КП?")) {
+                        cancelKpEdit(); // сбрасывает всё и переводит на "Архив"
+                        // Но раз уж кликнул на "Создать", переведем его на создание
+                        setTimeout(() => setKpTab('create'), 50);
+                    }
+                    return; // отменяем обычный клик
+                } else if (tab === 'archive') {
+                    if(confirm("Отменить редактирование и вернуться в архив? Данные не сохранятся.")) {
+                        cancelKpEdit();
+                    }
+                    return; // отменяем обычный клик
+                }
+            }
+            // Обычное переключение
+            setKpTab(tab);
+        }
+
         function handleKpPhoneInput(e) {
             formatPhoneInput(e);
             
-            // Если мы редактируем уже созданное КП, не прячем панель редактирования
+            // Если мы редактируем уже созданное КП, не показываем блок создания новых ссылок
             if (editingKpId) return;
 
             const val = e.target.value.replace(/\D/g, '');
@@ -933,21 +956,29 @@
             if (sumEl) sumEl.innerText = sum.toLocaleString() + ' ₽';
         }
 
-        function uploadKpImage(event, id) {
+        // ОБНОВЛЕНО: Сжатие фото для КП
+        async function uploadKpImage(event, id) {
             const file = event.target.files[0];
             if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const item = kpItems.find(i => i.id === id);
-                if(item) {
-                    item.image = e.target.result;
-                    const imgPreview = document.getElementById(`kp-img-preview-${id}`);
-                    if (imgPreview) {
-                        imgPreview.outerHTML = `<img src="${item.image}" id="kp-img-preview-${id}" class="w-10 h-10 object-cover rounded border border-[#dce3e7] shrink-0">`;
+            showToast("Сжатие фото...");
+            try {
+                const compressedFile = await compressImageFile(file);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const item = kpItems.find(i => i.id === id);
+                    if(item) {
+                        item.image = e.target.result;
+                        const imgPreview = document.getElementById(`kp-img-preview-${id}`);
+                        if (imgPreview) {
+                            imgPreview.outerHTML = `<img src="${item.image}" id="kp-img-preview-${id}" class="w-10 h-10 object-cover rounded border border-[#dce3e7] shrink-0">`;
+                        }
                     }
-                }
-            };
-            reader.readAsDataURL(file);
+                    showToast("Фото добавлено!", false);
+                };
+                reader.readAsDataURL(compressedFile);
+            } catch(e) {
+                showToast("Ошибка при загрузке фото", true);
+            }
         }
 
         // Фолбэк для копирования в буфер обмена
@@ -1042,6 +1073,7 @@
                 
                 kpItems = (typeof kp.items === 'string') ? JSON.parse(kp.items) : [...kp.items];
                 
+                // Переключаем визуально вкладки (но без логики handleKpTabClick)
                 setKpTab('create');
                 renderKpConstructor();
                 
@@ -1067,14 +1099,15 @@
             document.getElementById('kpEditBlock').classList.add('hidden');
             document.getElementById('kpEditBlock').classList.remove('flex');
             
+            document.getElementById('kpSharePlaceholder').classList.remove('hidden'); // Возвращаем заглушку
+            
             document.getElementById('kpName').value = '';
             document.getElementById('kpPhone').value = '';
             document.getElementById('kpAddress').value = '';
             kpItems = [{ id: 1, name: '', qty: 1, price: 0, isOption: false, image: null }];
             renderKpConstructor();
             
-            handleKpPhoneInput({target: document.getElementById('kpPhone')});
-            
+            // Переключаемся обратно в архив
             setKpTab('archive');
         }
 
@@ -1115,7 +1148,7 @@
                 }
 
                 showToast("Ссылка клиента успешно обновлена!", false);
-                cancelKpEdit(); // Возвращаемся в архив
+                cancelKpEdit(); // Возвращаемся в архив и сбрасываем форму
 
             } catch (err) {
                 console.error(err);
@@ -1123,17 +1156,6 @@
             } finally {
                 document.getElementById('ai-loader').style.display = 'none';
             }
-        }
-
-        function saveKpToLocalArchive(id, name, phone, address, total, items) {
-            try {
-                let archiveStr = localStorage.getItem('crm_saved_kps');
-                let archive = archiveStr ? JSON.parse(archiveStr) : [];
-                archive = archive.filter(k => String(k.id) !== String(id));
-                const newKp = { id: id, date: new Date().toISOString(), name: name, phone: phone, address: address, total: total, items: items };
-                archive.unshift(newKp);
-                localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
-            } catch(e) {}
         }
 
         function renderSavedKps() {
@@ -1169,16 +1191,23 @@
             } catch(e) {}
         }
 
-        function deleteSavedKp(id) {
-            if (!confirm("Удалить это КП из архива?")) return;
+        async function deleteSavedKp(id) {
+            if (!confirm("Удалить это КП из архива навсегда? Ссылка для клиента перестанет работать.")) return;
             try {
+                // Удаляем из локального архива (чтобы сразу пропало с экрана)
                 let archiveStr = localStorage.getItem('crm_saved_kps');
                 let archive = archiveStr ? JSON.parse(archiveStr) : [];
                 archive = archive.filter(k => String(k.id) !== String(id));
                 localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
                 renderSavedKps();
-                showToast("КП удалено из Архива");
-            } catch(e){}
+                
+                // Удаляем из базы данных Supabase (убиваем ссылку)
+                await _supabase.from('kps').delete().eq('id', id);
+                
+                showToast("КП удалено");
+            } catch(e) {
+                console.error(e);
+            }
         }
 
         function kpArchiveToDeal(id) {
@@ -1679,6 +1708,8 @@
             document.getElementById('taskModal').classList.remove('hidden'); checkBodyScroll();
         }
         function closeTaskModal() { document.getElementById('taskModal').classList.add('hidden'); document.getElementById('taskFile').value = ''; currentTaskId = null; checkBodyScroll(); }
+        
+        // ОБНОВЛЕНО: Сжатие фото для Задач
         async function saveTaskDetails() {
             if(!currentTaskId) return; 
             const title = document.getElementById('taskTitle').value.trim(); if(!title) return showToast("Укажите название задачи", true);
@@ -1687,14 +1718,17 @@
             try {
                 const fileInput = document.getElementById('taskFile');
                 if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0]; const ext = file.name ? file.name.split('.').pop() : 'pdf'; 
+                    const file = fileInput.files[0]; 
+                    const compressedFile = await compressImageFile(file); // Сжимаем если это фото
+                    const ext = compressedFile.name ? compressedFile.name.split('.').pop() : 'pdf'; 
                     const name = `task_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
-                    await _supabase.storage.from('order-files').upload(name, file);
+                    await _supabase.storage.from('order-files').upload(name, compressedFile);
                     updates.file_url = _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl;
                 }
                 await _supabase.from('tasks').update(updates).eq('id', currentTaskId); showToast("Задача сохранена", false); closeTaskModal(); loadTasks();
             } catch(e) { showToast("Ошибка", true); } finally { btn.disabled = false; btn.innerText = origText; }
         }
+        
         async function deleteTaskFromModal() { if(!currentTaskId) return; if(confirm("Удалить задачу навсегда?")) { try { await _supabase.from('tasks').delete().eq('id', currentTaskId); closeTaskModal(); loadTasks(); showToast("Задача удалена"); } catch(e) {} } }
         async function deleteTaskAttachedFile(id, url) { if(!confirm("Удалить файл?")) return; try { await _supabase.storage.from('order-files').remove([url.split('/').pop()]); await _supabase.from('tasks').update({ file_url: null }).eq('id', id); document.getElementById('currentTaskFileLink').innerHTML = '<span class="text-[#aab3b8] text-[11px]">Файл удален</span>'; const t = allTasks.find(x => String(x.id) === String(id)); if(t) t.file_url = null; loadTasks(); } catch (err) {} }
 
@@ -1711,12 +1745,16 @@
         }
         function openFolder(id) { currentFolderId = id; renderFiles(); }
         async function createFolder() { const n = prompt("Название папки:"); if(n) { try { await _supabase.from('crm_files').insert([{name: n, is_folder: true}]); loadFiles(); } catch(e) {} } }
+        
+        // ОБНОВЛЕНО: Сжатие фото для Диска
         async function uploadCrmFile(e) { 
             if(currentFolderId === null) return showToast("Зайдите в папку", true); showToast("Загрузка...", false); 
             try {
                 for(let file of e.target.files) { 
-                    const ext = file.name ? file.name.split('.').pop() : 'doc'; const name = `crm_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`; 
-                    await _supabase.storage.from('order-files').upload(name, file); 
+                    const compressedFile = await compressImageFile(file); // Сжимаем если это фото
+                    const ext = compressedFile.name ? compressedFile.name.split('.').pop() : 'doc'; 
+                    const name = `crm_${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`; 
+                    await _supabase.storage.from('order-files').upload(name, compressedFile); 
                     await _supabase.from('crm_files').insert([{ name: file.name, is_folder: false, folder_id: currentFolderId, file_url: _supabase.storage.from('order-files').getPublicUrl(name).data.publicUrl }]); 
                 } 
                 loadFiles(); showToast("Загружено"); 
