@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v3.4 PRO</title>
+    <title>Хорошие полы - CRM v3.5 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <h2 class="text-2xl font-['Playfair_Display'] text-kp-gold text-center uppercase mb-2 leading-snug">
-                    Индивидуальная смета<br>для <span id="prev-c-name-title" class="text-white">Клиента</span>
+                    Коммерческое предложение
                 </h2>
             </div>
             <div class="px-5 py-4 flex-1 overflow-y-auto no-scrollbar relative space-y-8">
@@ -122,14 +122,9 @@
                     </div>
                 </div>
             </div>
-            <div class="p-6 bg-[#031A10] border-t border-kp-gold/30 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-10">
-                <div class="flex justify-between items-end mb-5">
-                    <div class="text-xs font-bold text-kp-gold uppercase tracking-wider">Итоговая стоимость:</div>
-                    <div class="text-3xl font-bold text-white" id="prev-total-sum">0 ₽</div>
-                </div>
-                <button onclick="closeKpPreview()" class="w-full bg-gradient-to-r from-kp-gold to-kp-gold-light text-kp-bg font-bold py-3.5 rounded shadow-lg text-[13px] uppercase tracking-wide flex justify-center items-center gap-2 hover:opacity-90 transition-opacity">
-                    <span>ЗАКРЫТЬ ПРЕДПРОСМОТР</span>
-                </button>
+            <div class="p-6 bg-[#031A10] border-t border-kp-gold/30 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-10 flex justify-between items-center">
+                <div class="text-xs font-bold text-kp-gold uppercase tracking-wider">Итоговая стоимость:</div>
+                <div class="text-3xl font-bold text-white" id="prev-total-sum">0 ₽</div>
             </div>
         </div>
     </div>
@@ -420,7 +415,6 @@
             { id: 1, name: '', qty: 1, price: 0, isOption: false, image: null }
         ];
 
-        // --- УТИЛИТЫ ДЛЯ КП ---
         function saveKpToLocalArchive(id, name, phone, address, total, items) {
             try {
                 let archiveStr = localStorage.getItem('crm_saved_kps');
@@ -463,6 +457,12 @@
             });
         }
 
+        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
+        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
+        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+        function dragLeave(e) { if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return; e.currentTarget.classList.remove('drag-over'); }
+        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
+
         function applyTheme() {
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -504,12 +504,36 @@
         function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
         function formatDate(d) { return d ? new Date(d).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'; }
 
+        function startDictation(inputId, btn) {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Speech) return showToast("Голосовой ввод не поддерживается браузером", true);
+            const recognition = new Speech();
+            recognition.lang = 'ru-RU';
+            btn.innerText = '🛑';
+            recognition.onresult = (e) => { document.getElementById(inputId).value = e.results[0][0].transcript; };
+            recognition.onend = () => { btn.innerText = '🎤'; }; recognition.start();
+        }
+
+        function getTagColorClass(tag) {
+            const t = tag.toLowerCase().trim();
+            if(['авито', 'vk', 'вк', 'сайт', 'инста', 'телеграм'].includes(t)) return 'text-[#2fc6f6]';
+            if(['tarkett', 'classen', 'kronopol', 'aberhof', 'my floor', 'first floor'].includes(t)) return 'text-[#7bd500]';
+            if(['karelia', 'kahrs', 'wood bee', 'antic wood', 'steinholz', 'паркет'].includes(t)) return 'text-[#f5a623]';
+            if(['дизайнер', 'прораб', 'архитектор'].includes(t)) return 'text-purple-500';
+            if(['важно', 'акция', 'срочно', 'доставка'].includes(t)) return 'text-red-500';
+            return 'text-[#535c69] dark:text-gray-400';
+        }
+        function getTagsHtml(tagsStr) {
+            if(!tagsStr) return '';
+            const arr = String(tagsStr).split(',').map(t => t.trim()).filter(t => t);
+            if(arr.length === 0) return '';
+            return `<div class="mt-2 flex flex-wrap gap-1 pointer-events-none">` + arr.map(t => `<span class="bx-tag ${getTagColorClass(t)}">#${t}</span>`).join('') + `</div>`;
+        }
         function checkBodyScroll() { 
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden') || !document.getElementById('kpPreviewModal').classList.contains('hidden'); 
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden'); 
         }
 
-        // --- ИНИЦИАЛИЗАЦИЯ И НАВИГАЦИЯ ---
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('crm_auth') === 'true') unlockCrm();
             document.getElementById('pinInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') checkPin(); });
@@ -560,7 +584,6 @@
             if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) toggleSidebar();
         }
 
-        // --- ЛОГИКА ГЕНЕРАТОРА КП ---
         function setKpTab(tab) {
             if (tab === 'create' && editingKpId) {
                 cancelKpEdit();
@@ -734,10 +757,7 @@
         }
 
         function openKpPreview() {
-            const cName = document.getElementById('kpName').value || 'Клиента';
-            
-            document.getElementById('prev-c-name-title').innerText = cName;
-
+            // Убрана привязка имени к заголовку
             const baseContainer = document.getElementById('prev-base-items');
             const addonContainer = document.getElementById('prev-addon-items');
             
@@ -867,7 +887,7 @@
                 const kpId = data[0].id;
                 const kpLink = `https://mobile-crm-jet.vercel.app/kp.html?id=${kpId}`;
 
-                let text = `Здравствуйте, ${name}! Ваше коммерческое предложение от "Хорошие Полы":\n\n`;
+                let text = `Здравствуйте! Ваше коммерческое предложение от "Хорошие Полы":\n\n`;
                 text += `Итоговая сумма: ${total.toLocaleString()} ₽\n\n`;
                 text += `✨ Посмотреть интерактивную смету, фото товаров и скорректировать опции вы можете по этой ссылке:\n${kpLink}\n\n`;
                 text += `Мы всегда на связи и готовы запустить заказ в работу!`;
@@ -1069,7 +1089,6 @@
             } catch(e){}
         }
 
-        // --- ДАЛЕЕ ИДЕТ ОСТАЛЬНОЙ СТАНДАРТНЫЙ КОД CRM ---
         function setView(mode) { 
             activeView = mode; localStorage.setItem('crm_view_mode', mode); 
             ['kanban', 'list', 'table'].forEach(m => { const el = document.getElementById('v-' + m); if(el) { if (mode === m) { el.classList.add('active'); } else { el.classList.remove('active'); } } });
