@@ -3,197 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Коммерческое предложение - Хорошие Полы</title>
+    <title>Коммерческое предложение</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kp-bg': '#052A1B',
+                        'kp-card': '#083D28',
+                        'kp-gold': '#D4B86A',
+                        'kp-gold-light': '#FDE8C3',
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #111827; margin: 0; padding: 0; display: flex; justify-content: center; min-height: 100vh; }
+        body { font-family: 'Inter', sans-serif; background-color: #052A1B; color: #fff; -webkit-tap-highlight-color: transparent; }
+        .toggle-checkbox:checked { right: 0; border-color: #D4B86A; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #D4B86A; }
+        .toggle-checkbox { right: 0; z-index: 1; border-color: #374151; transition: all 0.3s; }
+        .toggle-label { background-color: #1f2937; transition: all 0.3s; }
         
-        /* Изумруд и золото */
-        .kp-emerald-bg { background-color: #1a362b; }
-        .kp-gold-text { color: #d4af37; }
-        .kp-gold-border { border-color: #d4af37; }
-        
-        /* Свитчи (iOS style) */
-        .toggle-checkbox:checked { right: 0; border-color: #d4af37; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #d4af37; }
-        .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
-        .toggle-label { background-color: #e2e8f0; transition: all 0.3s; }
-
-        /* Анимация загрузки */
-        .loader { border: 4px solid rgba(212, 175, 55, 0.3); border-top: 4px solid #d4af37; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        #loader { display: flex; position: fixed; inset: 0; background: #052A1B; z-index: 50; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { border: 3px solid rgba(212,184,106,0.2); border-top: 3px solid #D4B86A; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="text-white">
+<body class="pb-32 relative min-h-screen">
 
-    <div class="kp-emerald-bg w-full max-w-[450px] shadow-2xl flex flex-col relative min-h-screen sm:min-h-[850px] sm:my-8 sm:rounded-[3rem] sm:border-[12px] border-gray-900 overflow-hidden">
-        
-        <div class="p-6 pb-4 flex items-center justify-between border-b border-[#d4af37]/30 shrink-0 bg-[#152b22] z-10 relative shadow-md">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-gradient-to-br from-[#e6c875] to-[#d4af37] rounded-xl flex items-center justify-center font-black text-[#1a362b] text-xl shadow-lg">ХП</div>
+    <div id="loader">
+        <div class="spinner mb-4"></div>
+        <div class="text-kp-gold font-bold uppercase tracking-widest text-sm">Загрузка сметы...</div>
+    </div>
+
+    <div id="error-screen" class="hidden flex-col items-center justify-center min-h-screen p-6 text-center">
+        <div class="text-kp-gold text-5xl mb-4">⚠️</div>
+        <h2 class="text-xl font-bold text-white mb-2">Предложение не найдено</h2>
+        <p class="text-white/60 text-sm">Возможно, ссылка устарела или была удалена менеджером.</p>
+    </div>
+
+    <div id="kp-content" class="hidden flex-col max-w-lg mx-auto w-full">
+        <div class="p-6 pb-2 pt-8 shrink-0 flex flex-col items-center justify-center relative">
+            <div class="flex items-center justify-center gap-3 mb-6 mt-2">
+                <div class="w-12 h-12 bg-kp-gold text-kp-bg font-bold text-2xl flex items-center justify-center rounded">ХП</div>
+                <div class="text-kp-gold font-bold leading-none">
+                    <div class="text-xl tracking-widest uppercase">Хорошие полы</div>
+                    <div class="text-[10px] tracking-widest uppercase opacity-80 mt-1.5">Центр напольных покрытий</div>
+                </div>
+            </div>
+
+            <h2 class="text-3xl font-['Playfair_Display'] text-kp-gold text-center uppercase mb-2 leading-snug">
+                Индивидуальная смета<br>для <span id="client-name" class="text-white">...</span>
+            </h2>
+        </div>
+
+        <div class="px-5 py-4 flex-1 space-y-8">
+            <div id="base-section" class="relative border border-kp-gold/40 rounded-xl p-4 pt-6 hidden">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-kp-bg px-4 text-kp-gold text-[12px] font-bold uppercase tracking-widest whitespace-nowrap">
+                    Базовый комплект (Обязательно)
+                </div>
+                <div id="base-items" class="space-y-0 divide-y divide-kp-gold/10"></div>
+            </div>
+
+            <div id="addon-section" class="relative border border-kp-gold/40 rounded-xl p-4 pt-6 hidden">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-kp-bg px-4 text-kp-gold text-[12px] font-bold uppercase tracking-widest whitespace-nowrap">
+                    Рекомендуемые дополнения
+                </div>
+                <div id="addon-items" class="space-y-0 divide-y divide-kp-gold/10"></div>
+            </div>
+
+            <div class="flex items-center gap-4 bg-kp-card p-4 rounded-xl border border-kp-gold/20 shadow-lg mt-8">
+                <img src="https://ui-avatars.com/api/?name=Менеджер&background=D4B86A&color=052A1B" class="w-16 h-16 rounded-full border-2 border-kp-gold object-cover">
                 <div>
-                    <div class="font-black kp-gold-text text-[15px] uppercase leading-tight tracking-wide">Центр напольных</div>
-                    <div class="font-black kp-gold-text text-[15px] uppercase leading-tight tracking-wide">Покрытий</div>
+                    <div class="text-[10px] text-kp-gold uppercase tracking-widest mb-1">Ваш персональный менеджер</div>
+                    <div class="text-white font-bold text-lg mb-1">ЕКАТЕРИНА</div>
+                    <div class="text-[11px] text-white/70 italic">«Я на связи! Если нужно что-то поменять — пишите, всё решим.»</div>
                 </div>
             </div>
-            <a href="https://wa.me/79000000000" class="bg-green-500 hover:bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105" title="Написать в WhatsApp">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 .001 5.383.001 12.029c0 2.124.553 4.195 1.604 6.012L.036 24l6.113-1.603c1.745.952 3.73 1.455 5.882 1.455 6.645 0 12.029-5.384 12.029-12.03C24.06 5.383 18.676 0 12.031 0zm0 21.849c-1.802 0-3.565-.484-5.111-1.399l-.366-.217-3.8.996.996-3.705-.238-.378c-1.006-1.597-1.538-3.447-1.538-5.347 0-5.545 4.512-10.059 10.057-10.059 5.544 0 10.058 4.514 10.058 10.059 0 5.546-4.514 10.05-10.058 10.05zM17.55 14.39c-.303-.152-1.793-.886-2.072-.988-.278-.101-.481-.152-.684.152-.202.303-.784.988-.961 1.19-.177.177-.354.202-.657.051-2.034-.997-3.468-2.185-4.518-3.957-.152-.253-.02-.38.131-.532.136-.136.303-.354.455-.53.151-.178.202-.304.303-.506.101-.202.051-.38-.025-.531-.076-.152-.684-1.646-.936-2.253-.247-.594-.497-.514-.684-.523-.177-.008-.38-.01-.582-.01-.202 0-.53.076-.809.38-.278.304-1.062 1.038-1.062 2.532 0 1.494 1.087 2.937 1.239 3.14.152.202 2.144 3.272 5.19 4.59.723.313 1.287.5 1.727.64.726.23 1.387.198 1.905.12.582-.088 1.793-.733 2.046-1.442.253-.71.253-1.317.177-1.443-.076-.127-.278-.203-.582-.355z"/></svg>
-            </a>
         </div>
 
-        <div id="loading" class="flex-1 flex flex-col justify-center items-center">
-            <div class="loader mb-4"></div>
-            <div class="text-[#d4af37] font-bold text-sm tracking-widest uppercase">Загрузка предложения...</div>
-        </div>
-
-        <div id="content" class="flex-1 overflow-y-auto relative hidden flex flex-col">
-            <div class="p-6 pb-24">
-                <h2 class="text-3xl font-black text-white uppercase tracking-wide mb-6 leading-tight">Коммерческое<br><span class="kp-gold-text">Предложение</span></h2>
-                
-                <div class="mb-8 space-y-2 relative">
-                    <div class="absolute -left-6 top-2 w-1.5 h-16 bg-[#d4af37] rounded-r"></div>
-                    <div class="text-[10px] font-black kp-gold-text uppercase tracking-widest mb-2 opacity-80">Данные клиента:</div>
-                    <div class="text-lg font-bold text-white tracking-wide" id="c-name">Имя клиента</div>
-                    <div class="text-sm font-medium text-white/70 flex items-center gap-2">📍 <span id="c-address">Адрес</span></div>
-                    <div class="text-sm font-medium text-[#d4af37] flex items-center gap-2 font-mono">📞 <span id="c-phone">Телефон</span></div>
+        <div class="fixed bottom-0 left-0 w-full bg-[#031A10] border-t border-kp-gold/30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-40 px-5 py-5">
+            <div class="max-w-lg mx-auto">
+                <div class="flex justify-between items-end mb-4">
+                    <div class="text-xs font-bold text-kp-gold uppercase tracking-wider w-1/2">Итоговая стоимость<br>предложения:</div>
+                    <div class="text-4xl font-bold text-white text-right" id="total-sum">0 ₽</div>
                 </div>
-
-                <div class="text-[10px] font-black kp-gold-text uppercase tracking-widest mb-4 opacity-80 border-b border-[#d4af37]/30 pb-2">Состав заказа:</div>
-                <div id="items-container" class="space-y-4">
-                    </div>
+                <button onclick="window.print()" class="w-full bg-gradient-to-r from-kp-gold to-kp-gold-light text-kp-bg font-bold py-3.5 rounded shadow-lg text-[14px] uppercase tracking-wide flex justify-center items-center gap-2 hover:opacity-90 transition-opacity">
+                    <span>📄 Скачать официальное КП (PDF)</span>
+                </button>
             </div>
-        </div>
-
-        <div id="footer" class="p-6 bg-gradient-to-t from-[#0e1d17] to-[#152b22] border-t border-[#d4af37]/30 shrink-0 shadow-[0_-15px_40px_rgba(0,0,0,0.5)] hidden z-10 relative">
-            <div class="flex justify-between items-end mb-5">
-                <div class="text-[11px] font-black text-white/50 uppercase tracking-widest">Итого к оплате:</div>
-                <div class="text-4xl font-black text-white tracking-tight" id="total-sum">0 ₽</div>
-            </div>
-            <button onclick="confirmOrder()" class="w-full bg-gradient-to-r from-[#d4af37] via-[#e6c875] to-[#d4af37] text-[#1a362b] font-black py-4 rounded-xl shadow-[0_0_20px_rgba(212,175,55,0.4)] text-[14px] uppercase tracking-widest flex justify-center items-center gap-2 hover:scale-[1.02] transition-transform active:scale-95">
-                <span class="text-xl leading-none">✓</span> Согласовать заказ
-            </button>
-            <div class="text-center text-[10px] text-white/30 mt-4 uppercase tracking-widest">Хорошие полы CRM © 2026</div>
         </div>
     </div>
 
     <script>
-        // Подключаемся к базе (Ключи те же самые, что в CRM)
         const SUPABASE_URL = 'https://vhzzrczbkvldjvdosozg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_-ivfAU5o4IO1gJkX-jgkSQ_RzV20mfJ';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let kpData = null;
+        let kpItems = [];
 
-        // Читаем ID из ссылки (kp.html?id=...)
-        const urlParams = new URLSearchParams(window.location.search);
-        const kpId = urlParams.get('id');
-
-        async function loadKp() {
-            if (!kpId) {
-                alert("Ошибка: Неверная ссылка на КП");
-                return;
-            }
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (!id) return showError();
 
             try {
-                // Ищем КП в новой таблице
-                const { data, error } = await _supabase.from('kps').select('*').eq('id', kpId).single();
+                const { data, error } = await _supabase.from('kps').select('*').eq('id', id).single();
+                if (error || !data) throw error;
+
+                document.getElementById('client-name').innerText = data.client_name;
+                kpItems = JSON.parse(data.items);
+                renderItems();
                 
-                if (error || !data) {
-                    document.getElementById('loading').innerHTML = '<div class="text-red-400 font-bold">КП не найдено или удалено</div>';
-                    return;
-                }
-
-                kpData = data;
-                
-                // Парсим товары из JSON
-                if (typeof kpData.items === 'string') {
-                    kpData.items = JSON.parse(kpData.items);
-                }
-
-                renderData();
-
-                // Показываем интерфейс
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('content').classList.remove('hidden');
-                document.getElementById('footer').classList.remove('hidden');
-
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('kp-content').classList.remove('hidden');
+                document.getElementById('kp-content').classList.add('flex');
             } catch (err) {
-                document.getElementById('loading').innerHTML = '<div class="text-red-400 font-bold">Ошибка загрузки данных</div>';
+                showError();
             }
         }
 
-        function renderData() {
-            document.getElementById('c-name').innerText = kpData.client_name || 'Клиент';
-            document.getElementById('c-phone').innerText = kpData.phone || '—';
-            document.getElementById('c-address').innerText = kpData.address || '—';
+        function showError() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('error-screen').classList.remove('hidden');
+            document.getElementById('error-screen').classList.add('flex');
+        }
 
-            const container = document.getElementById('items-container');
-            container.innerHTML = '';
+        function renderItems() {
+            const baseContainer = document.getElementById('base-items');
+            const addonContainer = document.getElementById('addon-items');
+            baseContainer.innerHTML = '';
+            addonContainer.innerHTML = '';
+            
+            let hasBase = false;
+            let hasAddon = false;
 
-            kpData.items.forEach(item => {
-                if(!item.name && item.price === 0) return;
+            kpItems.forEach(item => {
+                if(!item.name && item.price === 0) return; 
                 
-                const imgHtml = item.image ? `<img src="${item.image}" class="w-16 h-16 object-cover rounded-lg shadow-md border border-[#d4af37]/30 shrink-0">` : `<div class="w-16 h-16 bg-[#152b22] rounded-lg border border-[#d4af37]/20 flex items-center justify-center text-[#d4af37]/50 text-[10px] uppercase font-bold shrink-0">Без фото</div>`;
+                const imgHtml = item.image ? `<img src="${item.image}" class="w-16 h-16 object-cover rounded shadow-sm border border-kp-gold/30 shrink-0">` : `<div class="w-16 h-16 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30">БЕЗ ФОТО</div>`;
                 
-                let actionHtml = '';
-                if (item.isOption) {
-                    actionHtml = `
-                    <label class="flex items-center cursor-pointer ml-auto mt-3 sm:mt-0">
-                        <div class="relative flex items-center">
-                            <input type="checkbox" class="sr-only toggle-checkbox prev-toggle" checked data-id="${item.id}" data-price="${item.price * item.qty}" onchange="recalcTotal()">
-                            <div class="block w-12 h-7 rounded-full bg-[#12261e] border border-[#d4af37]/50 toggle-bg transition-colors"></div>
-                            <div class="dot absolute left-1 top-1 bg-[#d4af37] w-5 h-5 rounded-full transition-transform transform translate-x-5 shadow-md"></div>
-                        </div>
-                    </label>`;
-                } else {
-                    actionHtml = `<div class="text-[9px] font-black text-[#d4af37]/40 uppercase tracking-widest ml-auto mt-3 sm:mt-0 bg-[#d4af37]/10 px-2 py-1 rounded">Обязательно</div>`;
-                }
-
-                container.innerHTML += `
-                <div class="bg-gradient-to-br from-[#152b22] to-[#12261e] border border-[#d4af37]/20 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-4 shadow-lg hover:border-[#d4af37]/50 transition-colors">
-                    <div class="flex gap-4 w-full">
+                if (!item.isOption) {
+                    hasBase = true;
+                    baseContainer.innerHTML += `
+                    <div class="flex items-center gap-4 py-4 border-b border-kp-gold/10 last:border-0">
                         ${imgHtml}
-                        <div class="flex-1 min-w-0 pt-1">
-                            <div class="font-bold text-white text-[14px] leading-tight mb-1.5">${item.name || 'Товар'}</div>
-                            <div class="text-[12px] font-medium text-white/50">${item.qty} шт × ${item.price.toLocaleString()} ₽</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-white text-[15px] leading-tight mb-1 truncate">${item.name || 'Товар'}</div>
+                            <div class="text-[12px] text-white/60">${item.qty} шт</div>
                         </div>
-                    </div>
-                    <div class="flex items-center justify-between w-full sm:w-auto shrink-0 border-t sm:border-t-0 border-[#d4af37]/10 pt-3 sm:pt-0 sm:pl-4">
-                        <div class="font-black kp-gold-text text-[16px]">${(item.qty * item.price).toLocaleString()} ₽</div>
-                        ${actionHtml}
-                    </div>
-                </div>`;
+                        <div class="text-right shrink-0 flex flex-col items-end gap-1">
+                            <div class="text-[10px] font-bold text-kp-gold border border-kp-gold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1">База</div>
+                            <div class="font-bold text-white text-[16px]">${(item.qty * item.price).toLocaleString()} ₽</div>
+                        </div>
+                    </div>`;
+                } else {
+                    hasAddon = true;
+                    addonContainer.innerHTML += `
+                    <div class="flex items-center gap-4 py-4 border-b border-kp-gold/10 last:border-0">
+                        ${imgHtml}
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-white text-[15px] leading-tight mb-1 truncate">${item.name || 'Товар'}</div>
+                            <div class="text-[12px] text-white/60">${item.qty} шт × ${item.price.toLocaleString()} ₽</div>
+                        </div>
+                        <div class="text-right shrink-0 flex flex-col items-end gap-2">
+                            <label class="relative flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only toggle-checkbox prev-toggle" checked data-id="${item.id}" onchange="calcTotal()">
+                                <div class="block w-10 h-6 rounded-full bg-[#0a1a14] border border-kp-gold/50 toggle-bg transition-colors"></div>
+                                <div class="dot absolute left-1 top-1 bg-kp-gold w-4 h-4 rounded-full transition-transform transform translate-x-4 shadow"></div>
+                            </label>
+                            <div class="font-bold text-kp-gold text-[16px]">${(item.qty * item.price).toLocaleString()} ₽</div>
+                        </div>
+                    </div>`;
+                }
             });
 
-            // Навешиваем слушатели на свитчи
+            if (hasBase) { document.getElementById('base-section').classList.remove('hidden'); document.getElementById('base-section').classList.add('block'); }
+            if (hasAddon) { document.getElementById('addon-section').classList.remove('hidden'); document.getElementById('addon-section').classList.add('block'); }
+
+            calcTotal();
+
             document.querySelectorAll('.prev-toggle').forEach(t => {
                 t.addEventListener('change', function() {
                     const bg = this.nextElementSibling;
                     const dot = bg.nextElementSibling;
                     if(this.checked) {
-                        bg.classList.add('bg-[#12261e]', 'border-[#d4af37]/50');
-                        dot.classList.add('translate-x-5', 'bg-[#d4af37]');
+                        bg.classList.remove('bg-gray-600', 'border-gray-500');
+                        bg.classList.add('bg-[#0a1a14]', 'border-[#D4B86A]/50');
+                        dot.classList.add('translate-x-4', 'bg-[#D4B86A]');
                         dot.classList.remove('bg-gray-400', 'translate-x-0');
                     } else {
-                        bg.classList.remove('bg-[#12261e]', 'border-[#d4af37]/50');
-                        dot.classList.remove('translate-x-5', 'bg-[#d4af37]');
+                        bg.classList.add('bg-gray-600', 'border-gray-500');
+                        bg.classList.remove('bg-[#0a1a14]', 'border-[#D4B86A]/50');
+                        dot.classList.remove('translate-x-4', 'bg-[#D4B86A]');
                         dot.classList.add('bg-gray-400', 'translate-x-0');
                     }
                 });
             });
-
-            recalcTotal();
         }
 
-        function recalcTotal() {
+        function calcTotal() {
             let total = 0;
-            kpData.items.forEach(item => {
+            kpItems.forEach(item => {
                 if(!item.name && item.price === 0) return;
                 if (!item.isOption) {
                     total += (item.qty * item.price);
@@ -206,22 +225,14 @@
             });
             
             const el = document.getElementById('total-sum');
-            el.style.transform = 'scale(0.95)';
             el.style.opacity = '0.5';
             setTimeout(() => {
                 el.innerText = total.toLocaleString() + ' ₽';
-                el.style.transform = 'scale(1)';
                 el.style.opacity = '1';
-                el.style.transition = 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            }, 100);
+            }, 150);
         }
 
-        function confirmOrder() {
-            alert('Супер! В полноценной версии здесь мы отправим уведомление менеджеру в CRM и откроем чат WhatsApp для согласования.');
-        }
-
-        // Запускаем
-        loadKp();
+        init();
     </script>
 </body>
 </html>
