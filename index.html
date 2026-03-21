@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v2.6 PRO</title>
+    <title>Хорошие полы - CRM v2.7 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -179,6 +179,7 @@
             </div>
         </div>
     </div>
+
     <div id="editModal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden z-[160] flex items-center justify-center p-3 sm:p-5 transition-all">
         <div class="bg-white dark:bg-gray-800 rounded shadow-xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh]">
             <div class="p-4 border-b border-[#dce3e7] dark:border-gray-700 flex justify-between items-center bg-[#f4f7f8] dark:bg-gray-800 shrink-0">
@@ -294,7 +295,9 @@
                 <button onclick="lockCrm()" class="w-full text-left bx-sidebar-item border-none bg-transparent hover:text-white">🚪 Выйти</button>
             </div>
         </aside>
+
         <main class="flex-1 md:ml-[260px] flex flex-col min-w-0 h-screen overflow-y-auto w-full relative">
+            
             <header class="sticky top-0 z-40 px-4 sm:px-6 py-3 flex flex-col md:flex-row items-start md:items-center justify-between w-full bg-white dark:bg-gray-900 border-b border-[#dce3e7] dark:border-gray-700 shadow-sm gap-3">
                 <div class="flex items-center justify-between w-full md:w-auto shrink-0">
                     <div class="flex items-center gap-3 sm:gap-4">
@@ -304,7 +307,7 @@
                     <button onclick="toggleForm()" class="sm:hidden bx-btn-success w-9 h-9 !p-0 rounded text-xl shrink-0" id="mobileAddBtn">+</button>
                 </div>
                 
-                <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 w-full mt-2 sm:mt-0">
+                <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
                     <div class="relative w-full md:max-w-md lg:max-w-2xl mx-auto flex-1 order-1">
                         <span class="absolute left-3 top-2.5 text-[#aab3b8] text-sm">🔍</span>
                         <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск по клиентам, номерам, тегам..." class="bx-input pl-8 !h-[38px] w-full shadow-inner bg-gray-50 dark:bg-gray-800">
@@ -404,9 +407,8 @@
                         </div>
                     </div>
 
-                    <div class="mb-6 flex justify-between items-end">
+                    <div class="mb-6">
                         <h2 class="text-xl font-bold text-[#333] dark:text-white uppercase tracking-tight">Смета / Товары</h2>
-                        <button onclick="addKpItem()" class="bx-btn-default text-[#2fc6f6] border-[#2fc6f6] hover:bg-[#f0fbff] text-xs h-8 px-4">+ Добавить позицию</button>
                     </div>
 
                     <div class="hidden md:grid grid-cols-12 gap-3 px-4 pb-2 text-[11px] font-bold text-[#aab3b8] uppercase tracking-wider border-b border-[#dce3e7] dark:border-gray-700">
@@ -419,6 +421,12 @@
 
                     <div id="kpItemsContainer" class="space-y-4 md:space-y-0 md:divide-y md:divide-[#dce3e7] dark:md:divide-gray-700 mt-4 md:mt-0">
                         </div>
+
+                    <div class="mt-4 pt-2">
+                        <button onclick="addKpItem()" class="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-[#c6d1d6] dark:border-gray-600 rounded-lg text-[#535c69] dark:text-gray-400 font-bold text-[13px] uppercase hover:border-[#2fc6f6] hover:text-[#2fc6f6] dark:hover:border-[#2fc6f6] dark:hover:text-[#2fc6f6] transition-colors bg-[#f4f7f8]/50 dark:bg-gray-800/50">
+                            + Добавить еще позицию
+                        </button>
+                    </div>
 
                     <div class="mt-8 pt-6 border-t-2 border-[#333] dark:border-gray-600 flex flex-col md:flex-row justify-between items-center gap-4">
                         
