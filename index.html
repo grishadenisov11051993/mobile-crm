@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v2.2 PRO</title>
+    <title>Хорошие полы - CRM v2.3 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,12 +63,12 @@
         .spinner { border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #2fc6f6; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Дизайн клиентского превью (Изумруд + Золото) */
+        /* Дизайн клиентского превью КП (Изумруд + Золото) */
         .kp-emerald-bg { background-color: #1a362b; }
         .kp-gold-text { color: #d4af37; }
         .kp-gold-border { border-color: #d4af37; }
         
-        /* Свитчи (iOS style) для интерактива */
+        /* Свитчи для интерактива */
         .toggle-checkbox:checked { right: 0; border-color: #d4af37; }
         .toggle-checkbox:checked + .toggle-label { background-color: #d4af37; }
         .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
@@ -80,13 +80,12 @@
     <div id="ai-loader">
         <div class="spinner"></div>
         <h3 class="text-xl font-bold mb-2">Обработка...</h3>
-        <p class="text-sm text-gray-300">Сжимаем фото и сохраняем данные.</p>
+        <p class="text-sm text-gray-300">Подождите, сохраняем данные.</p>
     </div>
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800"></div>
 
     <div id="kpPreviewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-[200] flex items-center justify-center sm:p-4 transition-all">
         <div class="kp-emerald-bg w-full sm:w-[400px] h-full sm:h-[800px] sm:rounded-[3rem] sm:border-[12px] border-gray-900 shadow-2xl overflow-hidden flex flex-col relative">
-            
             <div class="p-6 pb-4 flex items-center justify-between border-b border-[#d4af37]/30 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-[#d4af37] rounded flex items-center justify-center font-bold text-[#1a362b] text-lg shadow-md">ХП</div>
@@ -287,6 +286,7 @@
                 <a href="#" id="nav-files" onclick="switchSection('files')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Общий диск</a>
                 <a href="#" id="nav-calendar" onclick="switchSection('calendar')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Календарь</a>
                 <a href="#" id="nav-archive" onclick="switchSection('archive')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Архив</a>
+                
                 <div class="sidebar-category mt-6">Отчеты и Настройки</div>
                 <a href="#" id="nav-analytics" onclick="switchSection('analytics')" class="bx-sidebar-item"><svg class="bx-sidebar-icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-5 5"/></svg> Аналитика</a>
                 <button onclick="toggleDarkMode()" class="w-full text-left bx-sidebar-item bg-transparent border-none cursor-pointer"><span class="bx-sidebar-icon" id="themeIcon">🌙</span> Тема</button>
@@ -310,7 +310,7 @@
                 <div id="dealsToolbar" class="hidden w-full flex-col md:flex-row items-center gap-2 sm:gap-4 w-full mt-2 sm:mt-0">
                     <div class="relative w-full md:max-w-md lg:max-w-2xl mx-auto flex-1 order-1">
                         <span class="absolute left-3 top-2.5 text-[#aab3b8] text-sm">🔍</span>
-                        <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск..." class="bx-input pl-8 !h-[38px] w-full shadow-inner bg-gray-50 dark:bg-gray-800">
+                        <input id="searchInput" oninput="debounceSearch()" type="text" placeholder="Поиск по клиентам, номерам, тегам..." class="bx-input pl-8 !h-[38px] w-full shadow-inner bg-gray-50 dark:bg-gray-800">
                     </div>
                     <div class="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-2 w-full md:w-auto shrink-0 order-2">
                         <select id="sortSelect" onchange="renderData()" class="bx-input !h-[36px] text-[11px] sm:text-[12px] font-bold text-[#535c69] dark:text-gray-300 bg-[#f4f7f8] dark:bg-gray-800 cursor-pointer !w-auto !px-2 border-[#dce3e7] dark:border-gray-700 outline-none">
@@ -703,17 +703,14 @@
             const container = document.getElementById('kpItemsContainer');
             if (!container) return;
             container.innerHTML = '';
-            let sum = 0;
 
             kpItems.forEach((item, index) => {
                 const itemTotal = item.qty * item.price;
-                sum += itemTotal;
-                
                 const imgPreview = item.image ? `<img src="${item.image}" class="w-10 h-10 object-cover rounded border border-[#dce3e7] shrink-0">` : `<div class="w-10 h-10 bg-[#eef2f4] dark:bg-gray-700 rounded border border-[#dce3e7] dark:border-gray-600 flex items-center justify-center text-gray-400 text-[10px] shrink-0">Фото</div>`;
 
                 container.innerHTML += `
-                <div class="flex flex-col md:flex-row items-start md:items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg md:rounded-none relative group">
-                    <button onclick="removeKpItem(${item.id})" class="absolute top-2 right-2 md:relative md:top-auto md:right-auto text-red-400 hover:text-red-600 font-bold px-2 py-1 bg-red-50 md:bg-transparent rounded md:order-last shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity" title="Удалить">✕</button>
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg md:rounded-none relative group" id="kp-row-${item.id}">
+                    <button onclick="removeKpItem(${item.id})" class="absolute top-2 right-2 md:relative md:top-auto md:right-auto text-red-400 hover:text-red-600 font-bold px-2 py-1 bg-red-50 md:bg-transparent rounded md:order-last shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity" title="Удалить">✕</button>
                     
                     <div class="flex-1 w-full md:w-5/12 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
                         <label class="cursor-pointer shrink-0" title="Загрузить фото">
@@ -735,12 +732,12 @@
                     
                     <div class="w-full md:w-2/12 flex items-center gap-2 md:justify-end">
                         <span class="md:hidden text-[11px] font-bold text-[#aab3b8] uppercase w-16">Итого:</span>
-                        <div class="font-bold text-[14px] text-[#333] dark:text-white truncate">${itemTotal.toLocaleString()} ₽</div>
+                        <div class="font-bold text-[14px] text-[#333] dark:text-white truncate" id="kp-item-total-${item.id}">${itemTotal.toLocaleString()} ₽</div>
                     </div>
                     
                     <div class="w-full md:w-1/12 flex items-center justify-start md:justify-center mt-2 md:mt-0">
                         <label class="flex items-center cursor-pointer gap-2">
-                            <span class="md:hidden text-[11px] font-bold text-[#aab3b8] uppercase">Опция (выбор):</span>
+                            <span class="md:hidden text-[11px] font-bold text-[#aab3b8] uppercase">Опция:</span>
                             <div class="relative">
                                 <input type="checkbox" class="sr-only toggle-checkbox" ${item.isOption ? 'checked' : ''} onchange="updateKpItem(${item.id}, 'isOption', this.checked)">
                                 <div class="block w-8 h-5 rounded-full toggle-label border border-[#dce3e7] dark:border-gray-600"></div>
@@ -751,7 +748,7 @@
                 </div>
                 `;
             });
-            document.getElementById('kpTotalSumDisplay').innerText = sum.toLocaleString() + ' ₽';
+            calcKpTotalSum();
         }
 
         function addKpItem() {
@@ -771,8 +768,21 @@
             if (item) {
                 if (field === 'qty' || field === 'price') value = Number(value) || 0;
                 item[field] = value;
-                renderKpConstructor();
+                
+                // Исправление бага с клавиатурой: обновляем только текст, а не перерисовываем инпуты
+                if (field === 'qty' || field === 'price') {
+                    const totalEl = document.getElementById(`kp-item-total-${id}`);
+                    if (totalEl) totalEl.innerText = (item.qty * item.price).toLocaleString() + ' ₽';
+                }
+                calcKpTotalSum();
             }
+        }
+
+        function calcKpTotalSum() {
+            let sum = 0;
+            kpItems.forEach(item => { sum += item.qty * item.price; });
+            const sumEl = document.getElementById('kpTotalSumDisplay');
+            if (sumEl) sumEl.innerText = sum.toLocaleString() + ' ₽';
         }
 
         function uploadKpImage(event, id) {
@@ -1270,20 +1280,7 @@
                 let orderLink = '';
                 if (t.order_id) { const linkedOrder = allOrders.find(o => String(o.id) === String(t.order_id)); if (linkedOrder) orderLink = `<div class="mt-1.5"><span onclick="event.stopPropagation(); openEditModal('${linkedOrder.id}')" class="text-[11px] font-bold text-[#2fc6f6] hover:underline cursor-pointer bg-[#f0fbff] border border-[#c6eaf8] px-2 py-0.5 rounded">🔗 ${linkedOrder.customer_name}</span></div>`; }
                 const fileIcon = t.file_url ? '📎 ' : '';
-                return `
-                <div class="flex items-center justify-between p-4 sm:p-5 border border-[#dce3e7] dark:border-gray-700 rounded bg-[#f4f7f8] dark:bg-gray-800 mb-3 hover:shadow-sm transition-all cursor-pointer" onclick="openTaskModal('${t.id}')">
-                    <div class="flex items-start gap-4 flex-1">
-                        <div class="mt-0.5 w-6 h-6 rounded flex items-center justify-center shrink-0 cursor-pointer ${t.is_completed ? 'bg-[#7bd500] text-white shadow-sm' : 'border border-[#dce3e7] bg-white hover:border-[#2fc6f6]'}" onclick="event.stopPropagation(); toggleTask('${t.id}', ${!t.is_completed})">
-                            ${t.is_completed ? '<span class="text-xs font-bold">✓</span>' : ''}
-                        </div>
-                        <div>
-                            <div class="${t.is_completed ? 'line-through text-[#aab3b8]' : 'text-[#333] dark:text-gray-100 font-bold'} text-[14px] break-words">
-                                ${fileIcon}${t.title} ${badgeHtml}
-                            </div>
-                            ${orderLink}
-                        </div>
-                    </div>
-                </div>`;
+                return `<div class="flex items-center justify-between p-4 sm:p-5 border border-[#dce3e7] dark:border-gray-700 rounded bg-[#f4f7f8] dark:bg-gray-800 mb-3 hover:shadow-sm transition-all cursor-pointer" onclick="openTaskModal('${t.id}')"><div class="flex items-start gap-4 flex-1"><div class="mt-0.5 w-6 h-6 rounded flex items-center justify-center shrink-0 cursor-pointer ${t.is_completed ? 'bg-[#7bd500] text-white shadow-sm' : 'border border-[#dce3e7] bg-white hover:border-[#2fc6f6]'}" onclick="event.stopPropagation(); toggleTask('${t.id}', ${!t.is_completed})">${t.is_completed ? '<span class="text-xs font-bold">✓</span>' : ''}</div><div><div class="${t.is_completed ? 'line-through text-[#aab3b8]' : 'text-[#333] dark:text-gray-100 font-bold'} text-[14px] break-words">${fileIcon}${t.title} ${badgeHtml}</div>${orderLink}</div></div></div>`;
             }).join('');
         }
         async function addTaskFromInput(id) { const i = document.getElementById(id); if(!i||!i.value.trim()) return showToast("Введите текст", true); try { await _supabase.from('tasks').insert([{ title: i.value.trim() }]); i.value = ''; loadTasks(); showToast("Добавлена", false); } catch(e) { showToast("Ошибка связи", true); } }
