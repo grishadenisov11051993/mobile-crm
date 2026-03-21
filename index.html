@@ -4,16 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v3.1 PRO</title>
+    <title>Хорошие полы - CRM v3.3 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
+    <script>
+        tailwind.config = { 
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'kp-bg': '#052A1B',
+                        'kp-card': '#083D28',
+                        'kp-gold': '#D4B86A',
+                        'kp-gold-light': '#FDE8C3',
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        /* Базовый дизайн и скроллбары */
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s, color 0.3s; background-color: #eef2f4; color: #333; }
         .dark body { background-color: #111827; color: #f3f4f6; }
         .overflow-y-auto, .overflow-x-auto { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
@@ -22,6 +38,7 @@
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
+        /* Сайдбар */
         #sidebar { background: linear-gradient(180deg, #1d252f 0%, #303b4a 100%); color: #fff; border-right: none; }
         .bx-sidebar-item { border-radius: 3px; transition: all 0.2s ease; font-size: 14px; font-weight: 500; text-decoration: none; margin: 4px 12px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.7); border-left: 3px solid transparent; }
         .bx-sidebar-item:hover { background-color: rgba(255,255,255,0.08); color: #fff; }
@@ -29,6 +46,7 @@
         .bx-sidebar-icon { width: 20px; height: 20px; opacity: 0.8; stroke-width: 2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; display: inline-block; } 
         .sidebar-category { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.4); font-weight: 700; padding: 20px 28px 8px; }
 
+        /* Инпуты и кнопки */
         .bx-input { background-color: #fff; border: 1px solid #c6d1d6; border-radius: 3px; padding: 0 16px; height: 40px; font-size: 14px; font-weight: 500; outline: none; transition: 0.2s; width: 100%; color: #333; }
         .dark .bx-input { background-color: #1f2937; border-color: #374151; color: #f3f4f6; }
         .bx-input:focus { border-color: #2fc6f6; box-shadow: 0 0 0 2px rgba(47,198,246,0.2); }
@@ -49,22 +67,21 @@
         
         .bx-tag { font-size: 10px; font-weight: 700; padding: 3px 6px; border-radius: 3px; text-transform: uppercase; display: inline-block; background: #eef2f4; color: #535c69; border: 1px solid #dce3e7; }
 
+        /* Канбан */
         .cursor-grab { cursor: grab; }
         .cursor-grab:active { cursor: grabbing; }
         .drag-over { background-color: rgba(47, 198, 246, 0.05) !important; border: 2px dashed #2fc6f6 !important; border-radius: 4px; }
         .dragging { opacity: 0.5; transform: scale(0.98); z-index: 50; position: relative; }
         .mass-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: #2fc6f6; }
 
+        /* Лоадер */
         #ai-loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; color: white; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(4px); }
         .spinner { border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #2fc6f6; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .kp-emerald-bg { background-color: #1a362b; }
-        .kp-gold-text { color: #d4af37; }
-        .kp-gold-border { border-color: #d4af37; }
-        
-        .toggle-checkbox:checked { right: 0; border-color: #d4af37; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #d4af37; }
+        /* Свитчи для интерактива */
+        .toggle-checkbox:checked { right: 0; border-color: #D4B86A; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #D4B86A; }
         .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
         .toggle-label { background-color: #e2e8f0; transition: all 0.3s; }
     </style>
@@ -78,36 +95,61 @@
     </div>
     <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg hidden z-[300] text-sm font-bold transition-all text-white w-[90%] sm:w-auto text-center max-w-sm bg-gray-800"></div>
 
-    <div id="kpPreviewModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-[200] flex items-center justify-center sm:p-4 transition-all">
-        <div class="kp-emerald-bg w-full sm:w-[400px] h-full sm:h-[800px] sm:rounded-[3rem] sm:border-[12px] border-gray-900 shadow-2xl overflow-hidden flex flex-col relative">
-            <div class="p-6 pb-4 flex items-center justify-between border-b border-[#d4af37]/30 shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-[#d4af37] rounded flex items-center justify-center font-bold text-[#1a362b] text-lg shadow-md">ХП</div>
-                    <div>
-                        <div class="font-bold kp-gold-text text-sm uppercase leading-tight">Центр напольных</div>
-                        <div class="font-bold kp-gold-text text-sm uppercase leading-tight">Покрытий</div>
+    <div id="kpPreviewModal" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden z-[200] flex items-center justify-center sm:p-4 transition-all overflow-hidden">
+        <div class="bg-kp-bg w-full sm:w-[420px] h-full sm:h-[85vh] sm:rounded-[2.5rem] sm:border-[8px] border-gray-900 shadow-2xl overflow-hidden flex flex-col relative">
+            
+            <div class="p-6 pb-2 shrink-0 flex flex-col items-center justify-center relative">
+                <button onclick="closeKpPreview()" class="absolute top-4 right-6 text-white/50 hover:text-white text-3xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+                
+                <div class="flex items-center justify-center gap-3 mb-4 mt-2">
+                    <div class="w-10 h-10 bg-kp-gold text-kp-bg font-bold text-xl flex items-center justify-center rounded">ХП</div>
+                    <div class="text-kp-gold font-bold leading-none">
+                        <div class="text-lg tracking-widest uppercase">Хорошие полы</div>
+                        <div class="text-[9px] tracking-widest uppercase opacity-80 mt-1">Центр напольных покрытий</div>
                     </div>
                 </div>
-                <button onclick="closeKpPreview()" class="text-white/50 hover:text-white text-3xl leading-none bg-transparent border-none cursor-pointer">&times;</button>
+
+                <h2 class="text-2xl font-['Playfair_Display'] text-kp-gold text-center uppercase mb-2 leading-snug">
+                    Индивидуальная смета<br>для <span id="prev-c-name-title" class="text-white">Клиента</span>
+                </h2>
             </div>
-            <div class="p-6 flex-1 overflow-y-auto no-scrollbar relative">
-                <h2 class="text-2xl font-bold text-white uppercase tracking-wide mb-6">Коммерческое<br><span class="kp-gold-text">Предложение</span></h2>
-                <div class="mb-6 space-y-2">
-                    <div class="text-[11px] font-bold kp-gold-text uppercase tracking-wider mb-2">Данные клиента:</div>
-                    <div class="border border-[#d4af37]/30 rounded p-2 px-3 text-white text-sm"><span class="text-white/50">Имя:</span> <span id="prev-c-name"></span></div>
-                    <div class="border border-[#d4af37]/30 rounded p-2 px-3 text-white text-sm"><span class="text-white/50">Адрес:</span> <span id="prev-c-address"></span></div>
-                    <div class="border border-[#d4af37]/30 rounded p-2 px-3 text-white text-sm"><span class="text-white/50">Телефон:</span> <span id="prev-c-phone"></span></div>
+
+            <div class="px-5 py-4 flex-1 overflow-y-auto no-scrollbar relative space-y-8">
+                
+                <div id="prev-base-section" class="relative border border-kp-gold/40 rounded-xl p-4 pt-6">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-kp-bg px-4 text-kp-gold text-[11px] font-bold uppercase tracking-widest whitespace-nowrap">
+                        Базовый комплект
+                    </div>
+                    <div id="prev-base-items" class="space-y-0 divide-y divide-kp-gold/10">
+                        </div>
                 </div>
-                <div class="text-[11px] font-bold kp-gold-text uppercase tracking-wider mb-3">Состав заказа:</div>
-                <div id="prev-items-container" class="space-y-3 mb-8"></div>
+
+                <div id="prev-addon-section" class="relative border border-kp-gold/40 rounded-xl p-4 pt-6 hidden">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-kp-bg px-4 text-kp-gold text-[11px] font-bold uppercase tracking-widest whitespace-nowrap">
+                        Рекомендуем добавить
+                    </div>
+                    <div id="prev-addon-items" class="space-y-0 divide-y divide-kp-gold/10">
+                        </div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-kp-card p-4 rounded-xl border border-kp-gold/20 mb-4 shadow-lg">
+                    <img src="https://ui-avatars.com/api/?name=Менеджер&background=D4B86A&color=052A1B" id="prev-manager-avatar" class="w-14 h-14 rounded-full border-2 border-kp-gold object-cover">
+                    <div>
+                        <div class="text-[9px] text-kp-gold uppercase tracking-widest mb-1">Ваш персональный менеджер</div>
+                        <div class="text-white font-bold text-base mb-1" id="prev-manager-name">МЕНЕДЖЕР</div>
+                        <div class="text-[10px] text-white/70">Я на связи! Если нужно что-то поменять — пишите, всё решим.</div>
+                    </div>
+                </div>
+
             </div>
-            <div class="p-6 bg-[#12261e] border-t border-[#d4af37]/30 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.3)]">
-                <div class="flex justify-between items-end mb-4">
-                    <div class="text-sm font-bold text-white/70 uppercase">Итого к оплате:</div>
+
+            <div class="p-6 bg-[#031A10] border-t border-kp-gold/30 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-10">
+                <div class="flex justify-between items-end mb-5">
+                    <div class="text-xs font-bold text-kp-gold uppercase tracking-wider">Итоговая стоимость:</div>
                     <div class="text-3xl font-bold text-white" id="prev-total-sum">0 ₽</div>
                 </div>
-                <button onclick="closeKpPreview()" class="w-full bg-gradient-to-r from-[#d4af37] to-[#e6c875] text-[#1a362b] font-bold py-3.5 rounded shadow-lg text-[13px] uppercase tracking-wide flex justify-center items-center gap-2 hover:opacity-90 transition-opacity">
-                    <span>Закрыть предпросмотр</span>
+                <button onclick="closeKpPreview()" class="w-full bg-gradient-to-r from-kp-gold to-kp-gold-light text-kp-bg font-bold py-3.5 rounded shadow-lg text-[13px] uppercase tracking-wide flex justify-center items-center gap-2 hover:opacity-90 transition-opacity">
+                    <span>ЗАКРЫТЬ ПРЕДПРОСМОТР</span>
                 </button>
             </div>
         </div>
@@ -268,7 +310,7 @@
                 </div>
 
                 <div id="kpToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 mt-2 sm:mt-0">
-                    <button onclick="openKpPreview()" class="bx-btn-success !h-[36px] shadow-sm bg-[#d4af37] hover:bg-[#c5a070] text-[#1a362b]">✨ Превью для клиента</button>
+                    <button onclick="openKpPreview()" class="bx-btn-success !h-[36px] shadow-sm bg-[#D4B86A] hover:bg-[#c5a070] text-[#052A1B]">✨ Превью для клиента</button>
                 </div>
 
                 <div id="tasksToolbar" class="hidden flex-wrap items-center w-full sm:w-auto justify-end gap-2 mt-2 sm:mt-0">
@@ -393,16 +435,24 @@
         let currentSupplierFilter = 'Все';
         let selectedOrders = [];
         let currentGallery = [];
-
-        // Флаг для понимания, редактируем мы КП или создаем новое
         let editingKpId = null;
 
-        // --- СТРУКТУРА ДЛЯ КП ---
         let kpItems = [
             { id: 1, name: '', qty: 1, price: 0, isOption: false, image: null }
         ];
 
-        // --- УЛУЧШЕННОЕ СЖАТИЕ ИЗОБРАЖЕНИЙ ---
+        // --- УТИЛИТЫ ДЛЯ КП ---
+        function saveKpToLocalArchive(id, name, phone, address, total, items) {
+            try {
+                let archiveStr = localStorage.getItem('crm_saved_kps');
+                let archive = archiveStr ? JSON.parse(archiveStr) : [];
+                archive = archive.filter(k => String(k.id) !== String(id));
+                const newKp = { id: id, date: new Date().toISOString(), name: name, phone: phone, address: address, total: total, items: items };
+                archive.unshift(newKp);
+                localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
+            } catch(e) { console.error('Ошибка сохранения в архив:', e); }
+        }
+
         async function compressImageFile(file) {
             if (!file.type.startsWith('image/')) return file;
             return new Promise((resolve) => {
@@ -433,13 +483,6 @@
                 };
             });
         }
-
-        // --- УТИЛИТЫ ---
-        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); setTimeout(() => e.target.classList.add('dragging'), 0); }
-        function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(col => col.classList.remove('drag-over')); }
-        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-        function dragLeave(e) { if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget)) return; e.currentTarget.classList.remove('drag-over'); }
-        function dropCard(e, newStatus) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); const orderId = e.dataTransfer.getData('text/plain'); if(orderId) changeStatus(orderId, newStatus); }
 
         function applyTheme() {
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -482,31 +525,6 @@
         function formatPhoneInput(e) { e.target.value = applyPhoneMask(e.target.value); }
         function formatDate(d) { return d ? new Date(d).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'; }
 
-        function startDictation(inputId, btn) {
-            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Speech) return showToast("Голосовой ввод не поддерживается браузером", true);
-            const recognition = new Speech();
-            recognition.lang = 'ru-RU';
-            btn.innerText = '🛑';
-            recognition.onresult = (e) => { document.getElementById(inputId).value = e.results[0][0].transcript; };
-            recognition.onend = () => { btn.innerText = '🎤'; }; recognition.start();
-        }
-
-        function getTagColorClass(tag) {
-            const t = tag.toLowerCase().trim();
-            if(['авито', 'vk', 'вк', 'сайт', 'инста', 'телеграм'].includes(t)) return 'text-[#2fc6f6]';
-            if(['tarkett', 'classen', 'kronopol', 'aberhof', 'my floor', 'first floor'].includes(t)) return 'text-[#7bd500]';
-            if(['karelia', 'kahrs', 'wood bee', 'antic wood', 'steinholz', 'паркет'].includes(t)) return 'text-[#f5a623]';
-            if(['дизайнер', 'прораб', 'архитектор'].includes(t)) return 'text-purple-500';
-            if(['важно', 'акция', 'срочно', 'доставка'].includes(t)) return 'text-red-500';
-            return 'text-[#535c69] dark:text-gray-400';
-        }
-        function getTagsHtml(tagsStr) {
-            if(!tagsStr) return '';
-            const arr = String(tagsStr).split(',').map(t => t.trim()).filter(t => t);
-            if(arr.length === 0) return '';
-            return `<div class="mt-2 flex flex-wrap gap-1 pointer-events-none">` + arr.map(t => `<span class="bx-tag ${getTagColorClass(t)}">#${t}</span>`).join('') + `</div>`;
-        }
         function checkBodyScroll() { 
             const hasOpenModals = !document.getElementById('editModal').classList.contains('hidden') || !document.getElementById('dayModal').classList.contains('hidden') || !document.getElementById('taskModal').classList.contains('hidden') || !document.getElementById('kpPreviewModal').classList.contains('hidden'); 
             if (hasOpenModals) document.body.classList.add('overflow-hidden'); else document.body.classList.remove('overflow-hidden'); 
@@ -565,6 +583,10 @@
 
         // --- ЛОГИКА ГЕНЕРАТОРА КП ---
         function setKpTab(tab) {
+            if (tab === 'create' && editingKpId) {
+                cancelKpEdit();
+                tab = 'create';
+            }
             document.getElementById('tab-kp-create').className = tab === 'create' ? 'bx-tab active !m-0' : 'bx-tab !m-0 text-gray-500';
             document.getElementById('tab-kp-archive').className = tab === 'archive' ? 'bx-tab active !m-0' : 'bx-tab !m-0 text-gray-500';
             
@@ -732,19 +754,113 @@
             document.body.removeChild(textArea);
         }
 
-        // --- СОХРАНЕНИЕ ЛОКАЛЬНОГО АРХИВА ---
-        function saveKpToLocalArchive(id, name, phone, address, total, items) {
-            try {
-                let archiveStr = localStorage.getItem('crm_saved_kps');
-                let archive = archiveStr ? JSON.parse(archiveStr) : [];
-                archive = archive.filter(k => String(k.id) !== String(id));
-                const newKp = { id: id, date: new Date().toISOString(), name: name, phone: phone, address: address, total: total, items: items };
-                archive.unshift(newKp);
-                localStorage.setItem('crm_saved_kps', JSON.stringify(archive));
-            } catch(e) {}
+        // --- НОВЫЙ ИНТЕРАКТИВНЫЙ ПРЕДПРОСМОТР (В СТИЛЕ ИЗУМРУД+ЗОЛОТО) ---
+        function openKpPreview() {
+            const cName = document.getElementById('kpName').value || 'Клиента';
+            
+            document.getElementById('prev-c-name-title').innerText = cName;
+
+            const baseContainer = document.getElementById('prev-base-items');
+            const addonContainer = document.getElementById('prev-addon-items');
+            
+            baseContainer.innerHTML = '';
+            addonContainer.innerHTML = '';
+            
+            let hasBase = false;
+            let hasAddon = false;
+
+            kpItems.forEach(item => {
+                if(!item.name && item.price === 0) return; 
+                
+                const imgHtml = item.image ? `<img src="${item.image}" class="w-12 h-12 object-cover rounded shadow-sm border border-kp-gold/30 shrink-0">` : `<div class="w-12 h-12 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30">ФОТО</div>`;
+                
+                if (!item.isOption) {
+                    hasBase = true;
+                    baseContainer.innerHTML += `
+                    <div class="flex items-center gap-3 py-3 border-b border-kp-gold/10 last:border-0">
+                        ${imgHtml}
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-white text-[13px] leading-tight mb-1 truncate">${item.name || 'Товар'}</div>
+                            <div class="text-[11px] text-white/60">${item.qty} шт</div>
+                        </div>
+                        <div class="text-right shrink-0 flex flex-col items-end gap-1">
+                            <div class="text-[9px] font-bold text-kp-gold border border-kp-gold px-2 py-0.5 rounded-full uppercase tracking-wider">Обязательно</div>
+                            <div class="font-bold text-white text-[14px] mt-1">${(item.qty * item.price).toLocaleString()} ₽</div>
+                        </div>
+                    </div>`;
+                } else {
+                    hasAddon = true;
+                    addonContainer.innerHTML += `
+                    <div class="flex items-center gap-3 py-3 border-b border-kp-gold/10 last:border-0">
+                        ${imgHtml}
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-white text-[13px] leading-tight mb-1 truncate">${item.name || 'Товар'}</div>
+                            <div class="text-[11px] text-white/60">${item.qty} шт × ${item.price.toLocaleString()} ₽</div>
+                        </div>
+                        <div class="text-right shrink-0 flex flex-col items-end gap-2">
+                            <label class="relative flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only toggle-checkbox prev-toggle" checked data-id="${item.id}" data-price="${item.price * item.qty}" onchange="calcPreviewTotal()">
+                                <div class="block w-10 h-6 rounded-full bg-[#0a1a14] border border-kp-gold/50 toggle-bg transition-colors"></div>
+                                <div class="dot absolute left-1 top-1 bg-kp-gold w-4 h-4 rounded-full transition-transform transform translate-x-4 shadow"></div>
+                            </label>
+                            <div class="font-bold text-kp-gold text-[14px]">${(item.qty * item.price).toLocaleString()} ₽</div>
+                        </div>
+                    </div>`;
+                }
+            });
+
+            document.getElementById('prev-base-section').style.display = hasBase ? 'block' : 'none';
+            document.getElementById('prev-addon-section').style.display = hasAddon ? 'block' : 'none';
+
+            calcPreviewTotal();
+            document.getElementById('kpPreviewModal').classList.remove('hidden');
+            checkBodyScroll();
+            
+            // Логика анимации тумблеров
+            document.querySelectorAll('.prev-toggle').forEach(t => {
+                t.addEventListener('change', function() {
+                    const bg = this.nextElementSibling;
+                    const dot = bg.nextElementSibling;
+                    if(this.checked) {
+                        bg.classList.remove('bg-gray-600', 'border-gray-500');
+                        bg.classList.add('bg-[#0a1a14]', 'border-[#D4B86A]/50');
+                        dot.classList.add('translate-x-4', 'bg-[#D4B86A]');
+                        dot.classList.remove('bg-gray-400', 'translate-x-0');
+                    } else {
+                        bg.classList.add('bg-gray-600', 'border-gray-500');
+                        bg.classList.remove('bg-[#0a1a14]', 'border-[#D4B86A]/50');
+                        dot.classList.remove('translate-x-4', 'bg-[#D4B86A]');
+                        dot.classList.add('bg-gray-400', 'translate-x-0');
+                    }
+                });
+            });
         }
 
-        // --- ОТПРАВКА И СОХРАНЕНИЕ В БАЗУ ---
+        function calcPreviewTotal() {
+            let total = 0;
+            kpItems.forEach(item => {
+                if(!item.name && item.price === 0) return;
+                if (!item.isOption) {
+                    total += (item.qty * item.price);
+                } else {
+                    const cb = document.querySelector(`.prev-toggle[data-id="${item.id}"]`);
+                    if (cb && cb.checked) {
+                        total += (item.qty * item.price);
+                    }
+                }
+            });
+            
+            const el = document.getElementById('prev-total-sum');
+            el.style.opacity = '0.5';
+            setTimeout(() => {
+                el.innerText = total.toLocaleString() + ' ₽';
+                el.style.opacity = '1';
+            }, 150);
+        }
+
+        function closeKpPreview() { document.getElementById('kpPreviewModal').classList.add('hidden'); checkBodyScroll(); }
+
+        // --- ЛОГИКА ОТПРАВКИ И СОХРАНЕНИЯ В БАЗУ ---
         async function shareKp(platform) {
             const phoneRaw = document.getElementById('kpPhone').value;
             const phone = phoneRaw.replace(/\D/g, '');
@@ -781,7 +897,6 @@
                 
                 const encodedText = encodeURIComponent(text);
 
-                // Обязательный вызов функции сохранения
                 saveKpToLocalArchive(kpId, name, phoneRaw, address, total, [...kpItems]);
 
                 let link = '';
@@ -814,7 +929,7 @@
                 const kp = archive.find(k => String(k.id) === String(id));
                 if (!kp) return;
 
-                editingKpId = id;
+                editingKpId = id; 
 
                 document.getElementById('kpName').value = kp.name || '';
                 document.getElementById('kpPhone').value = applyPhoneMask(kp.phone || '');
@@ -883,11 +998,10 @@
 
                 if (error) throw error;
 
-                // Обновляем локальный архив
                 saveKpToLocalArchive(editingKpId, name, phoneRaw, address, total, [...kpItems]);
 
                 showToast("Ссылка клиента успешно обновлена!", false);
-                cancelKpEdit();
+                cancelKpEdit(); 
 
             } catch (err) {
                 console.error(err);
@@ -971,98 +1085,6 @@
                 showToast("Данные скопированы! Нажмите Создать сделку.");
             } catch(e){}
         }
-
-        function openKpPreview() {
-            const cName = document.getElementById('kpName').value || 'Не указано';
-            const cAddress = document.getElementById('kpAddress').value || 'Не указано';
-            const cPhone = document.getElementById('kpPhone').value || 'Не указано';
-            
-            document.getElementById('prev-c-name').innerText = cName;
-            document.getElementById('prev-c-address').innerText = cAddress;
-            document.getElementById('prev-c-phone').innerText = cPhone;
-
-            const container = document.getElementById('prev-items-container');
-            container.innerHTML = '';
-            
-            kpItems.forEach(item => {
-                if(!item.name && item.price === 0) return; 
-                
-                const imgHtml = item.image ? `<img src="${item.image}" class="w-12 h-12 object-cover rounded shadow-sm border border-[#d4af37]/30 shrink-0">` : '';
-                
-                let actionHtml = '';
-                if (item.isOption) {
-                    actionHtml = `
-                    <label class="flex items-center cursor-pointer ml-auto">
-                        <div class="relative flex items-center">
-                            <input type="checkbox" class="sr-only toggle-checkbox prev-toggle" checked data-id="${item.id}" data-price="${item.price * item.qty}" onchange="calcPreviewTotal()">
-                            <div class="block w-10 h-6 rounded-full bg-[#12261e] border border-[#d4af37]/50 toggle-bg transition-colors"></div>
-                            <div class="dot absolute left-1 top-1 bg-[#d4af37] w-4 h-4 rounded-full transition-transform transform translate-x-4 shadow"></div>
-                        </div>
-                    </label>`;
-                } else {
-                    actionHtml = `<div class="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-auto">База</div>`;
-                }
-
-                container.innerHTML += `
-                <div class="bg-[#12261e]/50 border border-[#d4af37]/20 p-3 rounded-xl flex items-center gap-3">
-                    ${imgHtml}
-                    <div class="flex-1 min-w-0">
-                        <div class="font-bold text-white text-[13px] leading-tight mb-1 truncate">${item.name || 'Товар'}</div>
-                        <div class="text-[11px] text-white/70">${item.qty} шт × ${item.price.toLocaleString()} ₽</div>
-                    </div>
-                    <div class="text-right shrink-0 mr-2">
-                        <div class="font-bold kp-gold-text text-[14px]">${(item.qty * item.price).toLocaleString()} ₽</div>
-                    </div>
-                    ${actionHtml}
-                </div>`;
-            });
-
-            calcPreviewTotal();
-            document.getElementById('kpPreviewModal').classList.remove('hidden');
-            checkBodyScroll();
-            
-            document.querySelectorAll('.prev-toggle').forEach(t => {
-                t.addEventListener('change', function() {
-                    const bg = this.nextElementSibling;
-                    const dot = bg.nextElementSibling;
-                    if(this.checked) {
-                        bg.classList.remove('bg-gray-600', 'border-gray-500');
-                        bg.classList.add('bg-[#12261e]', 'border-[#d4af37]/50');
-                        dot.classList.add('translate-x-4', 'bg-[#d4af37]');
-                        dot.classList.remove('bg-gray-400', 'translate-x-0');
-                    } else {
-                        bg.classList.add('bg-gray-600', 'border-gray-500');
-                        bg.classList.remove('bg-[#12261e]', 'border-[#d4af37]/50');
-                        dot.classList.remove('translate-x-4', 'bg-[#d4af37]');
-                        dot.classList.add('bg-gray-400', 'translate-x-0');
-                    }
-                });
-            });
-        }
-
-        function calcPreviewTotal() {
-            let total = 0;
-            kpItems.forEach(item => {
-                if(!item.name && item.price === 0) return;
-                if (!item.isOption) {
-                    total += (item.qty * item.price);
-                } else {
-                    const cb = document.querySelector(`.prev-toggle[data-id="${item.id}"]`);
-                    if (cb && cb.checked) {
-                        total += (item.qty * item.price);
-                    }
-                }
-            });
-            
-            const el = document.getElementById('prev-total-sum');
-            el.style.opacity = '0.5';
-            setTimeout(() => {
-                el.innerText = total.toLocaleString() + ' ₽';
-                el.style.opacity = '1';
-            }, 150);
-        }
-
-        function closeKpPreview() { document.getElementById('kpPreviewModal').classList.add('hidden'); checkBodyScroll(); }
 
         // --- ДАЛЕЕ ИДЕТ ОСТАЛЬНОЙ СТАНДАРТНЫЙ КОД CRM ---
         function setView(mode) { 
