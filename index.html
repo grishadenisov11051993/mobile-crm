@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="color-scheme" content="light dark">
-    <title>Хорошие полы - CRM v3.7 PRO</title>
+    <title>Хорошие полы - CRM v3.8 PRO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,9 +125,9 @@
                         <span>📸 Посмотрите, как это выглядит в жизни</span>
                     </div>
                     <div class="flex gap-3 overflow-x-auto no-scrollbar snap-x pb-2">
-                        <img src="https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in">
-                        <img src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in">
-                        <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in">
+                        <img src="https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in hover:brightness-75 transition-all">
+                        <img src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in hover:brightness-75 transition-all">
+                        <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in hover:brightness-75 transition-all">
                     </div>
                 </div>
 
@@ -846,7 +846,7 @@
                             <span class="text-white text-lg drop-shadow-md">🔍</span>
                         </div>
                     </div>` : 
-                    `<div class="w-14 h-14 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30 text-center">БЕЗ<br>ФОТО</div>`;
+                    `<div class="w-14 h-14 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30 text-center leading-tight">БЕЗ<br>ФОТО</div>`;
                 
                 if (!item.isOption) {
                     hasBase = true;
@@ -879,11 +879,11 @@
                         </div>
                         <div class="text-right shrink-0 flex flex-col items-end gap-2">
                             <label class="relative flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only toggle-checkbox prev-toggle" checked data-id="${item.id}" data-price="${item.price * item.qty}" onchange="calcPreviewTotal()">
-                                <div class="block w-10 h-6 rounded-full bg-[#0a1a14] border border-kp-gold/50 toggle-bg transition-colors"></div>
-                                <div class="dot absolute left-1 top-1 bg-kp-gold w-4 h-4 rounded-full transition-transform transform translate-x-4 shadow"></div>
+                                <input type="checkbox" class="sr-only peer prev-toggle" checked data-id="${item.id}" onchange="calcPreviewTotal()">
+                                <div class="block w-10 h-6 rounded-full bg-gray-600 border-gray-500 border peer-checked:bg-[#0a1a14] peer-checked:border-kp-gold/50 transition-colors duration-300"></div>
+                                <div class="absolute left-1 top-1 bg-gray-400 w-4 h-4 rounded-full transition-transform duration-300 peer-checked:translate-x-4 peer-checked:bg-kp-gold shadow"></div>
                             </label>
-                            <div class="font-bold text-kp-gold text-[14px]">${(item.qty * item.price).toLocaleString()} ₽</div>
+                            <div class="font-bold text-kp-gold text-[14px] mt-1">${(item.qty * item.price).toLocaleString()} ₽</div>
                         </div>
                     </div>`;
                 }
@@ -895,24 +895,6 @@
             calcPreviewTotal();
             document.getElementById('kpPreviewModal').classList.remove('hidden');
             checkBodyScroll();
-            
-            document.querySelectorAll('.prev-toggle').forEach(t => {
-                t.addEventListener('change', function() {
-                    const bg = this.nextElementSibling;
-                    const dot = bg.nextElementSibling;
-                    if(this.checked) {
-                        bg.classList.remove('bg-gray-600', 'border-gray-500');
-                        bg.classList.add('bg-[#0a1a14]', 'border-[#D4B86A]/50');
-                        dot.classList.add('translate-x-4', 'bg-[#D4B86A]');
-                        dot.classList.remove('bg-gray-400', 'translate-x-0');
-                    } else {
-                        bg.classList.add('bg-gray-600', 'border-gray-500');
-                        bg.classList.remove('bg-[#0a1a14]', 'border-[#D4B86A]/50');
-                        dot.classList.remove('translate-x-4', 'bg-[#D4B86A]');
-                        dot.classList.add('bg-gray-400', 'translate-x-0');
-                    }
-                });
-            });
         }
 
         function calcPreviewTotal() {
