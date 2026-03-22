@@ -27,10 +27,6 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #052A1B; color: #fff; -webkit-tap-highlight-color: transparent; }
-        .toggle-checkbox:checked { right: 0; border-color: #D4B86A; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #D4B86A; }
-        .toggle-checkbox { right: 0; z-index: 1; border-color: #374151; transition: all 0.3s; }
-        .toggle-label { background-color: #1f2937; transition: all 0.3s; }
         
         #loader { display: flex; position: fixed; inset: 0; background: #052A1B; z-index: 50; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { border: 3px solid rgba(212,184,106,0.2); border-top: 3px solid #D4B86A; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
@@ -96,9 +92,9 @@
                     <span>📸 Посмотрите, как это выглядит в жизни</span>
                 </div>
                 <div class="flex gap-3 overflow-x-auto no-scrollbar snap-x pb-2">
-                    <img src="https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in">
-                    <img src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in">
-                    <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in">
+                    <img src="https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in hover:brightness-75 transition-all">
+                    <img src="https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in hover:brightness-75 transition-all">
+                    <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=500&q=80" onclick="openLightbox(this.src)" class="w-48 h-32 object-cover rounded-lg snap-center shrink-0 border border-kp-gold/30 shadow-sm cursor-zoom-in hover:brightness-75 transition-all">
                 </div>
             </div>
 
@@ -217,7 +213,7 @@
                             <span class="text-white text-xl drop-shadow-md">🔍</span>
                         </div>
                     </div>` : 
-                    `<div class="w-16 h-16 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30 text-center">БЕЗ<br>ФОТО</div>`;
+                    `<div class="w-16 h-16 bg-white/5 rounded border border-kp-gold/30 shrink-0 flex items-center justify-center text-[10px] text-white/30 text-center leading-tight">БЕЗ<br>ФОТО</div>`;
                 
                 if (!item.isOption) {
                     hasBase = true;
@@ -232,7 +228,7 @@
                             </div>
                         </div>
                         <div class="text-right shrink-0 flex flex-col items-end gap-1">
-                            <div class="text-[9px] font-bold text-kp-gold border border-kp-gold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1">База</div>
+                            <div class="text-[10px] font-bold text-kp-gold border border-kp-gold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1">База</div>
                             <div class="font-bold text-white text-[16px]">${(item.qty * item.price).toLocaleString()} ₽</div>
                         </div>
                     </div>`;
@@ -250,11 +246,11 @@
                         </div>
                         <div class="text-right shrink-0 flex flex-col items-end gap-2">
                             <label class="relative flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only toggle-checkbox prev-toggle" checked data-id="${item.id}" onchange="calcTotal()">
-                                <div class="block w-10 h-6 rounded-full bg-[#0a1a14] border border-kp-gold/50 toggle-bg transition-colors"></div>
-                                <div class="dot absolute left-1 top-1 bg-kp-gold w-4 h-4 rounded-full transition-transform transform translate-x-4 shadow"></div>
+                                <input type="checkbox" class="sr-only peer prev-toggle" checked data-id="${item.id}" onchange="calcTotal()">
+                                <div class="block w-10 h-6 rounded-full bg-gray-600 border border-gray-500 peer-checked:bg-[#0a1a14] peer-checked:border-kp-gold/50 transition-colors duration-300"></div>
+                                <div class="absolute left-1 top-1 bg-gray-400 w-4 h-4 rounded-full transition-transform duration-300 peer-checked:translate-x-4 peer-checked:bg-kp-gold shadow"></div>
                             </label>
-                            <div class="font-bold text-kp-gold text-[16px] mt-1">${(item.qty * item.price).toLocaleString()} ₽</div>
+                            <div class="font-bold text-kp-gold text-[16px]">${(item.qty * item.price).toLocaleString()} ₽</div>
                         </div>
                     </div>`;
                 }
@@ -264,24 +260,6 @@
             if (hasAddon) { document.getElementById('addon-section').classList.remove('hidden'); document.getElementById('addon-section').classList.add('block'); }
 
             calcTotal();
-
-            document.querySelectorAll('.prev-toggle').forEach(t => {
-                t.addEventListener('change', function() {
-                    const bg = this.nextElementSibling;
-                    const dot = bg.nextElementSibling;
-                    if(this.checked) {
-                        bg.classList.remove('bg-gray-600', 'border-gray-500');
-                        bg.classList.add('bg-[#0a1a14]', 'border-[#D4B86A]/50');
-                        dot.classList.add('translate-x-4', 'bg-[#D4B86A]');
-                        dot.classList.remove('bg-gray-400', 'translate-x-0');
-                    } else {
-                        bg.classList.add('bg-gray-600', 'border-gray-500');
-                        bg.classList.remove('bg-[#0a1a14]', 'border-[#D4B86A]/50');
-                        dot.classList.remove('translate-x-4', 'bg-[#D4B86A]');
-                        dot.classList.add('bg-gray-400', 'translate-x-0');
-                    }
-                });
-            });
         }
 
         function calcTotal() {
